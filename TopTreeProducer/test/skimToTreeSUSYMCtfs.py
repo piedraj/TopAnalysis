@@ -64,7 +64,7 @@ process.source = cms.Source("PoolSource",
 
 process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/CMSSW_projects/CMSSW_7_2_0/src/0CBDD8C3-B67F-E411-9AFA-0025901D4764.root')
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(150))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options = cms.untracked.PSet(reportEvery = cms.untracked.int32(10000))
 

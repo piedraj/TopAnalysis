@@ -1,30 +1,13 @@
-Check the architecture
+Everything starts here
 ====
-
-This code requires CMSSW_7_2_0 (or later). With the current default SCRAM_ARCH in lxplus there is no such version.
-
-    echo $SCRAM_ARCH
-    slc6_amd64_gcc472
-
-    scram list | grep CMSSW_7 | grep -v afs | awk '{print $2}'
-    CMSSW_7_0_0_pre0
-    CMSSW_7_0_0_pre1
-    CMSSW_7_0_0_pre2
-
-Set the architecture to slc6_amd64_gcc481
 
     setenv SCRAM_ARCH slc6_amd64_gcc481
-
-
-Get the CMSSW release
-====
-
     cmsrel CMSSW_7_2_0
     cd CMSSW_7_2_0/src/
     cmsenv
 
 
-Copy and compile the code
+Get the material and compile it
 ====
 
     git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
@@ -33,7 +16,7 @@ Copy and compile the code
     scram b -j 10
 
 
-Test the code
+Do a test run
 ====
 
     voms-proxy-init
