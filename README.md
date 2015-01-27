@@ -19,7 +19,10 @@ Get the material and compile it
 Do a test run
 ====
 
+    cmsenv
     voms-proxy-init
+
+    cd TopTreeProducer/test/
     cmsRun skimToTreeSUSYMCtfs.py
 
 
@@ -28,7 +31,8 @@ CRAB3
 
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
-
     voms-proxy-init
+
+    cd TopTreeProducer/test/
     crab submit -c crabConfig.py
     crab status --dir crab_TTJets_PU30bx50
