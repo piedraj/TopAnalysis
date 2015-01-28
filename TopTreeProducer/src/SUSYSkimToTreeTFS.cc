@@ -362,11 +362,6 @@ private:
   std::vector<float> *T_Muon_vy;
   std::vector<float> *T_Muon_vx;
   std::vector<bool> *T_Muon_isPFMuon;
-  std::vector<float> *T_Muon_PFMuonPt; 
-  std::vector<float> *T_Muon_PFMuonPx;
-  std::vector<float> *T_Muon_PFMuonPy;
-  std::vector<float> *T_Muon_PFMuonPz;
-  std::vector<float> *T_Muon_PFMuonE;
   std::vector<int> *T_Muon_NLayers;
   std::vector<float> *T_Muon_BestTrack_dxy;
   std::vector<float> *T_Muon_BestTrack_dz;
@@ -1350,11 +1345,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Muon_vz = new std::vector<float>;
   T_Muon_vy = new std::vector<float>;  
   T_Muon_vx = new std::vector<float>;
-  T_Muon_PFMuonPt = new std::vector<float>;
-  T_Muon_PFMuonPx = new std::vector<float>;
-  T_Muon_PFMuonPy = new std::vector<float>;
-  T_Muon_PFMuonPz = new std::vector<float>;
-  T_Muon_PFMuonE = new std::vector<float>;
   T_Muon_isPFMuon = new std::vector<bool>;
   T_Muon_NLayers =  new std::vector<int>;
   T_Muon_BestTrack_dxy = new std::vector<float>;
@@ -1500,22 +1490,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     T_Muon_NValidHitsSATrk->push_back(nhitsouttrack);
     T_Muon_NumOfMatchedStations->push_back(selected_muons[k].numberOfMatchedStations());
     T_Muon_isPFMuon->push_back(selected_muons[k].isPFMuon ());
-    if(selected_muons[k].isPFMuon ())   {
-      T_Muon_PFMuonPt->push_back(selected_muons[k].pfP4 ().pt());
-      T_Muon_PFMuonPx->push_back(selected_muons[k].pfP4 ().px());
-      T_Muon_PFMuonPy->push_back(selected_muons[k].pfP4 ().py());
-      T_Muon_PFMuonPz->push_back(selected_muons[k].pfP4 ().pz());
-      T_Muon_PFMuonE->push_back(selected_muons[k].pfP4 ().E());
-    }
-	
-    else {
-      T_Muon_PFMuonPt->push_back(-99999.);
-      T_Muon_PFMuonPx->push_back(-99999.);
-      T_Muon_PFMuonPy->push_back(-99999.);
-      T_Muon_PFMuonPz->push_back(-99999.);
-      T_Muon_PFMuonE->push_back(-99999.);
-    }
-
     T_Muon_NLayers->push_back(nLayers);
 
 
@@ -2045,11 +2019,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_photonIsoR04;
   delete T_Muon_sumPUPtR04;
   delete T_Muon_sumPUPtR03;
-  delete T_Muon_PFMuonPt;
-  delete T_Muon_PFMuonPx;
-  delete T_Muon_PFMuonPy;
-  delete T_Muon_PFMuonPz;
-  delete T_Muon_PFMuonE;
   delete T_Muon_isPFMuon;
   delete T_Muon_NLayers;
   delete T_Muon_BestTrack_dxy;
@@ -2741,11 +2710,6 @@ SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Muon_vy", "std::vector<float>", &T_Muon_vy);
   Tree->Branch("T_Muon_vx", "std::vector<float>", &T_Muon_vx);
   Tree->Branch("T_Muon_NumOfMatchedStations", "std::vector<int>", &T_Muon_NumOfMatchedStations);
-  Tree->Branch("T_Muon_PFMuonPt","std::vector<float>", &T_Muon_PFMuonPt);
-  Tree->Branch("T_Muon_PFMuonPx","std::vector<float>", &T_Muon_PFMuonPx);
-  Tree->Branch("T_Muon_PFMuonPy","std::vector<float>", &T_Muon_PFMuonPy);
-  Tree->Branch("T_Muon_PFMuonPz","std::vector<float>", &T_Muon_PFMuonPx);
-  Tree->Branch("T_Muon_PFMuonE","std::vector<float>", &T_Muon_PFMuonE);
   Tree->Branch("T_Muon_isPFMuon","std::vector<bool>", &T_Muon_isPFMuon);
   Tree->Branch("T_Muon_NLayers","std::vector<int>", &T_Muon_NLayers);
   Tree->Branch("T_Muon_BestTrack_dxy", "std::vector<float>", &T_Muon_BestTrack_dxy);
