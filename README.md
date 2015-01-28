@@ -46,7 +46,7 @@ It is commit time
 
 First get the latest changes in the repository, if any.
 
-    git pull
+    git pull https://github.com/piedraj/TopAnalysis.git
 
 And then commit your changes.
 
