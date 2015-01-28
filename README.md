@@ -41,9 +41,14 @@ CRAB3
 It is commit time
 ====
 
+First get the latest changes in the repository, if any.
+
+    git pull
+
+And then commit your changes.
+
     git status
-    git update
-    git add asdfg
+    git add <filepattern>
     git commit -m 'Modified'
     git push origin master
 
