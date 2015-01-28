@@ -36,3 +36,14 @@ CRAB3
     cd TopTreeProducer/test/
     crab submit -c crabConfig.py
     crab status --dir crab_TTJets_PU30bx50
+
+
+It is commit time
+====
+
+    git status
+    git update
+    git add asdfg
+    git commit -m 'Modified'
+    git push origin master
+
