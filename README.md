@@ -1,9 +1,11 @@
 Everything starts here
 ====
 
+    ssh -Y lxplus.cern.ch -o ServerAliveInterval=240
+
     setenv SCRAM_ARCH slc6_amd64_gcc481
     cmsrel CMSSW_7_2_0
-    cd CMSSW_7_2_0/src/
+    cd CMSSW_7_2_0/src
     cmsenv
 
 
@@ -12,6 +14,7 @@ Get the material and compile it
 
     git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
     git clone https://github.com/piedraj/TopAnalysis.git TopAnalysis
+    mkdir TopAnalysis/TopTreeProducer/interface
 
     scram b -j 10
 
@@ -22,7 +25,7 @@ Do a test run
     cmsenv
     voms-proxy-init
 
-    cd TopTreeProducer/test/
+    cd TopTreeProducer/test
     cmsRun skimToTreeSUSYMCtfs.py
 
 
