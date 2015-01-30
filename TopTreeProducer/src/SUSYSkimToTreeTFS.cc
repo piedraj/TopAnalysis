@@ -327,6 +327,7 @@ private:
   std::vector<bool> *T_Muon_IsAllArbitrated;            // all muons with the tracker muon arbitrated
   std::vector<float> *T_Muon_SegmentCompatibility; 
   std::vector<float> *T_Muon_trkKink;
+  std::vector<float> *T_Muon_StaTkMatchChi2;            // Chi2 of matching STA-TK tracks
   std::vector<float> *T_Muon_Px;
   std::vector<float> *T_Muon_Py;
   std::vector<float> *T_Muon_Pz;
@@ -1311,6 +1312,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Muon_IsAllArbitrated = new std::vector<bool>;
   T_Muon_SegmentCompatibility= new std::vector<float>;
   T_Muon_trkKink  = new std::vector<float>;
+  T_Muon_StaTkMatchChi2 = new std::vector<float>;
   T_Muon_Px = new std::vector<float>;
   T_Muon_Py = new std::vector<float>;
   T_Muon_Pz = new std::vector<float>;
@@ -1486,7 +1488,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     T_Muon_vx->push_back(selected_muons[k].vx());
     T_Muon_NValidHitsGTrk->push_back(numOfValidHitsGTrk);
     T_Muon_SegmentCompatibility->push_back(muon::segmentCompatibility(selected_muons[k]));
-    T_Muon_trkKink ->push_back(selected_muons[k].combinedQuality().trkKink );
+    T_Muon_trkKink->push_back(selected_muons[k].combinedQuality().trkKink);
+    T_Muon_StaTkMatchChi2->push_back(selected_muons[k].combinedQuality().staRelChi2);
     T_Muon_NValidHitsSATrk->push_back(nhitsouttrack);
     T_Muon_NumOfMatchedStations->push_back(selected_muons[k].numberOfMatchedStations());
     T_Muon_isPFMuon->push_back(selected_muons[k].isPFMuon ());
@@ -2007,7 +2010,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_vz;
   delete T_Muon_vy;
   delete T_Muon_vx;
-  delete T_Muon_trkKink ;
+  delete T_Muon_trkKink;
+  delete T_Muon_StaTkMatchChi2;
   delete T_Muon_SegmentCompatibility;
   delete T_Muon_chargedParticleIsoR03;
   delete T_Muon_chargedHadronIsoR03;
@@ -2667,14 +2671,15 @@ SUSYSkimToTreeTFS::beginJob()
   //Muons
   Tree->Branch("T_Muon_Eta", "std::vector<float>", &T_Muon_Eta);
   Tree->Branch("T_Muon_IsGlobalMuon", "std::vector<bool>", &T_Muon_IsGlobalMuon);
-  Tree-> Branch("T_Muon_IsAllTrackerMuons", "std::vector<bool>", &T_Muon_IsAllTrackerMuons);
-  Tree-> Branch("T_Muon_IsTrackerMuonArbitrated", "std::vector<bool>", &T_Muon_IsTrackerMuonArbitrated);
-  Tree-> Branch("T_Muon_IsGMPTMuons", "std::vector<bool>", &T_Muon_IsGMPTMuons);
-  Tree-> Branch("T_Muon_IsAllStandAloneMuons", "std::vector<bool>", &T_Muon_IsAllStandAloneMuons);
-  Tree-> Branch("T_Muon_IsTMLastStationTight", "std::vector<bool>", &T_Muon_IsTMLastStationTight);
+  Tree->Branch("T_Muon_IsAllTrackerMuons", "std::vector<bool>", &T_Muon_IsAllTrackerMuons);
+  Tree->Branch("T_Muon_IsTrackerMuonArbitrated", "std::vector<bool>", &T_Muon_IsTrackerMuonArbitrated);
+  Tree->Branch("T_Muon_IsGMPTMuons", "std::vector<bool>", &T_Muon_IsGMPTMuons);
+  Tree->Branch("T_Muon_IsAllStandAloneMuons", "std::vector<bool>", &T_Muon_IsAllStandAloneMuons);
+  Tree->Branch("T_Muon_IsTMLastStationTight", "std::vector<bool>", &T_Muon_IsTMLastStationTight);
  
   Tree->Branch("T_Muon_SegmentCompatibility","std::vector<float>", &T_Muon_SegmentCompatibility);
   Tree->Branch("T_Muon_trkKink","std::vector<float>", &T_Muon_trkKink);
+  Tree->Branch("T_Muon_StaTkMatchChi2","std::vector<float>", &T_Muon_StaTkMatchChi2);
   Tree->Branch("T_Muon_Px", "std::vector<float>", &T_Muon_Px);
   Tree->Branch("T_Muon_Py", "std::vector<float>", &T_Muon_Py);
   Tree->Branch("T_Muon_Pz", "std::vector<float>", &T_Muon_Pz);
