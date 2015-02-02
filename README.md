@@ -1,9 +1,20 @@
 Everything starts here
 ====
 
+The most common machines to run are lxplus.
+
     ssh -Y lxplus.cern.ch -o ServerAliveInterval=240
 
+Once logged in we need to set the architecture.
+
     setenv SCRAM_ARCH slc6_amd64_gcc481
+
+If not running from lxplus, the CMS environment has to be set.
+
+    source /cvmfs/cms.cern.ch/cmsset_default.csh
+
+Now we can choose our favorite CMSSW release.
+
     cmsrel CMSSW_7_2_0
     cd CMSSW_7_2_0/src
     cmsenv
