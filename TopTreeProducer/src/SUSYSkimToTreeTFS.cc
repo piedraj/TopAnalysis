@@ -22,6 +22,7 @@ Implementation:
 // User include files
 #include "CommonTools/Statistics/interface/ChiSquaredProbability.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/ParticleFlow/plugins/DeltaBetaWeights.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
@@ -357,6 +358,7 @@ private:
   std::vector<float> *T_Muon_chargedParticleIsoR03;
   std::vector<float> *T_Muon_chargedHadronIsoR03;
   std::vector<float> *T_Muon_neutralHadronIsoR03;
+  std::vector<float> *T_Muon_neutralIsoPFweightR03;
   std::vector<float> *T_Muon_photonIsoR03;
   std::vector<float> *T_Muon_sumPUPtR03;
   std::vector<float> *T_Muon_vz;
@@ -1342,6 +1344,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Muon_chargedParticleIsoR03 = new std::vector<float>;
   T_Muon_chargedHadronIsoR03 = new std::vector<float>;
   T_Muon_neutralHadronIsoR03 = new std::vector<float>;
+  T_Muon_neutralIsoPFweightR03 = new std::vector<float>;
   T_Muon_photonIsoR03 = new std::vector<float>;
   T_Muon_sumPUPtR03 = new std::vector<float>;
   T_Muon_vz = new std::vector<float>;
@@ -1497,6 +1500,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    double muon_neutralIsoPFweightR03 = 0;
     double muon_neutralIsoPFweightR04 = 0;
 
     // Get a list of the PF candidates used to build the muon, to exclude them
@@ -1510,16 +1514,16 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
 
       const pat::PackedCandidate &pf = (*pfHandle)[i];
+      
+      // PF candidate-based footprint removal
+      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
+	continue;
+      }
 
-      if (deltaR(pf,selected_muons[k]) < 0.4) {
-
-	// PF candidate-based footprint removal
-	if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
-	  continue;
-	}
-
-	if (pf.charge() == 0) {
-
+      if (pf.charge() == 0) {
+	
+	if (deltaR(pf,selected_muons[k]) < 0.4) {	  
+	  
 	  double sumPU = 1.0;
 	  double sumPV = 1.0;
 
@@ -1545,15 +1549,44 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 	  muon_neutralIsoPFweightR04 += (pfw * pf.pt());
 	}
+	
+	if (deltaR(pf,selected_muons[k]) < 0.3) {
+	  
+	  double sumPU = 1.0;
+	  double sumPV = 1.0;
+
+	  for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+
+	    const pat::PackedCandidate &pfj = (*pfHandle)[j];
+
+	    if (pfj.charge() == 0) continue;
+
+	    double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
+
+	    if (pfj.fromPV() >= 2) {
+	      if (sum > 1.0) sumPV *= sum;
+	    } else {
+	      if (sum > 1.0) sumPU *= sum;
+	    }
+	  }
+
+	  sumPU = 0.5 * log(sumPU);
+	  sumPV = 0.5 * log(sumPV);
+
+	  double pfw = sumPV / (sumPV + sumPU);
+
+	  muon_neutralIsoPFweightR03 += (pfw * pf.pt());
+	}
       }
     }
 
+    T_Muon_neutralIsoPFweightR03->push_back(muon_neutralIsoPFweightR03);
     T_Muon_neutralIsoPFweightR04->push_back(muon_neutralIsoPFweightR04);
   }
-
+  
   
   //************ TAUS ************************
-
+  
   /*
     T_Tau_Px = new std::vector<float>;
     T_Tau_Py = new std::vector<float>;
@@ -1728,50 +1761,51 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     // Loop on PF candidates
     for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
-
+      
       const pat::PackedCandidate &pf = (*pfHandle)[i];
-
+      
       if (deltaR(pf,selected_electrons[k]) < 0.4) {
 
 	// PF candidate-based footprint removal
 	if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
 	  continue;
 	}
-
+	
 	if (pf.charge() == 0) {
-
+	  
 	  double sumPU = 1.0;
 	  double sumPV = 1.0;
-
+	  
 	  for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
-
+	    
 	    const pat::PackedCandidate &pfj = (*pfHandle)[j];
-
+	    
 	    if (pfj.charge() == 0) continue;
-
+	    
 	    double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
-
+	    
 	    if (pfj.fromPV() >= 2) {
 	      if (sum > 1.0) sumPV *= sum;
 	    } else {
 	      if (sum > 1.0) sumPU *= sum;
 	    }
 	  }
-
+	  
 	  sumPU = 0.5 * log(sumPU);
 	  sumPV = 0.5 * log(sumPV);
-
+	  
 	  double pfw = sumPV / (sumPV + sumPU);
-
+	  
 	  electron_neutralIsoPFweightR04 += (pfw * pf.pt());
 	}
       }
     }
-
+    
     T_Elec_neutralIsoPFweight->push_back(electron_neutralIsoPFweightR04);
   }
-
-
+  
+  
+  
   SetJetInfo(0, jetsPF, vtxs, false);
   
   
@@ -2016,6 +2050,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_chargedParticleIsoR03;
   delete T_Muon_chargedHadronIsoR03;
   delete T_Muon_neutralHadronIsoR03;
+  delete T_Muon_neutralIsoPFweightR03;
   delete T_Muon_photonIsoR03;
   delete T_Muon_chargedHadronIsoR04;
   delete T_Muon_neutralHadronIsoR04;
@@ -2708,6 +2743,7 @@ SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Muon_chargedParticleIsoR03", "std::vector<float>", &T_Muon_chargedParticleIsoR03);
   Tree->Branch("T_Muon_chargedHadronIsoR03", "std::vector<float>", &T_Muon_chargedHadronIsoR03);
   Tree->Branch("T_Muon_neutralHadronIsoR03", "std::vector<float>", &T_Muon_neutralHadronIsoR03);
+  Tree->Branch("T_Muon_neutralIsoPFweightR03", "std::vector<float>", &T_Muon_neutralIsoPFweightR03);
   Tree->Branch("T_Muon_photonIsoR03", "std::vector<float>", &T_Muon_photonIsoR03);
   Tree->Branch("T_Muon_sumPUPtR04", "std::vector<float>", &T_Muon_sumPUPtR04);
   Tree->Branch("T_Muon_sumPUPtR03", "std::vector<float>", &T_Muon_sumPUPtR03);
