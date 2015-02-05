@@ -1500,6 +1500,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    int muon_fromPV = -1;
+
     double muon_neutralIsoPFweightR03 = 0;
     double muon_neutralIsoPFweightR04 = 0;
 
@@ -1517,6 +1519,9 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       
       // PF candidate-based footprint removal
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
+
+	muon_fromPV = pf.fromPV();
+
 	continue;
       }
 
@@ -1582,6 +1587,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     T_Muon_neutralIsoPFweightR03->push_back(muon_neutralIsoPFweightR03);
     T_Muon_neutralIsoPFweightR04->push_back(muon_neutralIsoPFweightR04);
+
+    printf(" Debug print. muon_fromPV = %d\n", muon_fromPV);
   }
   
   
