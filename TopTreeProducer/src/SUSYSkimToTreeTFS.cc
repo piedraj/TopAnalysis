@@ -318,38 +318,60 @@ private:
   std::vector<float> *T_Gen_Tau_LepDec_Energy;
  
   //Muons
-  std::vector<float>*T_Muon_Eta;
-  std::vector<bool> *T_Muon_IsGlobalMuon;
-  std::vector<bool> *T_Muon_IsGMPTMuons;
-  std::vector<bool> *T_Muon_IsAllStandAloneMuons;
-  std::vector<bool> *T_Muon_IsTMLastStationTight;       // penetration depth Tight selector
-  std::vector<bool> *T_Muon_IsAllTrackerMuons;          // checks isTrackerMuon flag
-  std::vector<bool> *T_Muon_IsTrackerMuonArbitrated;    // resolve ambiguity of sharing segments
-  std::vector<bool> *T_Muon_IsAllArbitrated;            // all muons with the tracker muon arbitrated
-  std::vector<float> *T_Muon_SegmentCompatibility; 
-  std::vector<float> *T_Muon_trkKink;
-  std::vector<float> *T_Muon_StaTrkMatchChi2;            // Chi2 of matching STA-TK tracks
+  //ID
+  std::vector<bool>  *T_Muon_IsGlobalMuon;
+  std::vector<bool>  *T_Muon_IsPFMuon;
+  std::vector<bool>  *T_Muon_IsTightMuon;
+  std::vector<bool>  *T_Muon_IsGMPTMuons;
+  std::vector<bool>  *T_Muon_IsAllStandAloneMuons;
+  std::vector<bool>  *T_Muon_IsTMLastStationTight;       // penetration depth Tight selector
+  std::vector<bool>  *T_Muon_IsAllTrackerMuons;          // checks isTrackerMuon flag
+  std::vector<bool>  *T_Muon_IsTrackerMuonArbitrated;    // resolve ambiguity of sharing segments
+  std::vector<bool>  *T_Muon_IsAllArbitrated;            // all muons with the tracker muon arbitrate
+  std::vector<bool>  *T_Muon_IsTrackHighPurity;
+  //Kinematic
+  std::vector<float> *T_Muon_Eta;  
   std::vector<float> *T_Muon_Px;
   std::vector<float> *T_Muon_Py;
   std::vector<float> *T_Muon_Pz;
   std::vector<float> *T_Muon_Pt;
+  std::vector<float> *T_Muon_BestTrack_Px;
+  std::vector<float> *T_Muon_BestTrack_Py;
+  std::vector<float> *T_Muon_BestTrack_Pz;
+  std::vector<float> *T_Muon_BestTrack_Pt;
+  std::vector<float> *T_Muon_BestTrack_Phi;
   std::vector<float> *T_Muon_deltaPt;
   std::vector<float> *T_Muon_Energy;
-  std::vector<int> *T_Muon_Charge;
+  std::vector<int>   *T_Muon_Charge;
+  //Track info
+  std::vector<float> *T_Muon_vz;
+  std::vector<float> *T_Muon_vy;
+  std::vector<float> *T_Muon_vx;
+  std::vector<float> *T_Muon_BestTrack_vx;
+  std::vector<float> *T_Muon_BestTrack_vy;
+  std::vector<float> *T_Muon_BestTrack_vz;
   std::vector<float> *T_Muon_NormChi2GTrk;
-  std::vector<int> *T_Muon_NValidHitsInTrk;
-  std::vector<int> *T_Muon_NValidPixelHitsInTrk;
-  std::vector<int> *T_Muon_NValidHitsSATrk;
-  std::vector<int> *T_Muon_NValidHitsGTrk;
-  std::vector<int> *T_Muon_NumOfMatchedStations;
-  std::vector<int> *T_Muon_InnerTrackFound;
   std::vector<float> *T_Muon_Chi2InTrk;
+  std::vector<float> *T_Muon_StaTrkMatchChi2;            // Chi2 of matching STA-TK tracks
   std::vector<float> *T_Muon_dofInTrk;
+  std::vector<int>   *T_Muon_NValidHitsInTrk;
+  std::vector<int>   *T_Muon_NValidPixelHitsInTrk;
+  std::vector<int>   *T_Muon_NValidHitsSATrk;
+  std::vector<int>   *T_Muon_NValidHitsGTrk;
+  std::vector<int>   *T_Muon_NLayers;
+  std::vector<int>   *T_Muon_InnerTrackFound;
+  std::vector<int>   *T_Muon_NumOfMatchedStations;
+  std::vector<float> *T_Muon_SegmentCompatibility; 
+  std::vector<float> *T_Muon_trkKink;
   std::vector<float> *T_Muon_dxyGTrack;
   std::vector<float> *T_Muon_dxyInTrack;
   std::vector<float> *T_Muon_dzGTrack;
   std::vector<float> *T_Muon_dzInTrack;
-  std::vector<float> *T_Muon_IPwrtAveBSInTrack;
+  std::vector<float> *T_Muon_IPwrtAveBSInTrack;         // dxy w.r.t Beam Spot
+  std::vector<float> *T_Muon_BestTrack_dxy;
+  std::vector<float> *T_Muon_BestTrack_dz;
+  std::vector<int>   *T_Muon_fromPV;                    // Association to the first PV. 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
+  //Isolation
   std::vector<float> *T_Muon_chargedHadronIsoR04;
   std::vector<float> *T_Muon_neutralHadronIsoR04;
   std::vector<float> *T_Muon_neutralIsoPFweightR04;
@@ -361,21 +383,6 @@ private:
   std::vector<float> *T_Muon_neutralIsoPFweightR03;
   std::vector<float> *T_Muon_photonIsoR03;
   std::vector<float> *T_Muon_sumPUPtR03;
-  std::vector<float> *T_Muon_vz;
-  std::vector<float> *T_Muon_vy;
-  std::vector<float> *T_Muon_vx;
-  std::vector<bool> *T_Muon_isPFMuon;
-  std::vector<int> *T_Muon_NLayers;
-  std::vector<float> *T_Muon_BestTrack_dxy;
-  std::vector<float> *T_Muon_BestTrack_dz;
-  std::vector<float> *T_Muon_BestTrack_vx;
-  std::vector<float> *T_Muon_BestTrack_vy;
-  std::vector<float> *T_Muon_BestTrack_vz;
-  std::vector<float> *T_Muon_BestTrack_Px;
-  std::vector<float> *T_Muon_BestTrack_Py;
-  std::vector<float> *T_Muon_BestTrack_Pz;
-  std::vector<float> *T_Muon_BestTrack_Pt;
-  std::vector<float> *T_Muon_BestTrack_Phi;
 
   // Tau
   /*  std::vector<float> *T_Tau_Px;
@@ -502,7 +509,7 @@ private:
   float T_METgen_Phi;
   
   //HLT
-   bool T_HLT_Mu_vx;
+  bool T_HLT_Mu_vx;
 };
 
 //
@@ -1350,18 +1357,21 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Muon_vz = new std::vector<float>;
   T_Muon_vy = new std::vector<float>;  
   T_Muon_vx = new std::vector<float>;
-  T_Muon_isPFMuon = new std::vector<bool>;
-  T_Muon_NLayers =  new std::vector<int>;
-  T_Muon_BestTrack_dxy = new std::vector<float>;
-  T_Muon_BestTrack_dz  = new std::vector<float>;
-  T_Muon_BestTrack_vx  = new std::vector<float>;
-  T_Muon_BestTrack_vy  = new std::vector<float>;
-  T_Muon_BestTrack_vz  = new std::vector<float>;
-  T_Muon_BestTrack_Px  = new std::vector<float>;
-  T_Muon_BestTrack_Py  = new std::vector<float>;
-  T_Muon_BestTrack_Pz  = new std::vector<float>;
-  T_Muon_BestTrack_Pt  = new std::vector<float>;
-  T_Muon_BestTrack_Phi = new std::vector<float>;
+  T_Muon_IsPFMuon = new std::vector<bool>;
+  T_Muon_IsTightMuon       = new std::vector<bool>;
+  T_Muon_NLayers           = new std::vector<int>;
+  T_Muon_BestTrack_dxy     = new std::vector<float>;
+  T_Muon_BestTrack_dz      = new std::vector<float>;
+  T_Muon_BestTrack_vx      = new std::vector<float>;
+  T_Muon_BestTrack_vy      = new std::vector<float>;
+  T_Muon_BestTrack_vz      = new std::vector<float>;
+  T_Muon_BestTrack_Px      = new std::vector<float>;
+  T_Muon_BestTrack_Py      = new std::vector<float>;
+  T_Muon_BestTrack_Pz      = new std::vector<float>;
+  T_Muon_BestTrack_Pt      = new std::vector<float>;
+  T_Muon_BestTrack_Phi     = new std::vector<float>;
+  T_Muon_fromPV            = new std::vector<int>;
+  T_Muon_IsTrackHighPurity = new std::vector<bool>;
 
   //Muons
   //no estoy seguro de que haga falta ordenar (se puede usar para filtrar en el futuro)
@@ -1422,14 +1432,14 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     }
 
     T_Muon_BestTrack_dxy->push_back(selected_muons[k].muonBestTrack()->dxy(vtxs[0].position()));
-    T_Muon_BestTrack_dz->push_back(selected_muons[k].muonBestTrack()->dz(vtxs[0].position()));
-    T_Muon_BestTrack_vx->push_back(selected_muons[k].muonBestTrack()->vx());
-    T_Muon_BestTrack_vy->push_back(selected_muons[k].muonBestTrack()->vy());
-    T_Muon_BestTrack_vz->push_back(selected_muons[k].muonBestTrack()->vz()); 
-    T_Muon_BestTrack_Px->push_back(selected_muons[k].muonBestTrack()->px());
-    T_Muon_BestTrack_Py->push_back(selected_muons[k].muonBestTrack()->py());
-    T_Muon_BestTrack_Pz->push_back(selected_muons[k].muonBestTrack()->pz());
-    T_Muon_BestTrack_Pt->push_back(selected_muons[k].muonBestTrack()->pt());
+    T_Muon_BestTrack_dz ->push_back(selected_muons[k].muonBestTrack()->dz(vtxs[0].position()));
+    T_Muon_BestTrack_vx ->push_back(selected_muons[k].muonBestTrack()->vx());
+    T_Muon_BestTrack_vy ->push_back(selected_muons[k].muonBestTrack()->vy());
+    T_Muon_BestTrack_vz ->push_back(selected_muons[k].muonBestTrack()->vz()); 
+    T_Muon_BestTrack_Px ->push_back(selected_muons[k].muonBestTrack()->px());
+    T_Muon_BestTrack_Py ->push_back(selected_muons[k].muonBestTrack()->py());
+    T_Muon_BestTrack_Pz ->push_back(selected_muons[k].muonBestTrack()->pz());
+    T_Muon_BestTrack_Pt ->push_back(selected_muons[k].muonBestTrack()->pt());
     T_Muon_BestTrack_Phi->push_back(selected_muons[k].muonBestTrack()->phi());
 
     reco::TrackRef tr_outtrack = selected_muons[k].standAloneMuon(); 
@@ -1442,16 +1452,21 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     
     }
 
-    int numOfValidHitsGTrk=0;
 
-    if (selected_muons[k].isGlobalMuon()){
+    int numOfValidHitsGTrk = 0;
+    if (selected_muons[k].isGlobalMuon()) {
+      numOfValidHitsGTrk = selected_muons[k].globalTrack()->hitPattern().numberOfValidMuonHits();
+    }
 
-      numOfValidHitsGTrk=selected_muons[k].globalTrack()-> hitPattern().numberOfValidMuonHits();
+    bool isTightMuon = false;
+    if (vtxs.size() > 0) {
+      isTightMuon = selected_muons[k].isTightMuon(vtxs[0]);
     }
 
     T_Muon_Eta->push_back(selected_muons[k].eta()); 
-    
     T_Muon_IsGlobalMuon->push_back(selected_muons[k].isGlobalMuon());
+    T_Muon_IsPFMuon->push_back(selected_muons[k].isPFMuon());
+    T_Muon_IsTightMuon->push_back(isTightMuon);
     T_Muon_IsGMPTMuons->push_back(selected_muons[k].muonID("GlobalMuonPromptTight"));
     T_Muon_IsAllTrackerMuons->push_back(selected_muons[k].muonID("AllTrackerMuons"));
     T_Muon_IsTrackerMuonArbitrated->push_back(selected_muons[k].muonID("TrackerMuonArbitrated"));
@@ -1495,13 +1510,12 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     T_Muon_StaTrkMatchChi2->push_back(selected_muons[k].combinedQuality().staRelChi2);
     T_Muon_NValidHitsSATrk->push_back(nhitsouttrack);
     T_Muon_NumOfMatchedStations->push_back(selected_muons[k].numberOfMatchedStations());
-    T_Muon_isPFMuon->push_back(selected_muons[k].isPFMuon ());
     T_Muon_NLayers->push_back(nLayers);
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int muon_fromPV = -1;
-
+    int    muon_fromPV                = -1;
+    bool   muon_trackHighPurity       = false;
     double muon_neutralIsoPFweightR03 = 0;
     double muon_neutralIsoPFweightR04 = 0;
 
@@ -1520,7 +1534,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       // PF candidate-based footprint removal
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
 
-	muon_fromPV = pf.fromPV();
+	muon_fromPV          = pf.fromPV();
+	muon_trackHighPurity = pf.trackHighPurity();
 
 	continue;
       }
@@ -1585,10 +1600,10 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       }
     }
 
+    T_Muon_fromPV               ->push_back(muon_fromPV);
+    T_Muon_IsTrackHighPurity    ->push_back(muon_trackHighPurity);
     T_Muon_neutralIsoPFweightR03->push_back(muon_neutralIsoPFweightR03);
     T_Muon_neutralIsoPFweightR04->push_back(muon_neutralIsoPFweightR04);
-
-    printf(" Debug print. muon_fromPV = %d\n", muon_fromPV);
   }
   
   
@@ -2065,7 +2080,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_photonIsoR04;
   delete T_Muon_sumPUPtR04;
   delete T_Muon_sumPUPtR03;
-  delete T_Muon_isPFMuon;
+  delete T_Muon_IsPFMuon;
+  delete T_Muon_IsTightMuon;
   delete T_Muon_NLayers;
   delete T_Muon_BestTrack_dxy;
   delete T_Muon_BestTrack_dz;
@@ -2077,6 +2093,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_BestTrack_Pz;
   delete T_Muon_BestTrack_Pt;
   delete T_Muon_BestTrack_Phi;
+  delete T_Muon_fromPV;
+  delete T_Muon_IsTrackHighPurity;
 
   //Electrons
   delete T_Elec_Eta;
@@ -2711,65 +2729,70 @@ SUSYSkimToTreeTFS::beginJob()
 
    
   //Muons
-  Tree->Branch("T_Muon_Eta", "std::vector<float>", &T_Muon_Eta);
-  Tree->Branch("T_Muon_IsGlobalMuon", "std::vector<bool>", &T_Muon_IsGlobalMuon);
-  Tree->Branch("T_Muon_IsAllTrackerMuons", "std::vector<bool>", &T_Muon_IsAllTrackerMuons);
+  Tree->Branch("T_Muon_IsGlobalMuon",            "std::vector<bool>", &T_Muon_IsGlobalMuon);
+  Tree->Branch("T_Muon_IsPFMuon",                "std::vector<bool>", &T_Muon_IsPFMuon);
+  Tree->Branch("T_Muon_IsTightMuon",             "std::vector<bool>", &T_Muon_IsTightMuon);
+  Tree->Branch("T_Muon_IsAllTrackerMuons",       "std::vector<bool>", &T_Muon_IsAllTrackerMuons);
   Tree->Branch("T_Muon_IsTrackerMuonArbitrated", "std::vector<bool>", &T_Muon_IsTrackerMuonArbitrated);
-  Tree->Branch("T_Muon_IsGMPTMuons", "std::vector<bool>", &T_Muon_IsGMPTMuons);
-  Tree->Branch("T_Muon_IsAllStandAloneMuons", "std::vector<bool>", &T_Muon_IsAllStandAloneMuons);
-  Tree->Branch("T_Muon_IsTMLastStationTight", "std::vector<bool>", &T_Muon_IsTMLastStationTight);
+  Tree->Branch("T_Muon_IsAllArbitrated",         "std::vector<bool>", &T_Muon_IsAllArbitrated);
+  Tree->Branch("T_Muon_IsGMPTMuons",             "std::vector<bool>", &T_Muon_IsGMPTMuons);
+  Tree->Branch("T_Muon_IsAllStandAloneMuons",    "std::vector<bool>", &T_Muon_IsAllStandAloneMuons);
+  Tree->Branch("T_Muon_IsTMLastStationTight",    "std::vector<bool>", &T_Muon_IsTMLastStationTight);
+  Tree->Branch("T_Muon_IsTrackHighPurity",       "std::vector<bool>", &T_Muon_IsTrackHighPurity);
  
-  Tree->Branch("T_Muon_SegmentCompatibility","std::vector<float>", &T_Muon_SegmentCompatibility);
-  Tree->Branch("T_Muon_trkKink","std::vector<float>", &T_Muon_trkKink);
-  Tree->Branch("T_Muon_StaTrkMatchChi2","std::vector<float>", &T_Muon_StaTrkMatchChi2);
+  Tree->Branch("T_Muon_Eta", "std::vector<float>", &T_Muon_Eta);
   Tree->Branch("T_Muon_Px", "std::vector<float>", &T_Muon_Px);
   Tree->Branch("T_Muon_Py", "std::vector<float>", &T_Muon_Py);
   Tree->Branch("T_Muon_Pz", "std::vector<float>", &T_Muon_Pz);
   Tree->Branch("T_Muon_Pt", "std::vector<float>", &T_Muon_Pt);
-  Tree->Branch("T_Muon_deltaPt", "std::vector<float>", &T_Muon_deltaPt);
-  Tree->Branch("T_Muon_Energy", "std::vector<float>", &T_Muon_Energy);
-  Tree->Branch("T_Muon_Charge", "std::vector<int>", &T_Muon_Charge);
-  Tree->Branch("T_Muon_NormChi2GTrk", "std::vector<float>", &T_Muon_NormChi2GTrk);
-  Tree->Branch("T_Muon_NValidHitsInTrk", "std::vector<int>", &T_Muon_NValidHitsInTrk);
-  Tree->Branch("T_Muon_NValidPixelHitsInTrk", "std::vector<int>", &T_Muon_NValidPixelHitsInTrk);
-  Tree->Branch("T_Muon_InnerTrackFound", "std::vector<int>", &T_Muon_InnerTrackFound);
-  Tree->Branch("T_Muon_NValidHitsSATrk", "std::vector<int>", &T_Muon_NValidHitsSATrk);
-  Tree->Branch("T_Muon_NValidHitsGTrk", "std::vector<int>", &T_Muon_NValidHitsGTrk);
-  Tree->Branch("T_Muon_Chi2InTrk", "std::vector<float>", &T_Muon_Chi2InTrk);
-  Tree->Branch("T_Muon_dofInTrk", "std::vector<float>", &T_Muon_dofInTrk);
-  Tree->Branch("T_Muon_dxyGTrack", "std::vector<float>", &T_Muon_dxyGTrack);
-  Tree->Branch("T_Muon_dxyInTrack", "std::vector<float>", &T_Muon_dxyInTrack);
-  Tree->Branch("T_Muon_dzGTrack", "std::vector<float>", &T_Muon_dzGTrack);
-  Tree->Branch("T_Muon_dzInTrack", "std::vector<float>", &T_Muon_dzInTrack);
-  Tree->Branch("T_Muon_IPwrtAveBSInTrack", "std::vector<float>", &T_Muon_IPwrtAveBSInTrack);
-
-  Tree->Branch("T_Muon_chargedHadronIsoR04", "std::vector<float>", &T_Muon_chargedHadronIsoR04);
-  Tree->Branch("T_Muon_neutralHadronIsoR04", "std::vector<float>", &T_Muon_neutralHadronIsoR04);
-  Tree->Branch("T_Muon_neutralIsoPFweightR04", "std::vector<float>", &T_Muon_neutralIsoPFweightR04);
-  Tree->Branch("T_Muon_photonIsoR04", "std::vector<float>", &T_Muon_photonIsoR04);
-  Tree->Branch("T_Muon_chargedParticleIsoR03", "std::vector<float>", &T_Muon_chargedParticleIsoR03);
-  Tree->Branch("T_Muon_chargedHadronIsoR03", "std::vector<float>", &T_Muon_chargedHadronIsoR03);
-  Tree->Branch("T_Muon_neutralHadronIsoR03", "std::vector<float>", &T_Muon_neutralHadronIsoR03);
-  Tree->Branch("T_Muon_neutralIsoPFweightR03", "std::vector<float>", &T_Muon_neutralIsoPFweightR03);
-  Tree->Branch("T_Muon_photonIsoR03", "std::vector<float>", &T_Muon_photonIsoR03);
-  Tree->Branch("T_Muon_sumPUPtR04", "std::vector<float>", &T_Muon_sumPUPtR04);
-  Tree->Branch("T_Muon_sumPUPtR03", "std::vector<float>", &T_Muon_sumPUPtR03);
-  Tree->Branch("T_Muon_vz", "std::vector<float>", &T_Muon_vz);
-  Tree->Branch("T_Muon_vy", "std::vector<float>", &T_Muon_vy);
-  Tree->Branch("T_Muon_vx", "std::vector<float>", &T_Muon_vx);
-  Tree->Branch("T_Muon_NumOfMatchedStations", "std::vector<int>", &T_Muon_NumOfMatchedStations);
-  Tree->Branch("T_Muon_isPFMuon","std::vector<bool>", &T_Muon_isPFMuon);
-  Tree->Branch("T_Muon_NLayers","std::vector<int>", &T_Muon_NLayers);
-  Tree->Branch("T_Muon_BestTrack_dxy", "std::vector<float>", &T_Muon_BestTrack_dxy);
-  Tree->Branch("T_Muon_BestTrack_dz",  "std::vector<float>", &T_Muon_BestTrack_dz);
-  Tree->Branch("T_Muon_BestTrack_vx",  "std::vector<float>", &T_Muon_BestTrack_vx);
-  Tree->Branch("T_Muon_BestTrack_vy",  "std::vector<float>", &T_Muon_BestTrack_vy);
-  Tree->Branch("T_Muon_BestTrack_vz",  "std::vector<float>", &T_Muon_BestTrack_vz);
   Tree->Branch("T_Muon_BestTrack_Px",  "std::vector<float>", &T_Muon_BestTrack_Px);
   Tree->Branch("T_Muon_BestTrack_Py",  "std::vector<float>", &T_Muon_BestTrack_Py);
   Tree->Branch("T_Muon_BestTrack_Pz",  "std::vector<float>", &T_Muon_BestTrack_Pz);
   Tree->Branch("T_Muon_BestTrack_Pt",  "std::vector<float>", &T_Muon_BestTrack_Pt);
   Tree->Branch("T_Muon_BestTrack_Phi", "std::vector<float>", &T_Muon_BestTrack_Phi);
+  Tree->Branch("T_Muon_deltaPt", "std::vector<float>", &T_Muon_deltaPt);
+  Tree->Branch("T_Muon_Energy", "std::vector<float>", &T_Muon_Energy);
+  Tree->Branch("T_Muon_Charge", "std::vector<int>", &T_Muon_Charge);
+
+  Tree->Branch("T_Muon_vz", "std::vector<float>", &T_Muon_vz);
+  Tree->Branch("T_Muon_vy", "std::vector<float>", &T_Muon_vy);
+  Tree->Branch("T_Muon_vx", "std::vector<float>", &T_Muon_vx);
+  Tree->Branch("T_Muon_BestTrack_vx",  "std::vector<float>", &T_Muon_BestTrack_vx);
+  Tree->Branch("T_Muon_BestTrack_vy",  "std::vector<float>", &T_Muon_BestTrack_vy);
+  Tree->Branch("T_Muon_BestTrack_vz",  "std::vector<float>", &T_Muon_BestTrack_vz);
+  Tree->Branch("T_Muon_NormChi2GTrk", "std::vector<float>", &T_Muon_NormChi2GTrk);
+  Tree->Branch("T_Muon_Chi2InTrk", "std::vector<float>", &T_Muon_Chi2InTrk);
+  Tree->Branch("T_Muon_StaTrkMatchChi2","std::vector<float>", &T_Muon_StaTrkMatchChi2);
+  Tree->Branch("T_Muon_dofInTrk", "std::vector<float>", &T_Muon_dofInTrk);
+  Tree->Branch("T_Muon_NValidHitsInTrk", "std::vector<int>", &T_Muon_NValidHitsInTrk);
+  Tree->Branch("T_Muon_NValidPixelHitsInTrk", "std::vector<int>", &T_Muon_NValidPixelHitsInTrk);
+  Tree->Branch("T_Muon_NValidHitsSATrk", "std::vector<int>", &T_Muon_NValidHitsSATrk);
+  Tree->Branch("T_Muon_NValidHitsGTrk", "std::vector<int>", &T_Muon_NValidHitsGTrk);
+  Tree->Branch("T_Muon_NLayers","std::vector<int>", &T_Muon_NLayers);
+  Tree->Branch("T_Muon_InnerTrackFound", "std::vector<int>", &T_Muon_InnerTrackFound);
+  Tree->Branch("T_Muon_NumOfMatchedStations", "std::vector<int>", &T_Muon_NumOfMatchedStations);
+  Tree->Branch("T_Muon_SegmentCompatibility","std::vector<float>", &T_Muon_SegmentCompatibility);
+  Tree->Branch("T_Muon_trkKink","std::vector<float>", &T_Muon_trkKink);
+  Tree->Branch("T_Muon_dxyGTrack", "std::vector<float>", &T_Muon_dxyGTrack);
+  Tree->Branch("T_Muon_dxyInTrack", "std::vector<float>", &T_Muon_dxyInTrack);
+  Tree->Branch("T_Muon_BestTrack_dxy", "std::vector<float>", &T_Muon_BestTrack_dxy);
+  Tree->Branch("T_Muon_IPwrtAveBSInTrack", "std::vector<float>", &T_Muon_IPwrtAveBSInTrack);
+  Tree->Branch("T_Muon_dzGTrack", "std::vector<float>", &T_Muon_dzGTrack);
+  Tree->Branch("T_Muon_dzInTrack", "std::vector<float>", &T_Muon_dzInTrack);
+  Tree->Branch("T_Muon_BestTrack_dz",  "std::vector<float>", &T_Muon_BestTrack_dz);
+  Tree->Branch("T_Muon_fromPV", "std::vector<int>", &T_Muon_fromPV);
+
+  Tree->Branch("T_Muon_chargedHadronIsoR04", "std::vector<float>", &T_Muon_chargedHadronIsoR04);
+  Tree->Branch("T_Muon_neutralHadronIsoR04", "std::vector<float>", &T_Muon_neutralHadronIsoR04);
+  Tree->Branch("T_Muon_neutralIsoPFweightR04", "std::vector<float>", &T_Muon_neutralIsoPFweightR04);
+  Tree->Branch("T_Muon_photonIsoR04", "std::vector<float>", &T_Muon_photonIsoR04);
+  Tree->Branch("T_Muon_sumPUPtR04", "std::vector<float>", &T_Muon_sumPUPtR04);
+  Tree->Branch("T_Muon_chargedParticleIsoR03", "std::vector<float>", &T_Muon_chargedParticleIsoR03);
+  Tree->Branch("T_Muon_chargedHadronIsoR03", "std::vector<float>", &T_Muon_chargedHadronIsoR03);
+  Tree->Branch("T_Muon_neutralHadronIsoR03", "std::vector<float>", &T_Muon_neutralHadronIsoR03);
+  Tree->Branch("T_Muon_neutralIsoPFweightR03", "std::vector<float>", &T_Muon_neutralIsoPFweightR03);
+  Tree->Branch("T_Muon_photonIsoR03", "std::vector<float>", &T_Muon_photonIsoR03);
+  Tree->Branch("T_Muon_sumPUPtR03", "std::vector<float>", &T_Muon_sumPUPtR03);
 
   //Taus
   /*  Tree->Branch("T_Tau_Px", "std::vector<float>", &T_Tau_Px);
