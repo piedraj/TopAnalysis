@@ -323,6 +323,17 @@ private:
   std::vector<float> *T_Gen_Tau_LepDec_Pz;
   std::vector<float> *T_Gen_Tau_LepDec_Energy;
  
+  // Vertex variables
+  std::vector<float> *T_Vertex_x;
+  std::vector<float> *T_Vertex_y;
+  std::vector<float> *T_Vertex_z;
+  std::vector<float> *T_Vertex_Chi2Prob;
+  std::vector<float> *T_Vertex_ndof;
+  std::vector<float> *T_Vertex_rho;
+  std::vector<bool>  *T_Vertex_isFake;
+  std::vector<int>   *T_Vertex_tracksSize;
+  std::vector<int>   *T_Vertex_nTracks;
+
   // Muon variables
   // ID
   std::vector<bool>  *T_Muon_IsGlobalMuon;
@@ -342,22 +353,25 @@ private:
   std::vector<float> *T_Muon_Py;
   std::vector<float> *T_Muon_Pz;
   std::vector<float> *T_Muon_Pt;
-  std::vector<float> *T_Muon_BestTrack_Px;
-  std::vector<float> *T_Muon_BestTrack_Py;
-  std::vector<float> *T_Muon_BestTrack_Pz;
-  std::vector<float> *T_Muon_BestTrack_Pt;
-  std::vector<float> *T_Muon_BestTrack_Phi;
   std::vector<float> *T_Muon_deltaPt;
   std::vector<float> *T_Muon_Energy;
   std::vector<int>   *T_Muon_Charge;
 
   // Track info
-  std::vector<float> *T_Muon_vz;
-  std::vector<float> *T_Muon_vy;
-  std::vector<float> *T_Muon_vx;
   std::vector<float> *T_Muon_BestTrack_vx;
   std::vector<float> *T_Muon_BestTrack_vy;
   std::vector<float> *T_Muon_BestTrack_vz;
+  std::vector<float> *T_Muon_BestTrack_dxy;
+  std::vector<float> *T_Muon_BestTrack_dz;
+  std::vector<float> *T_Muon_BestTrack_Px;
+  std::vector<float> *T_Muon_BestTrack_Py;
+  std::vector<float> *T_Muon_BestTrack_Pz;
+  std::vector<float> *T_Muon_BestTrack_Pt;
+  std::vector<float> *T_Muon_BestTrack_Phi;
+  std::vector<float> *T_Muon_vx;
+  std::vector<float> *T_Muon_vy;
+  std::vector<float> *T_Muon_vz;
+
   std::vector<float> *T_Muon_NormChi2GTrk;
   std::vector<float> *T_Muon_Chi2InTrk;
   std::vector<float> *T_Muon_StaTrkMatchChi2;            // Chi2 of matching STA-TK tracks
@@ -376,9 +390,8 @@ private:
   std::vector<float> *T_Muon_dzGTrack;
   std::vector<float> *T_Muon_dzInTrack;
   std::vector<float> *T_Muon_IPwrtAveBSInTrack;
-  std::vector<float> *T_Muon_BestTrack_dxy;
-  std::vector<float> *T_Muon_BestTrack_dz;
   std::vector<int>   *T_Muon_fromPV;                     // Association to the first PV. 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
+
 
   // Isolation
   std::vector<float> *T_Muon_chargedHadronIsoR04;
@@ -400,17 +413,6 @@ private:
       std::vector<float> *T_Tau_Energy;
       std::vector<int>   *T_Tau_Charge;
   */
-
-  // Vertex variables
-  std::vector<float> *T_Vertex_x;
-  std::vector<float> *T_Vertex_y;
-  std::vector<float> *T_Vertex_z;
-  std::vector<float> *T_Vertex_Chi2Prob;
-  std::vector<float> *T_Vertex_ndof;
-  std::vector<float> *T_Vertex_rho;
-  std::vector<bool>  *T_Vertex_isFake;
-  std::vector<int>   *T_Vertex_tracksSize;
-  std::vector<int>   *T_Vertex_nTracks;
    
   // Electron variables
   std::vector<float> *T_Elec_Eta;
@@ -649,7 +651,9 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Event_Rho=*rhoH; 
 
 
-  // MET filters result
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // MET filters
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   T_EventF_HBHENoiseFilter                    = false;
   T_EventF_CSCTightHaloFilter                 = false;
   T_EventF_hcalLaserEventFilter               = false;
@@ -689,138 +693,137 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   } catch(...) {;} 
 
 
-  //  if(!IsRealData){
-  //Gen
-  T_Gen_StopMass = new std::vector<float>;
-  T_Gen_Chi0Mass = new std::vector<float>;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Gen variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  T_Gen_StopMass     = new std::vector<float>;
+  T_Gen_Chi0Mass     = new std::vector<float>;
   T_Gen_CharginoMass = new std::vector<float>;
 
-
-  T_Gen_PromptMuon_pdgId = new std::vector<int>;
-  T_Gen_PromptMuon_Px = new std::vector<float>;
-  T_Gen_PromptMuon_Py = new std::vector<float>;
-  T_Gen_PromptMuon_Pz = new std::vector<float>;
+  T_Gen_PromptMuon_pdgId  = new std::vector<int>;
+  T_Gen_PromptMuon_Px     = new std::vector<float>;
+  T_Gen_PromptMuon_Py     = new std::vector<float>;
+  T_Gen_PromptMuon_Pz     = new std::vector<float>;
   T_Gen_PromptMuon_Energy = new std::vector<float>;
   
-  T_Gen_PromptMuon_MpdgId = new std::vector<int>;
-  T_Gen_PromptMuon_MPx = new std::vector<float>;
-  T_Gen_PromptMuon_MPy = new std::vector<float>;
-  T_Gen_PromptMuon_MPz = new std::vector<float>;
+  T_Gen_PromptMuon_MpdgId  = new std::vector<int>;
+  T_Gen_PromptMuon_MPx     = new std::vector<float>;
+  T_Gen_PromptMuon_MPy     = new std::vector<float>;
+  T_Gen_PromptMuon_MPz     = new std::vector<float>;
   T_Gen_PromptMuon_MEnergy = new std::vector<float>;
-  T_Gen_PromptMuon_MSt = new std::vector<int>;
+  T_Gen_PromptMuon_MSt     = new std::vector<int>;
 
-  T_Gen_PromptElec_pdgId = new std::vector<int>;
-  T_Gen_PromptElec_Px = new std::vector<float>;
-  T_Gen_PromptElec_Py = new std::vector<float>;
-  T_Gen_PromptElec_Pz = new std::vector<float>;
+  T_Gen_PromptElec_pdgId  = new std::vector<int>;
+  T_Gen_PromptElec_Px     = new std::vector<float>;
+  T_Gen_PromptElec_Py     = new std::vector<float>;
+  T_Gen_PromptElec_Pz     = new std::vector<float>;
   T_Gen_PromptElec_Energy = new std::vector<float>;
 
-  T_Gen_PromptElec_MpdgId = new std::vector<int>;
-  T_Gen_PromptElec_MPx = new std::vector<float>;
-  T_Gen_PromptElec_MPy = new std::vector<float>;
-  T_Gen_PromptElec_MPz = new std::vector<float>;
+  T_Gen_PromptElec_MpdgId  = new std::vector<int>;
+  T_Gen_PromptElec_MPx     = new std::vector<float>;
+  T_Gen_PromptElec_MPy     = new std::vector<float>;
+  T_Gen_PromptElec_MPz     = new std::vector<float>;
   T_Gen_PromptElec_MEnergy = new std::vector<float>;
-  T_Gen_PromptElec_MSt = new std::vector<int>;
+  T_Gen_PromptElec_MSt     = new std::vector<int>;
 
-  T_Gen_Promptb_pdgId = new std::vector<int>;
-  T_Gen_Promptb_Px = new std::vector<float>;
-  T_Gen_Promptb_Py = new std::vector<float>;
-  T_Gen_Promptb_Pz = new std::vector<float>;
+  T_Gen_Promptb_pdgId  = new std::vector<int>;
+  T_Gen_Promptb_Px     = new std::vector<float>;
+  T_Gen_Promptb_Py     = new std::vector<float>;
+  T_Gen_Promptb_Pz     = new std::vector<float>;
   T_Gen_Promptb_Energy = new std::vector<float>;
 
-  T_Gen_Promptb_MpdgId = new std::vector<int>;
-  T_Gen_Promptb_MPx = new std::vector<float>;
-  T_Gen_Promptb_MPy = new std::vector<float>;
-  T_Gen_Promptb_MPz = new std::vector<float>;
+  T_Gen_Promptb_MpdgId  = new std::vector<int>;
+  T_Gen_Promptb_MPx     = new std::vector<float>;
+  T_Gen_Promptb_MPy     = new std::vector<float>;
+  T_Gen_Promptb_MPz     = new std::vector<float>;
   T_Gen_Promptb_MEnergy = new std::vector<float>;
-  T_Gen_Promptb_MSt = new std::vector<int>;
+  T_Gen_Promptb_MSt     = new std::vector<int>;
 
-  T_Gen_FinalMuon_pdgId = new std::vector<int>;
-  T_Gen_FinalMuon_Px = new std::vector<float>;
-  T_Gen_FinalMuon_Py = new std::vector<float>;
-  T_Gen_FinalMuon_Pz = new std::vector<float>;
+  T_Gen_FinalMuon_pdgId  = new std::vector<int>;
+  T_Gen_FinalMuon_Px     = new std::vector<float>;
+  T_Gen_FinalMuon_Py     = new std::vector<float>;
+  T_Gen_FinalMuon_Pz     = new std::vector<float>;
   T_Gen_FinalMuon_Energy = new std::vector<float>;
 
-  T_Gen_Muon_pdgId = new std::vector<int>;
-  T_Gen_Muon_Px = new std::vector<float>;
-  T_Gen_Muon_Py = new std::vector<float>;
-  T_Gen_Muon_Pz = new std::vector<float>;
+  T_Gen_Muon_pdgId  = new std::vector<int>;
+  T_Gen_Muon_Px     = new std::vector<float>;
+  T_Gen_Muon_Py     = new std::vector<float>;
+  T_Gen_Muon_Pz     = new std::vector<float>;
   T_Gen_Muon_Energy = new std::vector<float>;
   
-  T_Gen_Muon_MpdgId = new std::vector<int>;
-  T_Gen_Muon_MPx = new std::vector<float>;
-  T_Gen_Muon_MPy = new std::vector<float>;
-  T_Gen_Muon_MPz = new std::vector<float>;
+  T_Gen_Muon_MpdgId  = new std::vector<int>;
+  T_Gen_Muon_MPx     = new std::vector<float>;
+  T_Gen_Muon_MPy     = new std::vector<float>;
+  T_Gen_Muon_MPz     = new std::vector<float>;
   T_Gen_Muon_MEnergy = new std::vector<float>;
-  T_Gen_Muon_MSt = new std::vector<int>;
+  T_Gen_Muon_MSt     = new std::vector<int>;
 
-  T_Gen_FinalElec_pdgId = new std::vector<int>;
-  T_Gen_FinalElec_Px = new std::vector<float>;
-  T_Gen_FinalElec_Py = new std::vector<float>;
-  T_Gen_FinalElec_Pz = new std::vector<float>;
+  T_Gen_FinalElec_pdgId  = new std::vector<int>;
+  T_Gen_FinalElec_Px     = new std::vector<float>;
+  T_Gen_FinalElec_Py     = new std::vector<float>;
+  T_Gen_FinalElec_Pz     = new std::vector<float>;
   T_Gen_FinalElec_Energy = new std::vector<float>;
 
-  T_Gen_Elec_pdgId = new std::vector<int>;
-  T_Gen_Elec_Px = new std::vector<float>;
-  T_Gen_Elec_Py = new std::vector<float>;
-  T_Gen_Elec_Pz = new std::vector<float>;
+  T_Gen_Elec_pdgId  = new std::vector<int>;
+  T_Gen_Elec_Px     = new std::vector<float>;
+  T_Gen_Elec_Py     = new std::vector<float>;
+  T_Gen_Elec_Pz     = new std::vector<float>;
   T_Gen_Elec_Energy = new std::vector<float>;
 
-  T_Gen_Elec_MpdgId = new std::vector<int>;
-  T_Gen_Elec_MPx = new std::vector<float>;
-  T_Gen_Elec_MPy = new std::vector<float>;
-  T_Gen_Elec_MPz = new std::vector<float>;
+  T_Gen_Elec_MpdgId  = new std::vector<int>;
+  T_Gen_Elec_MPx     = new std::vector<float>;
+  T_Gen_Elec_MPy     = new std::vector<float>;
+  T_Gen_Elec_MPz     = new std::vector<float>;
   T_Gen_Elec_MEnergy = new std::vector<float>;
-  T_Gen_Elec_MSt = new std::vector<int>;
+  T_Gen_Elec_MSt     = new std::vector<int>;
 
-  T_Gen_b_pdgId = new std::vector<int>;
-  T_Gen_b_Px = new std::vector<float>;
-  T_Gen_b_Py = new std::vector<float>;
-  T_Gen_b_Pz = new std::vector<float>;
+  T_Gen_b_pdgId  = new std::vector<int>;
+  T_Gen_b_Px     = new std::vector<float>;
+  T_Gen_b_Py     = new std::vector<float>;
+  T_Gen_b_Pz     = new std::vector<float>;
   T_Gen_b_Energy = new std::vector<float>;
 
-  T_Gen_b_MpdgId = new std::vector<int>;
-  T_Gen_b_MPx = new std::vector<float>;
-  T_Gen_b_MPy = new std::vector<float>;
-  T_Gen_b_MPz = new std::vector<float>;
+  T_Gen_b_MpdgId  = new std::vector<int>;
+  T_Gen_b_MPx     = new std::vector<float>;
+  T_Gen_b_MPy     = new std::vector<float>;
+  T_Gen_b_MPz     = new std::vector<float>;
   T_Gen_b_MEnergy = new std::vector<float>;
-  T_Gen_b_MSt = new std::vector<int>;
+  T_Gen_b_MSt     = new std::vector<int>;
 
- 
-  T_Gen_Stop_pdgId = new std::vector<int>;	   
+  T_Gen_Stop_pdgId  = new std::vector<int>;	   
   T_Gen_Stop_MpdgId = new std::vector<int>;
   T_Gen_Stop_energy = new std::vector<float>;   
-  T_Gen_Stop_pt = new std::vector<float>;	   
-  T_Gen_Stop_eta = new std::vector<float>;	   
-  T_Gen_Stop_phi = new std::vector<float>;      
+  T_Gen_Stop_pt     = new std::vector<float>;	   
+  T_Gen_Stop_eta    = new std::vector<float>;	   
+  T_Gen_Stop_phi    = new std::vector<float>;      
   
-  T_Gen_Chi0_pdgId = new std::vector<int>;	   
+  T_Gen_Chi0_pdgId  = new std::vector<int>;	   
   T_Gen_Chi0_MpdgId = new std::vector<int>;
   T_Gen_Chi0_energy = new std::vector<float>;   
-  T_Gen_Chi0_pt = new std::vector<float>;	   
-  T_Gen_Chi0_eta = new std::vector<float>;	   
-  T_Gen_Chi0_phi = new std::vector<float>;      
+  T_Gen_Chi0_pt     = new std::vector<float>;	   
+  T_Gen_Chi0_eta    = new std::vector<float>;	   
+  T_Gen_Chi0_phi    = new std::vector<float>;      
   
-  T_Gen_t_pdgId = new std::vector<int>;	   
+  T_Gen_t_pdgId  = new std::vector<int>;	   
   T_Gen_t_MpdgId = new std::vector<int>;
   T_Gen_t_energy = new std::vector<float>;   
-  T_Gen_t_pt = new std::vector<float>;	   
-  T_Gen_t_eta = new std::vector<float>;	   
-  T_Gen_t_phi = new std::vector<float>;      
+  T_Gen_t_pt     = new std::vector<float>;	   
+  T_Gen_t_eta    = new std::vector<float>;	   
+  T_Gen_t_phi    = new std::vector<float>;      
 
-  T_Gen_ChiPM_pdgId = new std::vector<int>;	   
+  T_Gen_ChiPM_pdgId  = new std::vector<int>;	   
   T_Gen_ChiPM_MpdgId = new std::vector<int>;
   T_Gen_ChiPM_energy = new std::vector<float>;   
-  T_Gen_ChiPM_pt = new std::vector<float>;	   
-  T_Gen_ChiPM_eta = new std::vector<float>;	   
-  T_Gen_ChiPM_phi = new std::vector<float>;      
+  T_Gen_ChiPM_pt     = new std::vector<float>;	   
+  T_Gen_ChiPM_eta    = new std::vector<float>;	   
+  T_Gen_ChiPM_phi    = new std::vector<float>;      
 
-  T_Gen_Nu_pdgId = new std::vector<int>;	
+  T_Gen_Nu_pdgId  = new std::vector<int>;	
   T_Gen_Nu_MpdgId = new std::vector<int>;
   T_Gen_Nu_energy = new std::vector<float>;   
-  T_Gen_Nu_pt = new std::vector<float>;	
-  T_Gen_Nu_eta = new std::vector<float>;	
-  T_Gen_Nu_phi = new std::vector<float>;      
+  T_Gen_Nu_pt     = new std::vector<float>;	
+  T_Gen_Nu_eta    = new std::vector<float>;	
+  T_Gen_Nu_phi    = new std::vector<float>;      
 
   T_Gen_Z_pdgId = new std::vector<int>;	
   T_Gen_Z_MpdgId = new std::vector<int>;
@@ -829,405 +832,458 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Gen_Z_eta = new std::vector<float>;	
   T_Gen_Z_phi = new std::vector<float>;      
 
-  T_Gen_W_pdgId = new std::vector<int>;	
+  T_Gen_W_pdgId  = new std::vector<int>;	
   T_Gen_W_MpdgId = new std::vector<int>;
   T_Gen_W_energy = new std::vector<float>;   
-  T_Gen_W_pt = new std::vector<float>;	
-  T_Gen_W_eta = new std::vector<float>;	
-  T_Gen_W_phi = new std::vector<float>;      
+  T_Gen_W_pt     = new std::vector<float>;	
+  T_Gen_W_eta    = new std::vector<float>;	
+  T_Gen_W_phi    = new std::vector<float>;      
 
-  T_Gen_PromptTau_pdgId = new std::vector<int>;	
-  T_Gen_PromptTau_Energy = new std::vector<float>;   
-  T_Gen_PromptTau_Px = new std::vector<float>;	
-  T_Gen_PromptTau_Py = new std::vector<float>;	
-  T_Gen_PromptTau_Pz = new std::vector<float>;      
-  T_Gen_PromptTau_MpdgId = new std::vector<int>;
+  T_Gen_PromptTau_pdgId   = new std::vector<int>;	
+  T_Gen_PromptTau_Energy  = new std::vector<float>;   
+  T_Gen_PromptTau_Px      = new std::vector<float>;	
+  T_Gen_PromptTau_Py      = new std::vector<float>;	
+  T_Gen_PromptTau_Pz      = new std::vector<float>;      
+  T_Gen_PromptTau_MpdgId  = new std::vector<int>;
   T_Gen_PromptTau_MEnergy = new std::vector<float>;   
-  T_Gen_PromptTau_MPx = new std::vector<float>;	
-  T_Gen_PromptTau_MPy = new std::vector<float>;	
-  T_Gen_PromptTau_MPz = new std::vector<float>;      
-  T_Gen_PromptTau_MSt = new std::vector<int>;
+  T_Gen_PromptTau_MPx     = new std::vector<float>;	
+  T_Gen_PromptTau_MPy     = new std::vector<float>;	
+  T_Gen_PromptTau_MPz     = new std::vector<float>;      
+  T_Gen_PromptTau_MSt     = new std::vector<int>;
 
-  T_Gen_PromptTau_IsLepDec = new std::vector<bool>;
-  T_Gen_PromptTau_LepDec_pdgId = new std::vector<int>;
-  T_Gen_PromptTau_LepDec_Px = new std::vector<float>;
-  T_Gen_PromptTau_LepDec_Py = new std::vector<float>;
-  T_Gen_PromptTau_LepDec_Pz = new std::vector<float>;
+  T_Gen_PromptTau_IsLepDec      = new std::vector<bool>;
+  T_Gen_PromptTau_LepDec_pdgId  = new std::vector<int>;
+  T_Gen_PromptTau_LepDec_Px     = new std::vector<float>;
+  T_Gen_PromptTau_LepDec_Py     = new std::vector<float>;
+  T_Gen_PromptTau_LepDec_Pz     = new std::vector<float>;
   T_Gen_PromptTau_LepDec_Energy = new std::vector<float>;  
   
-  T_Gen_Tau_pdgId = new std::vector<int>;	
-  T_Gen_Tau_Energy = new std::vector<float>;   
-  T_Gen_Tau_Px = new std::vector<float>;	
-  T_Gen_Tau_Py = new std::vector<float>;	
-  T_Gen_Tau_Pz = new std::vector<float>;      
-  T_Gen_Tau_MpdgId = new std::vector<int>;
+  T_Gen_Tau_pdgId   = new std::vector<int>;	
+  T_Gen_Tau_Energy  = new std::vector<float>;   
+  T_Gen_Tau_Px      = new std::vector<float>;	
+  T_Gen_Tau_Py      = new std::vector<float>;	
+  T_Gen_Tau_Pz      = new std::vector<float>;      
+  T_Gen_Tau_MpdgId  = new std::vector<int>;
   T_Gen_Tau_MEnergy = new std::vector<float>;   
-  T_Gen_Tau_MPx = new std::vector<float>;	
-  T_Gen_Tau_MPy = new std::vector<float>;	
-  T_Gen_Tau_MPz = new std::vector<float>;      
-  T_Gen_Tau_MSt = new std::vector<int>;
+  T_Gen_Tau_MPx     = new std::vector<float>;	
+  T_Gen_Tau_MPy     = new std::vector<float>;	
+  T_Gen_Tau_MPz     = new std::vector<float>;      
+  T_Gen_Tau_MSt     = new std::vector<int>;
 
-  T_Gen_Tau_IsLepDec = new std::vector<bool>;
-  T_Gen_Tau_LepDec_pdgId = new std::vector<int>;
-  T_Gen_Tau_LepDec_Px = new std::vector<float>;
-  T_Gen_Tau_LepDec_Py = new std::vector<float>;
-  T_Gen_Tau_LepDec_Pz = new std::vector<float>;
+  T_Gen_Tau_IsLepDec      = new std::vector<bool>;
+  T_Gen_Tau_LepDec_pdgId  = new std::vector<int>;
+  T_Gen_Tau_LepDec_Px     = new std::vector<float>;
+  T_Gen_Tau_LepDec_Py     = new std::vector<float>;
+  T_Gen_Tau_LepDec_Pz     = new std::vector<float>;
   T_Gen_Tau_LepDec_Energy = new std::vector<float>;  
   
-  if(!IsRealData){
+  if (!IsRealData) {
+
     edm::Handle<GenEventInfoProduct> genEvtInfo;
     iEvent.getByLabel("generator", genEvtInfo);
-    //T_Event_PtHat =  genEvtInfo->hasBinningValues() ? (genEvtInfo->binningValues())[0] : 0.0;
-    T_Event_processID= genEvtInfo->signalProcessID();
 
-//    std::vector<SUSYGenParticle> genParVec;
-//    genParVec.clear();
+    T_Event_processID = genEvtInfo->signalProcessID();
 
-    for (size_t i = 0; i < genParticles->size(); ++i){//avoid pp
+    for (size_t i=0; i<genParticles->size(); ++i) {
+
       const Candidate & p = (*genParticles)[i];
+
       int id = p.pdgId();
       int st = p.status();
-//      int mom = (p.mother())->pdgId();
-//        cout<<"pdgId: "<<id<<" Mom: "<<mom<<endl;
 
-     if (!(abs(id) == 11 || abs(id) == 13 || abs(id) == 15 || abs(id)== 12 || abs(id)==14 || abs(id)== 16 || abs(id)==23 || abs(id)==24 || abs(id)==25 || abs(id)==5 || abs(id)==6 || abs(id) == 1000006 || abs(id) == 1000022 || abs(id) == 1000024)) continue;
+      if (!(
+	    abs(id) == 11 ||       // e
+	    abs(id) == 13 ||       // mu
+	    abs(id) == 15 ||       // tau
+	    abs(id) == 12 ||       // nu_e
+	    abs(id) == 14 ||       // nu_mu
+	    abs(id) == 16 ||       // nu_tau
+	    abs(id) == 23 ||       // Z
+	    abs(id) == 24 ||       // W
+	    abs(id) == 25 ||       // h / H
+	    abs(id) ==  5 ||       // b
+	    abs(id) ==  6 ||       // t
+	    abs(id) == 1000006 ||  // Stop
+	    abs(id) == 1000022 ||  // Chi0
+	    abs(id) == 1000024     // Chargino
+	    )
+	  ) continue;
 
       if (abs(id) == 1000006) T_Gen_StopMass->push_back(p.mass());      
       if (abs(id) == 1000022) T_Gen_Chi0Mass->push_back(p.mass());
       if (abs(id) == 1000024) T_Gen_CharginoMass->push_back(p.mass());
       
-	// get mother 
-	const GenParticle* gen_mom = static_cast<const GenParticle*> (p.mother());
-	int m_id=id;
-	if(gen_mom!=0) m_id = gen_mom -> pdgId();
-	else m_id=0;
+      // Get the mother 
+      const GenParticle* gen_mom = static_cast<const GenParticle*> (p.mother());
 
-//	if(m_id==0) cout<<"Particle "<<id <<" with status "<<st<<" has no mother id"<<endl;
-	
-      if (abs(id) == 11 || abs(id) == 13 || abs(id) == 5){ // muons,electrons and b quarks	
-	if(!(abs(m_id)== 6 || abs(m_id)== 22 || abs(m_id)== 24 || abs(m_id)== 23 || m_id==id)){  //Non-prompt,we do NOT want those coming from W/Z/top
-      
-		if (abs(id) == 11) {
-		  T_Gen_Elec_pdgId->push_back(id);
-		  T_Gen_Elec_Px->push_back(p.px());
-		  T_Gen_Elec_Py->push_back(p.py());
-		  T_Gen_Elec_Pz->push_back(p.pz());
-		  T_Gen_Elec_Energy->push_back(p.energy());
-		  if(gen_mom!=0){
-		    T_Gen_Elec_MpdgId->push_back(m_id);
-		    T_Gen_Elec_MPx->push_back(gen_mom->px());
-		    T_Gen_Elec_MPy->push_back(gen_mom->py());
-		    T_Gen_Elec_MPz->push_back(gen_mom->pz());
-		    T_Gen_Elec_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_Elec_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-//		cout<<"Particle "<<id <<" with status "<<st<<"and no mother"<<endl;
-		    T_Gen_Elec_MpdgId->push_back(111); //asign a pi0
-		    T_Gen_Elec_MPx->push_back(0);
-		    T_Gen_Elec_MPy->push_back(0);
-		    T_Gen_Elec_MPz->push_back(0);
-		    T_Gen_Elec_MEnergy->push_back(0);
-		    T_Gen_Elec_MSt->push_back(0);
-		  }
-		}//ele
-      
-		else if (abs(id) == 13) {
-		  T_Gen_Muon_pdgId->push_back(id);
-		  T_Gen_Muon_Px->push_back(p.px());
-		  T_Gen_Muon_Py->push_back(p.py());
-		  T_Gen_Muon_Pz->push_back(p.pz());
-		  T_Gen_Muon_Energy->push_back(p.energy());
-	
-		  T_Gen_Muon_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_Muon_MPx->push_back(gen_mom->px());
-		    T_Gen_Muon_MPy->push_back(gen_mom->py());
-		    T_Gen_Muon_MPz->push_back(gen_mom->pz());
-		    T_Gen_Muon_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_Muon_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_Muon_MPx->push_back(0);
-		    T_Gen_Muon_MPy->push_back(0);
-		    T_Gen_Muon_MPz->push_back(0);
-		    T_Gen_Muon_MEnergy->push_back(0);
-		    T_Gen_Muon_MSt->push_back(0);
-		  }
-		}//mu
-      
-		else if (abs(id) == 5) {
-		  T_Gen_b_pdgId->push_back(id);
-		  T_Gen_b_Px->push_back(p.px());
-		  T_Gen_b_Py->push_back(p.py());
-		  T_Gen_b_Pz->push_back(p.pz());
-		  T_Gen_b_Energy->push_back(p.energy());
-	
-		  if(gen_mom!=0){
-		    T_Gen_b_MpdgId->push_back(m_id);
-		    T_Gen_b_MPx->push_back(gen_mom->px());
-		    T_Gen_b_MPy->push_back(gen_mom->py());
-		    T_Gen_b_MPz->push_back(gen_mom->pz());
-		    T_Gen_b_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_b_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_b_MpdgId->push_back(21);//assign gluon
-		    T_Gen_b_MPx->push_back(0);
-		    T_Gen_b_MPy->push_back(0);
-		    T_Gen_b_MPz->push_back(0);
-		    T_Gen_b_MEnergy->push_back(0);
-		    T_Gen_b_MSt->push_back(0);
-		  }
-		}//bs      
-      	} //Non Prompt
-      
-        else if(m_id!=id){
-	
-		if (abs(id) == 11) {
-		  T_Gen_PromptElec_pdgId->push_back(id);
-		  T_Gen_PromptElec_Px->push_back(p.px());
-		  T_Gen_PromptElec_Py->push_back(p.py());
-		  T_Gen_PromptElec_Pz->push_back(p.pz());
-		  T_Gen_PromptElec_Energy->push_back(p.energy());
-	
-		  T_Gen_PromptElec_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_PromptElec_MPx->push_back(gen_mom->px());
-		    T_Gen_PromptElec_MPy->push_back(gen_mom->py());
-		    T_Gen_PromptElec_MPz->push_back(gen_mom->pz());
-		    T_Gen_PromptElec_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_PromptElec_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_PromptElec_MPx->push_back(0);
-		    T_Gen_PromptElec_MPy->push_back(0);
-		    T_Gen_PromptElec_MPz->push_back(0);
-		    T_Gen_PromptElec_MEnergy->push_back(0);
-		    T_Gen_PromptElec_MSt->push_back(0);
-		  }
-		}//ele
-      
-		else if (abs(id) == 13) {
-		  T_Gen_PromptMuon_pdgId->push_back(id);
-		  T_Gen_PromptMuon_Px->push_back(p.px());
-		  T_Gen_PromptMuon_Py->push_back(p.py());
-		  T_Gen_PromptMuon_Pz->push_back(p.pz());
-		  T_Gen_PromptMuon_Energy->push_back(p.energy());
-	
-		  T_Gen_PromptMuon_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_PromptMuon_MPx->push_back(gen_mom->px());
-		    T_Gen_PromptMuon_MPy->push_back(gen_mom->py());
-		    T_Gen_PromptMuon_MPz->push_back(gen_mom->pz());
-		    T_Gen_PromptMuon_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_PromptMuon_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_PromptMuon_MPx->push_back(0);
-		    T_Gen_PromptMuon_MPy->push_back(0);
-		    T_Gen_PromptMuon_MPz->push_back(0);
-		    T_Gen_PromptMuon_MEnergy->push_back(0);
-		    T_Gen_PromptMuon_MSt->push_back(0);
-		  }
-		}//mu
-      
-		else if (abs(id) == 5) {
-		  T_Gen_Promptb_pdgId->push_back(id);
-		  T_Gen_Promptb_Px->push_back(p.px());
-		  T_Gen_Promptb_Py->push_back(p.py());
-		  T_Gen_Promptb_Pz->push_back(p.pz());
-		  T_Gen_Promptb_Energy->push_back(p.energy());
-	
-		  T_Gen_Promptb_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_Promptb_MPx->push_back(gen_mom->px());
-		    T_Gen_Promptb_MPy->push_back(gen_mom->py());
-		    T_Gen_Promptb_MPz->push_back(gen_mom->pz());
-		    T_Gen_Promptb_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_Promptb_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_Promptb_MPx->push_back(0);
-		    T_Gen_Promptb_MPy->push_back(0);
-		    T_Gen_Promptb_MPz->push_back(0);
-		    T_Gen_Promptb_MEnergy->push_back(0);
-		    T_Gen_Promptb_MSt->push_back(0);
-		  }
-		}//bs      
-      	} //Prompt
+      int m_id = (gen_mom != 0) ? gen_mom->pdgId() : 0;
 
-	else if (st==1 && m_id==id){ //after radiation, if any... m_id==id
+      // electron, muon, b
+      if (abs(id) == 11 || abs(id) == 13 || abs(id) == 5) {
 
-		if(abs(id) == 11){
-		T_Gen_FinalElec_pdgId->push_back(id);
-                T_Gen_FinalElec_Px->push_back(p.px());
-                T_Gen_FinalElec_Py->push_back(p.py());
-                T_Gen_FinalElec_Pz->push_back(p.pz());
-                T_Gen_FinalElec_Energy->push_back(p.energy());
-		}
-		else if(abs(id) == 13){
-                T_Gen_FinalMuon_pdgId->push_back(id);
-                T_Gen_FinalMuon_Px->push_back(p.px());
-                T_Gen_FinalMuon_Py->push_back(p.py());
-                T_Gen_FinalMuon_Pz->push_back(p.pz());
-                T_Gen_FinalMuon_Energy->push_back(p.energy());
-                }
-	}//after radiation, m_id==id
+	// Non-prompt. We do NOT want those coming from top/gamma/Z/W
+	if (!(abs(m_id) == 6 || abs(m_id) == 22 || abs(m_id) == 23 || abs(m_id) == 24 || m_id == id)) {
+      
+	  // Non-prompt gen electron
+	  if (abs(id) == 11) {
+
+	    T_Gen_Elec_pdgId  -> push_back(id);
+	    T_Gen_Elec_Px     -> push_back(p.px());
+	    T_Gen_Elec_Py     -> push_back(p.py());
+	    T_Gen_Elec_Pz     -> push_back(p.pz());
+	    T_Gen_Elec_Energy -> push_back(p.energy());
+
+	    if (gen_mom != 0) {
+
+	      T_Gen_Elec_MpdgId  -> push_back(m_id);
+	      T_Gen_Elec_MPx     -> push_back(gen_mom->px());
+	      T_Gen_Elec_MPy     -> push_back(gen_mom->py());
+	      T_Gen_Elec_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_Elec_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_Elec_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_Elec_MpdgId  -> push_back(111);  // Assign a pi0
+              T_Gen_Elec_MPx     -> push_back(0);
+	      T_Gen_Elec_MPy     -> push_back(0);
+	      T_Gen_Elec_MPz     -> push_back(0);
+	      T_Gen_Elec_MEnergy -> push_back(0);
+	      T_Gen_Elec_MSt     -> push_back(0);
+	    }
+	  }
+
+	  // Non-prompt gen muon
+	  else if (abs(id) == 13) {
+
+	    T_Gen_Muon_pdgId  -> push_back(id);
+	    T_Gen_Muon_Px     -> push_back(p.px());
+	    T_Gen_Muon_Py     -> push_back(p.py());
+	    T_Gen_Muon_Pz     -> push_back(p.pz());
+	    T_Gen_Muon_Energy -> push_back(p.energy());
+	    T_Gen_Muon_MpdgId -> push_back(m_id);
+
+	    if (gen_mom != 0) {
+
+	      T_Gen_Muon_MPx     -> push_back(gen_mom->px());
+	      T_Gen_Muon_MPy     -> push_back(gen_mom->py());
+	      T_Gen_Muon_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_Muon_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_Muon_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_Muon_MPx     -> push_back(0);
+	      T_Gen_Muon_MPy     -> push_back(0);
+	      T_Gen_Muon_MPz     -> push_back(0);
+	      T_Gen_Muon_MEnergy -> push_back(0);
+	      T_Gen_Muon_MSt     -> push_back(0);
+	    }
+	  }
+
+	  // Non-prompt gen b
+	  else if (abs(id) == 5) {
+
+	    T_Gen_b_pdgId  -> push_back(id);
+	    T_Gen_b_Px     -> push_back(p.px());
+	    T_Gen_b_Py     -> push_back(p.py());
+	    T_Gen_b_Pz     -> push_back(p.pz());
+	    T_Gen_b_Energy -> push_back(p.energy());
 	
-     } // e + mu + b
+	    if (gen_mom != 0) {
 
+	      T_Gen_b_MpdgId  -> push_back(m_id);
+	      T_Gen_b_MPx     -> push_back(gen_mom->px());
+	      T_Gen_b_MPy     -> push_back(gen_mom->py());
+	      T_Gen_b_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_b_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_b_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
 
-     else if (abs(id) == 15){ //taus
-     
-      if(abs(m_id)==23 || abs(m_id)==24) {//Prompt taus
-	bool elecdec = false, muondec = false;
-	int pdgId = 0;
-	float px = 0, py = 0, pz = 0, energy = 0;
-	LeptonicTauDecay(p, elecdec, muondec, pdgId, px, py, pz, energy);
-	T_Gen_PromptTau_IsLepDec->push_back(elecdec || muondec);
-	T_Gen_PromptTau_LepDec_pdgId->push_back(pdgId);
-	T_Gen_PromptTau_LepDec_Px->push_back(px);
-	T_Gen_PromptTau_LepDec_Py->push_back(py);
-	T_Gen_PromptTau_LepDec_Pz->push_back(pz);
-	T_Gen_PromptTau_LepDec_Energy->push_back(energy);    	
-	T_Gen_PromptTau_pdgId->push_back(id);
-	T_Gen_PromptTau_Px->push_back(p.px());
-	T_Gen_PromptTau_Py->push_back(p.py());
-	T_Gen_PromptTau_Pz->push_back(p.pz());
-	T_Gen_PromptTau_Energy->push_back(p.energy());  
+	      T_Gen_b_MpdgId  -> push_back(21);  // Assign a gluon
+	      T_Gen_b_MPx     -> push_back(0);
+	      T_Gen_b_MPy     -> push_back(0);
+	      T_Gen_b_MPz     -> push_back(0);
+	      T_Gen_b_MEnergy -> push_back(0);
+	      T_Gen_b_MSt     -> push_back(0);
+	    }
+	  }
+      	}
+
+	// Prompt
+        else if (m_id != id) {
+	  
+	  // Prompt gen electron
+	  if (abs(id) == 11) {
+
+	    T_Gen_PromptElec_pdgId  -> push_back(id);
+	    T_Gen_PromptElec_Px     -> push_back(p.px());
+	    T_Gen_PromptElec_Py     -> push_back(p.py());
+	    T_Gen_PromptElec_Pz     -> push_back(p.pz());
+	    T_Gen_PromptElec_Energy -> push_back(p.energy());
+	    T_Gen_PromptElec_MpdgId -> push_back(m_id);
+
+	    if (gen_mom != 0){
+
+	      T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
+	      T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
+	      T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_PromptElec_MPx     -> push_back(0);
+	      T_Gen_PromptElec_MPy     -> push_back(0);
+	      T_Gen_PromptElec_MPz     -> push_back(0);
+	      T_Gen_PromptElec_MEnergy -> push_back(0);
+	      T_Gen_PromptElec_MSt     -> push_back(0);
+	    }
+	  }
+      
+	  // Prompt gen muon
+	  else if (abs(id) == 13) {
+
+	    T_Gen_PromptMuon_pdgId  -> push_back(id);
+	    T_Gen_PromptMuon_Px     -> push_back(p.px());
+	    T_Gen_PromptMuon_Py     -> push_back(p.py());
+	    T_Gen_PromptMuon_Pz     -> push_back(p.pz());
+	    T_Gen_PromptMuon_Energy -> push_back(p.energy());
+	    T_Gen_PromptMuon_MpdgId -> push_back(m_id);
+
+	    if (gen_mom != 0) {
+
+	      T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
+	      T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
+	      T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_PromptMuon_MPx     -> push_back(0);
+	      T_Gen_PromptMuon_MPy     -> push_back(0);
+	      T_Gen_PromptMuon_MPz     -> push_back(0);
+	      T_Gen_PromptMuon_MEnergy -> push_back(0);
+	      T_Gen_PromptMuon_MSt     -> push_back(0);
+	    }
+	  }
+
+	  // Prompt gen b
+	  else if (abs(id) == 5) {
+
+	    T_Gen_Promptb_pdgId  -> push_back(id);
+	    T_Gen_Promptb_Px     -> push_back(p.px());
+	    T_Gen_Promptb_Py     -> push_back(p.py());
+	    T_Gen_Promptb_Pz     -> push_back(p.pz());
+	    T_Gen_Promptb_Energy -> push_back(p.energy());
+	    T_Gen_Promptb_MpdgId -> push_back(m_id);
+
+	    if (gen_mom != 0) {
+
+	      T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
+	      T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
+	      T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_Promptb_MPx     -> push_back(0);
+	      T_Gen_Promptb_MPy     -> push_back(0);
+	      T_Gen_Promptb_MPz     -> push_back(0);
+	      T_Gen_Promptb_MEnergy -> push_back(0);
+	      T_Gen_Promptb_MSt     -> push_back(0);
+	    }
+	  }
+      	}
+
+	// After radiation, if any... m_id==id
+	else if (st == 1 && m_id == id) {
+
+	  if(abs(id) == 11) {
+
+	    T_Gen_FinalElec_pdgId  -> push_back(id);
+	    T_Gen_FinalElec_Px     -> push_back(p.px());
+	    T_Gen_FinalElec_Py     -> push_back(p.py());
+	    T_Gen_FinalElec_Pz     -> push_back(p.pz());
+	    T_Gen_FinalElec_Energy -> push_back(p.energy());
+	  }
+	  else if (abs(id) == 13) {
+
+	    T_Gen_FinalMuon_pdgId  -> push_back(id);
+	    T_Gen_FinalMuon_Px     -> push_back(p.px());
+	    T_Gen_FinalMuon_Py     -> push_back(p.py());
+	    T_Gen_FinalMuon_Pz     -> push_back(p.pz());
+	    T_Gen_FinalMuon_Energy -> push_back(p.energy());
+	  }
+	}
+      }
+
+      // tau
+      else if (abs(id) == 15) {
 	
-		  T_Gen_PromptTau_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_PromptTau_MPx->push_back(gen_mom->px());
-		    T_Gen_PromptTau_MPy->push_back(gen_mom->py());
-		    T_Gen_PromptTau_MPz->push_back(gen_mom->pz());
-		    T_Gen_PromptTau_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_PromptTau_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_PromptTau_MPx->push_back(0);
-		    T_Gen_PromptTau_MPy->push_back(0);
-		    T_Gen_PromptTau_MPz->push_back(0);
-		    T_Gen_PromptTau_MEnergy->push_back(0);
-		    T_Gen_PromptTau_MSt->push_back(0);
-		  }
+	// Prompt gen tau
+	if (abs(m_id) == 23 || abs(m_id) == 24) {
+
+	  bool  elecdec = false;
+	  bool  muondec = false;
+	  int   pdgId   = 0;
+	  float px      = 0;
+	  float py      = 0;
+	  float pz      = 0;
+	  float energy  = 0;
+
+	  LeptonicTauDecay(p, elecdec, muondec, pdgId, px, py, pz, energy);
+
+	  T_Gen_PromptTau_IsLepDec      -> push_back(elecdec || muondec);
+	  T_Gen_PromptTau_LepDec_pdgId  -> push_back(pdgId);
+	  T_Gen_PromptTau_LepDec_Px     -> push_back(px);
+	  T_Gen_PromptTau_LepDec_Py     -> push_back(py);
+	  T_Gen_PromptTau_LepDec_Pz     -> push_back(pz);
+	  T_Gen_PromptTau_LepDec_Energy -> push_back(energy);    	
+	  T_Gen_PromptTau_pdgId         -> push_back(id);
+	  T_Gen_PromptTau_Px            -> push_back(p.px());
+	  T_Gen_PromptTau_Py            -> push_back(p.py());
+	  T_Gen_PromptTau_Pz            -> push_back(p.pz());
+	  T_Gen_PromptTau_Energy        -> push_back(p.energy());  
+	  T_Gen_PromptTau_MpdgId        -> push_back(m_id);
+
+	  if (gen_mom != 0) {
+
+	    T_Gen_PromptTau_MPx     -> push_back(gen_mom->px());
+	    T_Gen_PromptTau_MPy     -> push_back(gen_mom->py());
+	    T_Gen_PromptTau_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_PromptTau_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_PromptTau_MSt     -> push_back(gen_mom->status());
+	  }
+	  else {
+
+	    T_Gen_PromptTau_MPx     -> push_back(0);
+	    T_Gen_PromptTau_MPy     -> push_back(0);
+	    T_Gen_PromptTau_MPz     -> push_back(0);
+	    T_Gen_PromptTau_MEnergy -> push_back(0);
+	    T_Gen_PromptTau_MSt     -> push_back(0);
+	  }
 	}
 	
-      else if(m_id!=id){ //Non prompt taus
-  	bool elecdec = false, muondec = false;
-	int pdgId = 0;
-	float px = 0, py = 0, pz = 0, energy = 0;
-	LeptonicTauDecay(p, elecdec, muondec, pdgId, px, py, pz, energy);
-	T_Gen_Tau_IsLepDec->push_back(elecdec || muondec);
-	T_Gen_Tau_LepDec_pdgId->push_back(pdgId);
-	T_Gen_Tau_LepDec_Px->push_back(px);
-	T_Gen_Tau_LepDec_Py->push_back(py);
-	T_Gen_Tau_LepDec_Pz->push_back(pz);
-	T_Gen_Tau_LepDec_Energy->push_back(energy);  
-	T_Gen_Tau_pdgId->push_back(id);
-	T_Gen_Tau_Px->push_back(p.px());
-	T_Gen_Tau_Py->push_back(p.py());
-	T_Gen_Tau_Pz->push_back(p.pz());
-	T_Gen_Tau_Energy->push_back(p.energy());  
-		  T_Gen_Tau_MpdgId->push_back(m_id);
-		  if(gen_mom!=0){
-		    T_Gen_Tau_MPx->push_back(gen_mom->px());
-		    T_Gen_Tau_MPy->push_back(gen_mom->py());
-		    T_Gen_Tau_MPz->push_back(gen_mom->pz());
-		    T_Gen_Tau_MEnergy->push_back(gen_mom->energy());
-		    T_Gen_Tau_MSt->push_back(gen_mom->status());
-		  }
-		  else{
-		    T_Gen_Tau_MPx->push_back(0);
-		    T_Gen_Tau_MPy->push_back(0);
-		    T_Gen_Tau_MPz->push_back(0);
-		    T_Gen_Tau_MEnergy->push_back(0);
-		    T_Gen_Tau_MSt->push_back(0);
-		  }
-    
-	}//Non prompt taus      
-     }//taus
+	// Non-prompt gen tau
+	else if (m_id != id) {
 
+	  bool  elecdec = false;
+	  bool  muondec = false;
+	  int   pdgId   = 0;
+	  float px      = 0;
+	  float py      = 0;
+	  float pz      = 0;
+	  float energy  = 0;
 
-     //VIP particles, first version
-      else if( abs(id ) == 1000006 && m_id!=id){				   
-									   
-	T_Gen_Stop_pdgId       ->push_back( id );	   
-	T_Gen_Stop_MpdgId      ->push_back( m_id);
-	T_Gen_Stop_energy      ->push_back( p.energy() );	   
-	T_Gen_Stop_pt          ->push_back( p.pt() );	   
-	T_Gen_Stop_eta         ->push_back( p.eta() );	   
-	T_Gen_Stop_phi         ->push_back( p.phi() );	   
+	  LeptonicTauDecay(p, elecdec, muondec, pdgId, px, py, pz, energy);
+	  
+	  T_Gen_Tau_IsLepDec      -> push_back(elecdec || muondec);
+	  T_Gen_Tau_LepDec_pdgId  -> push_back(pdgId);
+	  T_Gen_Tau_LepDec_Px     -> push_back(px);
+	  T_Gen_Tau_LepDec_Py     -> push_back(py);
+	  T_Gen_Tau_LepDec_Pz     -> push_back(pz);
+	  T_Gen_Tau_LepDec_Energy -> push_back(energy);  
+	  T_Gen_Tau_pdgId         -> push_back(id);
+	  T_Gen_Tau_Px            -> push_back(p.px());
+	  T_Gen_Tau_Py            -> push_back(p.py());
+	  T_Gen_Tau_Pz            -> push_back(p.pz());
+	  T_Gen_Tau_Energy        -> push_back(p.energy());  
+	  T_Gen_Tau_MpdgId        -> push_back(m_id);
+
+	  if (gen_mom != 0) {
+
+	    T_Gen_Tau_MPx     -> push_back(gen_mom->px());
+	    T_Gen_Tau_MPy     -> push_back(gen_mom->py());
+	    T_Gen_Tau_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_Tau_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_Tau_MSt     -> push_back(gen_mom->status());
+	  }
+	  else {
+
+	    T_Gen_Tau_MPx     -> push_back(0);
+	    T_Gen_Tau_MPy     -> push_back(0);
+	    T_Gen_Tau_MPz     -> push_back(0);
+	    T_Gen_Tau_MEnergy -> push_back(0);
+	    T_Gen_Tau_MSt     -> push_back(0);
+	  }
+    	}
+      }
+
+      // VIP particles
+      else if (abs(id) == 1000006 && m_id != id) {
+							   
+	T_Gen_Stop_pdgId  -> push_back(id);	   
+	T_Gen_Stop_MpdgId -> push_back(m_id);
+	T_Gen_Stop_energy -> push_back(p.energy());	   
+	T_Gen_Stop_pt     -> push_back(p.pt());	   
+	T_Gen_Stop_eta    -> push_back(p.eta());	   
+	T_Gen_Stop_phi    -> push_back(p.phi());	   
       }                                                                    
-      
-      else if( abs(id ) == 1000022 && m_id!=id){			      	   
+      else if (abs(id) == 1000022 && m_id != id) {
 									      
-	T_Gen_Chi0_pdgId       ->push_back( id );      	   
-	T_Gen_Chi0_MpdgId      ->push_back( m_id );
-	T_Gen_Chi0_energy      ->push_back( p.energy() );     	   
-	T_Gen_Chi0_pt          ->push_back( p.pt() );	      
-	T_Gen_Chi0_eta         ->push_back( p.eta() );	      
-	T_Gen_Chi0_phi         ->push_back( p.phi() );	      
+	T_Gen_Chi0_pdgId  -> push_back(id);      	   
+	T_Gen_Chi0_MpdgId -> push_back(m_id);
+	T_Gen_Chi0_energy -> push_back(p.energy());     	   
+	T_Gen_Chi0_pt     -> push_back(p.pt());	      
+	T_Gen_Chi0_eta    -> push_back(p.eta());	      
+	T_Gen_Chi0_phi    -> push_back(p.phi());	      
       }                                                                       
-      
-       else if( abs(id) == 1000024 && m_id!=id ){			      
+      else if (abs(id) == 1000024 && m_id != id) {
 									      
-	T_Gen_ChiPM_pdgId       ->push_back( id );      
-	T_Gen_ChiPM_MpdgId      ->push_back( m_id);
-	T_Gen_ChiPM_energy      ->push_back( p.energy() );     
-	T_Gen_ChiPM_pt          ->push_back( p.pt() );	      
-	T_Gen_ChiPM_eta         ->push_back( p.eta() );	      
-	T_Gen_ChiPM_phi         ->push_back( p.phi() );	      
+	T_Gen_ChiPM_pdgId  -> push_back(id);      
+	T_Gen_ChiPM_MpdgId -> push_back(m_id);
+	T_Gen_ChiPM_energy -> push_back(p.energy());     
+	T_Gen_ChiPM_pt     -> push_back(p.pt());	      
+	T_Gen_ChiPM_eta    -> push_back(p.eta());	      
+	T_Gen_ChiPM_phi    -> push_back(p.phi());	      
       }                                                                       
-
-      else if( abs(id) == 6 && m_id!=id ){				   
+      else if (abs(id) == 6 && m_id != id) {
 									   
-	T_Gen_t_pdgId       ->push_back( id );	   
-	T_Gen_t_MpdgId      ->push_back( m_id );
-	T_Gen_t_energy      ->push_back( p.energy() );	   
-	T_Gen_t_pt          ->push_back( p.pt() );	   
-	T_Gen_t_eta         ->push_back( p.eta() );	   
-	T_Gen_t_phi         ->push_back( p.phi() );	   
+	T_Gen_t_pdgId  -> push_back(id);	   
+	T_Gen_t_MpdgId -> push_back(m_id);
+	T_Gen_t_energy -> push_back(p.energy());	   
+	T_Gen_t_pt     -> push_back(p.pt());	   
+	T_Gen_t_eta    -> push_back(p.eta());	   
+	T_Gen_t_phi    -> push_back(p.phi());	   
       }                                                                    
-
-
-      else if( abs(id) == 24 && m_id!=id ){				   
+      else if (abs(id) == 24 && m_id != id) {
 									   
-	T_Gen_W_pdgId       ->push_back( id );	   
-	T_Gen_W_MpdgId      ->push_back( m_id );
-	T_Gen_W_energy      ->push_back( p.energy() );	   
-	T_Gen_W_pt          ->push_back( p.pt() );	   
-	T_Gen_W_eta         ->push_back( p.eta() );	   
-	T_Gen_W_phi         ->push_back( p.phi() );	   
+	T_Gen_W_pdgId  -> push_back(id);	   
+	T_Gen_W_MpdgId -> push_back(m_id);
+	T_Gen_W_energy -> push_back(p.energy());	   
+	T_Gen_W_pt     -> push_back(p.pt());	   
+	T_Gen_W_eta    -> push_back(p.eta());	   
+	T_Gen_W_phi    -> push_back(p.phi());	   
       }                                                                    
-
-      else if( abs(id) == 23 && m_id!=id ){				   
-									   
-	T_Gen_Z_pdgId       ->push_back( id );	   
-	T_Gen_Z_MpdgId      ->push_back( m_id );
-	T_Gen_Z_energy      ->push_back( p.energy() );	   
-	T_Gen_Z_pt          ->push_back( p.pt() );	   
-	T_Gen_Z_eta         ->push_back( p.eta() );	   
-	T_Gen_Z_phi         ->push_back( p.phi() );	   
+      else if (abs(id) == 23 && m_id != id) {
+	
+	T_Gen_Z_pdgId  -> push_back(id);	   
+	T_Gen_Z_MpdgId -> push_back(m_id);
+	T_Gen_Z_energy -> push_back(p.energy());	   
+	T_Gen_Z_pt     -> push_back(p.pt());	   
+	T_Gen_Z_eta    -> push_back(p.eta());	   
+	T_Gen_Z_phi    -> push_back(p.phi());	   
       }    
-      
-      else if( (abs(id) == 12 || abs(id)==14 || abs(id)==16) && m_id!=id){ //neutrinos
+      else if ((abs(id) == 12 || abs(id) == 14 || abs(id) == 16) && m_id != id){
 									   
-	T_Gen_Nu_pdgId       ->push_back( id );	   
-	T_Gen_Nu_MpdgId      ->push_back( m_id );
-	T_Gen_Nu_energy      ->push_back( p.energy() );	   
-	T_Gen_Nu_pt          ->push_back( p.pt() );	   
-	T_Gen_Nu_eta         ->push_back( p.eta() );	   
-	T_Gen_Nu_phi         ->push_back( p.phi() );	   
+	T_Gen_Nu_pdgId  ->push_back(id);	   
+	T_Gen_Nu_MpdgId ->push_back(m_id);
+	T_Gen_Nu_energy ->push_back(p.energy());	   
+	T_Gen_Nu_pt     ->push_back(p.pt());	   
+	T_Gen_Nu_eta    ->push_back(p.eta());	   
+	T_Gen_Nu_phi    ->push_back(p.phi());	   
       }    
-                                                                     
-    
-    } // loop over GenParticles    
+    }  // for..genParticles    
+  }  // !IsRealData
 
-  }// !IsRealData
-    
-  //**********************VERTEX****************************
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Vertex variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   T_Vertex_x          = new std::vector<float>; 
   T_Vertex_y          = new std::vector<float>;
   T_Vertex_z          = new std::vector<float>;   
@@ -1238,19 +1294,17 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Vertex_tracksSize = new std::vector<int>; 
   T_Vertex_nTracks    = new std::vector<int>; 
   
-  //Vertex
-  
   if (vtxs.size() != 0) {
     for (size_t i=0; i<vtxs.size(); i++) {
-      T_Vertex_x         ->push_back(vtxs[i].x());
-      T_Vertex_y         ->push_back(vtxs[i].y());
-      T_Vertex_z         ->push_back(vtxs[i].z());
-      T_Vertex_Chi2Prob  ->push_back(ChiSquaredProbability(vtxs[i].chi2(),vtxs[i].ndof()));
-      T_Vertex_ndof      ->push_back(vtxs[i].ndof());
-      T_Vertex_rho       ->push_back(vtxs[i].position().Rho());
-      T_Vertex_isFake    ->push_back(vtxs[i].isFake());
-      T_Vertex_tracksSize->push_back(vtxs[i].tracksSize());      
-      T_Vertex_nTracks   ->push_back(vtxs[i].nTracks());
+      T_Vertex_x          -> push_back(vtxs[i].x());
+      T_Vertex_y          -> push_back(vtxs[i].y());
+      T_Vertex_z          -> push_back(vtxs[i].z());
+      T_Vertex_Chi2Prob   -> push_back(ChiSquaredProbability(vtxs[i].chi2(),vtxs[i].ndof()));
+      T_Vertex_ndof       -> push_back(vtxs[i].ndof());
+      T_Vertex_rho        -> push_back(vtxs[i].position().Rho());
+      T_Vertex_isFake     -> push_back(vtxs[i].isFake());
+      T_Vertex_tracksSize -> push_back(vtxs[i].tracksSize());      
+      T_Vertex_nTracks    -> push_back(vtxs[i].nTracks());
     }
   } 
 
@@ -1274,148 +1328,171 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // TEST
 
 
-  //********************MUONS*******************
-  T_Muon_Eta = new std::vector<float>;
-  T_Muon_IsGlobalMuon = new std::vector<bool>;
-  T_Muon_IsGMPTMuons = new std::vector<bool>;
-  T_Muon_IsAllStandAloneMuons = new std::vector<bool>;
-  T_Muon_IsTMLastStationTight = new std::vector<bool>; 
-  T_Muon_IsAllTrackerMuons = new std::vector<bool>;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Muon variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // ID
+  T_Muon_IsGlobalMuon            = new std::vector<bool>;
+  T_Muon_IsPFMuon                = new std::vector<bool>;
+  T_Muon_IsTightMuon             = new std::vector<bool>;
+  T_Muon_IsGMPTMuons             = new std::vector<bool>;
+  T_Muon_IsAllStandAloneMuons    = new std::vector<bool>;
+  T_Muon_IsTMLastStationTight    = new std::vector<bool>; 
+  T_Muon_IsAllTrackerMuons       = new std::vector<bool>;
   T_Muon_IsTrackerMuonArbitrated = new std::vector<bool>;
-  T_Muon_IsAllArbitrated = new std::vector<bool>;
-  T_Muon_SegmentCompatibility= new std::vector<float>;
-  T_Muon_trkKink  = new std::vector<float>;
-  T_Muon_StaTrkMatchChi2 = new std::vector<float>;
-  T_Muon_Px = new std::vector<float>;
-  T_Muon_Py = new std::vector<float>;
-  T_Muon_Pz = new std::vector<float>;
-  T_Muon_Pt = new std::vector<float>;
+  T_Muon_IsAllArbitrated         = new std::vector<bool>;
+  T_Muon_IsTrackHighPurity       = new std::vector<bool>;
+
+  // Kinematics
+  T_Muon_Eta     = new std::vector<float>;
+  T_Muon_Px      = new std::vector<float>;
+  T_Muon_Py      = new std::vector<float>;
+  T_Muon_Pz      = new std::vector<float>;
+  T_Muon_Pt      = new std::vector<float>;
   T_Muon_deltaPt = new std::vector<float>;
-  T_Muon_Energy = new std::vector<float>;
-  T_Muon_Charge = new std::vector<int>;
-  T_Muon_NormChi2GTrk = new std::vector<float>;
-  T_Muon_NValidHitsInTrk = new std::vector<int>;
+  T_Muon_Energy  = new std::vector<float>;
+  T_Muon_Charge  = new std::vector<int>;
+
+  // Track info
+  T_Muon_BestTrack_vx         = new std::vector<float>;
+  T_Muon_BestTrack_vy         = new std::vector<float>;
+  T_Muon_BestTrack_vz         = new std::vector<float>;
+  T_Muon_BestTrack_dxy        = new std::vector<float>;
+  T_Muon_BestTrack_dz         = new std::vector<float>;
+  T_Muon_BestTrack_Px         = new std::vector<float>;
+  T_Muon_BestTrack_Py         = new std::vector<float>;
+  T_Muon_BestTrack_Pz         = new std::vector<float>;
+  T_Muon_BestTrack_Pt         = new std::vector<float>;
+  T_Muon_BestTrack_Phi        = new std::vector<float>;
+  T_Muon_vx                   = new std::vector<float>;
+  T_Muon_vy                   = new std::vector<float>;  
+  T_Muon_vz                   = new std::vector<float>;
+  T_Muon_NormChi2GTrk         = new std::vector<float>;
+  T_Muon_Chi2InTrk            = new std::vector<float>;
+  T_Muon_StaTrkMatchChi2      = new std::vector<float>;
+  T_Muon_dofInTrk             = new std::vector<float>;
+  T_Muon_NValidHitsInTrk      = new std::vector<int>;
   T_Muon_NValidPixelHitsInTrk = new std::vector<int>;
-  T_Muon_NValidHitsSATrk = new std::vector<int>;
-  T_Muon_NValidHitsGTrk = new std::vector<int>;
+  T_Muon_NValidHitsSATrk      = new std::vector<int>;
+  T_Muon_NValidHitsGTrk       = new std::vector<int>;
+  T_Muon_NLayers              = new std::vector<int>;
+  T_Muon_InnerTrackFound      = new std::vector<int>;
   T_Muon_NumOfMatchedStations = new std::vector<int>;
-  T_Muon_Chi2InTrk = new std::vector<float>;
-  T_Muon_dofInTrk = new std::vector<float>;
-  T_Muon_dxyGTrack = new std::vector<float>;
-  T_Muon_dxyInTrack = new std::vector<float>;
-  T_Muon_dzGTrack = new std::vector<float>;
-  T_Muon_dzInTrack = new std::vector<float>;
-  T_Muon_IPwrtAveBSInTrack =  new std::vector<float>;
-  T_Muon_InnerTrackFound=new std::vector<int>;
-  T_Muon_chargedHadronIsoR04 = new std::vector<float>;
-  T_Muon_neutralHadronIsoR04 = new std::vector<float>;
-  T_Muon_neutralIsoPFweightR04 = new std::vector<float>;
-  T_Muon_photonIsoR04 = new std::vector<float>;
-  T_Muon_sumPUPtR04 = new std::vector<float>;
+  T_Muon_SegmentCompatibility = new std::vector<float>;
+  T_Muon_trkKink              = new std::vector<float>;
+  T_Muon_dxyGTrack            = new std::vector<float>;
+  T_Muon_dxyInTrack           = new std::vector<float>;
+  T_Muon_dzGTrack             = new std::vector<float>;
+  T_Muon_dzInTrack            = new std::vector<float>;
+  T_Muon_IPwrtAveBSInTrack    = new std::vector<float>;
+  T_Muon_fromPV               = new std::vector<int>;
+
+  // Isolation
   T_Muon_chargedParticleIsoR03 = new std::vector<float>;
-  T_Muon_chargedHadronIsoR03 = new std::vector<float>;
-  T_Muon_neutralHadronIsoR03 = new std::vector<float>;
+  T_Muon_chargedHadronIsoR03   = new std::vector<float>;
+  T_Muon_neutralHadronIsoR03   = new std::vector<float>;
   T_Muon_neutralIsoPFweightR03 = new std::vector<float>;
-  T_Muon_photonIsoR03 = new std::vector<float>;
-  T_Muon_sumPUPtR03 = new std::vector<float>;
-  T_Muon_vz = new std::vector<float>;
-  T_Muon_vy = new std::vector<float>;  
-  T_Muon_vx = new std::vector<float>;
-  T_Muon_IsPFMuon = new std::vector<bool>;
-  T_Muon_IsTightMuon       = new std::vector<bool>;
-  T_Muon_NLayers           = new std::vector<int>;
-  T_Muon_BestTrack_dxy     = new std::vector<float>;
-  T_Muon_BestTrack_dz      = new std::vector<float>;
-  T_Muon_BestTrack_vx      = new std::vector<float>;
-  T_Muon_BestTrack_vy      = new std::vector<float>;
-  T_Muon_BestTrack_vz      = new std::vector<float>;
-  T_Muon_BestTrack_Px      = new std::vector<float>;
-  T_Muon_BestTrack_Py      = new std::vector<float>;
-  T_Muon_BestTrack_Pz      = new std::vector<float>;
-  T_Muon_BestTrack_Pt      = new std::vector<float>;
-  T_Muon_BestTrack_Phi     = new std::vector<float>;
-  T_Muon_fromPV            = new std::vector<int>;
-  T_Muon_IsTrackHighPurity = new std::vector<bool>;
+  T_Muon_photonIsoR03          = new std::vector<float>;
+  T_Muon_sumPUPtR03            = new std::vector<float>;
+  T_Muon_chargedHadronIsoR04   = new std::vector<float>;
+  T_Muon_neutralHadronIsoR04   = new std::vector<float>;
+  T_Muon_neutralIsoPFweightR04 = new std::vector<float>;
+  T_Muon_photonIsoR04          = new std::vector<float>;
+  T_Muon_sumPUPtR04            = new std::vector<float>;
 
-  //Muons
-  //no estoy seguro de que haga falta ordenar (se puede usar para filtrar en el futuro)
 
+  // It is not clear if the muon ordering by pt is needed
   std::map<float,pat::Muon> muonMap;
-  for (size_t i = 0; i< muonHandle->size(); ++i) {
-    muonMap[(*muonHandle)[i].pt()]=(*muonHandle)[i];  
-  }
-  std::vector<pat::Muon> selected_muons;
-  for( std::map<float,pat::Muon>::reverse_iterator rit=muonMap.rbegin(); rit!=muonMap.rend(); ++rit){
-    selected_muons.push_back( (*rit).second );
+  for (size_t i=0; i<muonHandle->size(); ++i) {
+    muonMap[(*muonHandle)[i].pt()] = (*muonHandle)[i];  
   }
 
+  std::vector<pat::Muon> selected_muons;
+  for (std::map<float,pat::Muon>::reverse_iterator rit=muonMap.rbegin(); rit!=muonMap.rend(); ++rit) {
+    selected_muons.push_back((*rit).second);
+  }
   
-  for (size_t k = 0; k < selected_muons.size(); ++k) {
-    float IP      = 9999.;
-    float dZ      =9999.;
+  // Loop over muons
+  for (size_t k=0; k<selected_muons.size(); ++k) {
+
+    // globalTrack quantities
+    float IP       = 9999;
+    float dZ       = 9999;
     float normchi2 = 9999;
-    //quantities wrt global track    
-    reco::TrackRef tr_globaltrack = selected_muons[k].globalTrack();       
-    if (!tr_globaltrack.isNull() && selected_muons[k].isGlobalMuon()) {
+
+    if (!selected_muons[k].globalTrack().isNull() && selected_muons[k].isGlobalMuon()) {
     
       normchi2 = selected_muons[k].globalTrack()->normalizedChi2();
 
       if (vtxs.size() > 0) {
-
-	// to calculate the ImpactParameter, its Error and the Significance use
 	IP = selected_muons[k].globalTrack()->dxy(vtxs[0].position());
 	dZ = selected_muons[k].globalTrack()->dz(vtxs[0].position());
       }
-      
-    
     }
 
+    // innerTrack quantities
+    int   nhitsinnertracker = -1;
+    int   pixelHits         = -1;
+    int   nLayers           = -1;
+    int   found             = -1;
+    float chi2innertracker  = 9999;
+    float dofinnertracker   = 9999;
+    float deltaPt           = 9999;
+    float IPIn              = 9999;
+    float dZIn              = 9999;
 
-    //cuantities wrt inner track
-    reco::TrackRef tr_innertrack = selected_muons[k].innerTrack(); 
-    int nhitsinnertracker = -1,pixelHits=-1, found=-1, nLayers=-1;
-    float chi2innertracker=9999;
-    float dofinnertracker=9999;
-    float IPIn      = 9999., dZIn=9999.;
-    float deltaPt =9999.;
-    if (!tr_innertrack.isNull()) {
+    if (!selected_muons[k].innerTrack().isNull()) {
+    
+      nhitsinnertracker = selected_muons[k].innerTrack()->hitPattern().numberOfValidTrackerHits();
+      pixelHits         = selected_muons[k].innerTrack()->hitPattern().numberOfValidPixelHits(); 
+      nLayers           = selected_muons[k].innerTrack()->hitPattern().trackerLayersWithMeasurement();
+      found             = selected_muons[k].innerTrack()->found();
+      chi2innertracker  = selected_muons[k].innerTrack()->chi2();
+      dofinnertracker   = selected_muons[k].innerTrack()->ndof();
+      deltaPt           = selected_muons[k].innerTrack()->ptError();
+
       if (vtxs.size() > 0) {
-
-	// to calculate the ImpactParameter, its Error and the Significance use
-	IPIn             =   selected_muons[k].innerTrack()->dxy(vtxs[0].position());
-	dZIn		 =   selected_muons[k].innerTrack()->dz(vtxs[0].position());
+	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[0].position());
+	dZIn = selected_muons[k].innerTrack()->dz(vtxs[0].position());
       }
-      nhitsinnertracker = tr_innertrack->hitPattern().numberOfValidTrackerHits();
-      pixelHits = tr_innertrack->hitPattern().numberOfValidPixelHits(); 
-      nLayers = tr_innertrack->hitPattern().trackerLayersWithMeasurement();
-      chi2innertracker=tr_innertrack->chi2();
-      dofinnertracker=tr_innertrack->ndof();
-      deltaPt=tr_innertrack->ptError();
-      found=tr_innertrack->found();
-
     }
 
-    T_Muon_BestTrack_dxy->push_back(selected_muons[k].muonBestTrack()->dxy(vtxs[0].position()));
-    T_Muon_BestTrack_dz ->push_back(selected_muons[k].muonBestTrack()->dz(vtxs[0].position()));
-    T_Muon_BestTrack_vx ->push_back(selected_muons[k].muonBestTrack()->vx());
-    T_Muon_BestTrack_vy ->push_back(selected_muons[k].muonBestTrack()->vy());
-    T_Muon_BestTrack_vz ->push_back(selected_muons[k].muonBestTrack()->vz()); 
-    T_Muon_BestTrack_Px ->push_back(selected_muons[k].muonBestTrack()->px());
-    T_Muon_BestTrack_Py ->push_back(selected_muons[k].muonBestTrack()->py());
-    T_Muon_BestTrack_Pz ->push_back(selected_muons[k].muonBestTrack()->pz());
-    T_Muon_BestTrack_Pt ->push_back(selected_muons[k].muonBestTrack()->pt());
-    T_Muon_BestTrack_Phi->push_back(selected_muons[k].muonBestTrack()->phi());
+    // muonBestTrack quantities
+    float besttrack_vx  = 9999;
+    float besttrack_vy  = 9999;
+    float besttrack_vz  = 9999;
+    float besttrack_dxy = 9999;
+    float besttrack_dz  = 9999;
+    float besttrack_Px  = 9999;
+    float besttrack_Py  = 9999;
+    float besttrack_Pz  = 9999;
+    float besttrack_Pt  = 9999;
+    float besttrack_Phi = 9999;
 
-    reco::TrackRef tr_outtrack = selected_muons[k].standAloneMuon(); 
+    if (!selected_muons[k].innerTrack().isNull()) {
 
-    float nhitsouttrack=9999;
-    
-    if (!tr_outtrack.isNull()) {
-    
-      nhitsouttrack=selected_muons[k].standAloneMuon()->hitPattern().numberOfValidMuonHits();
-    
+      besttrack_vx  = selected_muons[k].muonBestTrack()->vx();
+      besttrack_vy  = selected_muons[k].muonBestTrack()->vy();
+      besttrack_vz  = selected_muons[k].muonBestTrack()->vz(); 
+      besttrack_Px  = selected_muons[k].muonBestTrack()->px();
+      besttrack_Py  = selected_muons[k].muonBestTrack()->py();
+      besttrack_Pz  = selected_muons[k].muonBestTrack()->pz();
+      besttrack_Pt  = selected_muons[k].muonBestTrack()->pt();
+      besttrack_Phi = selected_muons[k].muonBestTrack()->phi();
+
+      if (vtxs.size() > 0) {
+	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[0].position());
+	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[0].position());
+      }
     }
 
+    // standAloneMuon quantities
+    float nhitsouttrack = 9999;
+    
+    if (!selected_muons[k].standAloneMuon().isNull()) {
+    
+      nhitsouttrack = selected_muons[k].standAloneMuon()->hitPattern().numberOfValidMuonHits();
+    }
 
     int numOfValidHitsGTrk = 0;
     if (selected_muons[k].isGlobalMuon()) {
@@ -1426,55 +1503,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     if (vtxs.size() > 0) {
       isTightMuon = selected_muons[k].isTightMuon(vtxs[0]);
     }
-
-    T_Muon_Eta->push_back(selected_muons[k].eta()); 
-    T_Muon_IsGlobalMuon->push_back(selected_muons[k].isGlobalMuon());
-    T_Muon_IsPFMuon->push_back(selected_muons[k].isPFMuon());
-    T_Muon_IsTightMuon->push_back(isTightMuon);
-    T_Muon_IsGMPTMuons->push_back(selected_muons[k].muonID("GlobalMuonPromptTight"));
-    T_Muon_IsAllTrackerMuons->push_back(selected_muons[k].muonID("AllTrackerMuons"));
-    T_Muon_IsTrackerMuonArbitrated->push_back(selected_muons[k].muonID("TrackerMuonArbitrated"));
-    T_Muon_IsAllArbitrated->push_back(selected_muons[k].muonID("AllArbitrated"));
-    T_Muon_IsAllStandAloneMuons->push_back(selected_muons[k].muonID("AllStandAloneMuons"));
-    T_Muon_IsTMLastStationTight->push_back(selected_muons[k].muonID("TMLastStationTight"));
-    T_Muon_Px->push_back(selected_muons[k].px());
-    T_Muon_Py->push_back(selected_muons[k].py());
-    T_Muon_Pz->push_back(selected_muons[k].pz());
-    T_Muon_Pt->push_back(selected_muons[k].pt());
-    T_Muon_InnerTrackFound->push_back(found);
-    T_Muon_deltaPt->push_back(deltaPt);
-    T_Muon_Energy->push_back(selected_muons[k].energy());
-    T_Muon_Charge->push_back(selected_muons[k].charge());
-    T_Muon_NormChi2GTrk->push_back(normchi2);
-    T_Muon_NValidHitsInTrk->push_back(nhitsinnertracker);
-    T_Muon_NValidPixelHitsInTrk->push_back(pixelHits);
-    T_Muon_Chi2InTrk->push_back(chi2innertracker);
-    T_Muon_dofInTrk->push_back(dofinnertracker);
-    T_Muon_dxyGTrack->push_back(IP);
-    T_Muon_dxyInTrack->push_back(IPIn);
-    T_Muon_dzGTrack->push_back(dZ);
-    T_Muon_dzInTrack->push_back(dZIn);
-
-    T_Muon_IPwrtAveBSInTrack->push_back(selected_muons[k].dB());
-    T_Muon_chargedHadronIsoR04->push_back(selected_muons[k].pfIsolationR04().sumChargedHadronPt);
-    T_Muon_neutralHadronIsoR04->push_back(selected_muons[k].pfIsolationR04().sumNeutralHadronEt);
-    T_Muon_photonIsoR04->push_back(selected_muons[k].pfIsolationR04().sumPhotonEt);
-    T_Muon_chargedParticleIsoR03->push_back(selected_muons[k].pfIsolationR03().sumChargedParticlePt);
-    T_Muon_chargedHadronIsoR03->push_back(selected_muons[k].pfIsolationR03().sumChargedHadronPt);
-    T_Muon_neutralHadronIsoR03->push_back(selected_muons[k].pfIsolationR03().sumNeutralHadronEt);
-    T_Muon_photonIsoR03->push_back(selected_muons[k].pfIsolationR03().sumPhotonEt);
-    T_Muon_sumPUPtR03->push_back(selected_muons[k].pfIsolationR03().sumPUPt);
-    T_Muon_sumPUPtR04->push_back(selected_muons[k].pfIsolationR04().sumPUPt);
-    T_Muon_vz->push_back(selected_muons[k].vz());
-    T_Muon_vy->push_back(selected_muons[k].vy());
-    T_Muon_vx->push_back(selected_muons[k].vx());
-    T_Muon_NValidHitsGTrk->push_back(numOfValidHitsGTrk);
-    T_Muon_SegmentCompatibility->push_back(muon::segmentCompatibility(selected_muons[k]));
-    T_Muon_trkKink->push_back(selected_muons[k].combinedQuality().trkKink);
-    T_Muon_StaTrkMatchChi2->push_back(selected_muons[k].combinedQuality().staRelChi2);
-    T_Muon_NValidHitsSATrk->push_back(nhitsouttrack);
-    T_Muon_NumOfMatchedStations->push_back(selected_muons[k].numberOfMatchedStations());
-    T_Muon_NLayers->push_back(nLayers);
 
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1564,41 +1592,112 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       }
     }
 
-    T_Muon_fromPV               ->push_back(muon_fromPV);
-    T_Muon_IsTrackHighPurity    ->push_back(muon_trackHighPurity);
-    T_Muon_neutralIsoPFweightR03->push_back(muon_neutralIsoPFweightR03);
-    T_Muon_neutralIsoPFweightR04->push_back(muon_neutralIsoPFweightR04);
+
+    // ID
+    T_Muon_IsGlobalMuon            -> push_back(selected_muons[k].isGlobalMuon());
+    T_Muon_IsPFMuon                -> push_back(selected_muons[k].isPFMuon());
+    T_Muon_IsTightMuon             -> push_back(isTightMuon);
+    T_Muon_IsGMPTMuons             -> push_back(selected_muons[k].muonID("GlobalMuonPromptTight"));
+    T_Muon_IsAllStandAloneMuons    -> push_back(selected_muons[k].muonID("AllStandAloneMuons"));
+    T_Muon_IsTMLastStationTight    -> push_back(selected_muons[k].muonID("TMLastStationTight"));
+    T_Muon_IsAllTrackerMuons       -> push_back(selected_muons[k].muonID("AllTrackerMuons"));
+    T_Muon_IsTrackerMuonArbitrated -> push_back(selected_muons[k].muonID("TrackerMuonArbitrated"));
+    T_Muon_IsAllArbitrated         -> push_back(selected_muons[k].muonID("AllArbitrated"));
+    T_Muon_IsTrackHighPurity       -> push_back(muon_trackHighPurity);
+
+    // Kinematics
+    T_Muon_Eta     -> push_back(selected_muons[k].eta()); 
+    T_Muon_Px      -> push_back(selected_muons[k].px());
+    T_Muon_Py      -> push_back(selected_muons[k].py());
+    T_Muon_Pz      -> push_back(selected_muons[k].pz());
+    T_Muon_Pt      -> push_back(selected_muons[k].pt());
+    T_Muon_deltaPt -> push_back(deltaPt);
+    T_Muon_Energy  -> push_back(selected_muons[k].energy());
+    T_Muon_Charge  -> push_back(selected_muons[k].charge());
+
+    // Track info
+    T_Muon_BestTrack_vx         -> push_back(besttrack_vx);
+    T_Muon_BestTrack_vy         -> push_back(besttrack_vy);
+    T_Muon_BestTrack_vz         -> push_back(besttrack_vz); 
+    T_Muon_BestTrack_dxy        -> push_back(besttrack_dxy);
+    T_Muon_BestTrack_dz         -> push_back(besttrack_dz);
+    T_Muon_BestTrack_Px         -> push_back(besttrack_Px);
+    T_Muon_BestTrack_Py         -> push_back(besttrack_Py);
+    T_Muon_BestTrack_Pz         -> push_back(besttrack_Pz);
+    T_Muon_BestTrack_Pt         -> push_back(besttrack_Pt);
+    T_Muon_BestTrack_Phi        -> push_back(besttrack_Phi);
+    T_Muon_vx                   -> push_back(selected_muons[k].vx());
+    T_Muon_vy                   -> push_back(selected_muons[k].vy());
+    T_Muon_vz                   -> push_back(selected_muons[k].vz());
+    T_Muon_NormChi2GTrk         -> push_back(normchi2);
+    T_Muon_Chi2InTrk            -> push_back(chi2innertracker);
+    T_Muon_StaTrkMatchChi2      -> push_back(selected_muons[k].combinedQuality().staRelChi2);
+    T_Muon_dofInTrk             -> push_back(dofinnertracker);
+    T_Muon_NValidHitsInTrk      -> push_back(nhitsinnertracker);
+    T_Muon_NValidPixelHitsInTrk -> push_back(pixelHits);
+    T_Muon_NValidHitsSATrk      -> push_back(nhitsouttrack);
+    T_Muon_NValidHitsGTrk       -> push_back(numOfValidHitsGTrk);
+    T_Muon_NLayers              -> push_back(nLayers);
+    T_Muon_InnerTrackFound      -> push_back(found);
+    T_Muon_NumOfMatchedStations -> push_back(selected_muons[k].numberOfMatchedStations());
+    T_Muon_SegmentCompatibility -> push_back(muon::segmentCompatibility(selected_muons[k]));
+    T_Muon_trkKink              -> push_back(selected_muons[k].combinedQuality().trkKink);
+    T_Muon_dxyGTrack            -> push_back(IP);
+    T_Muon_dxyInTrack           -> push_back(IPIn);
+    T_Muon_dzGTrack             -> push_back(dZ);
+    T_Muon_dzInTrack            -> push_back(dZIn);
+    T_Muon_IPwrtAveBSInTrack    -> push_back(selected_muons[k].dB());
+    T_Muon_fromPV               -> push_back(muon_fromPV);
+
+    // Isolation
+    T_Muon_chargedParticleIsoR03 -> push_back(selected_muons[k].pfIsolationR03().sumChargedParticlePt);
+    T_Muon_chargedHadronIsoR03   -> push_back(selected_muons[k].pfIsolationR03().sumChargedHadronPt);
+    T_Muon_neutralHadronIsoR03   -> push_back(selected_muons[k].pfIsolationR03().sumNeutralHadronEt);
+    T_Muon_neutralIsoPFweightR03 -> push_back(muon_neutralIsoPFweightR03);
+    T_Muon_photonIsoR03          -> push_back(selected_muons[k].pfIsolationR03().sumPhotonEt);
+    T_Muon_sumPUPtR03            -> push_back(selected_muons[k].pfIsolationR03().sumPUPt);
+    T_Muon_chargedHadronIsoR04   -> push_back(selected_muons[k].pfIsolationR04().sumChargedHadronPt);
+    T_Muon_neutralHadronIsoR04   -> push_back(selected_muons[k].pfIsolationR04().sumNeutralHadronEt);
+    T_Muon_neutralIsoPFweightR04 -> push_back(muon_neutralIsoPFweightR04);
+    T_Muon_photonIsoR04          -> push_back(selected_muons[k].pfIsolationR04().sumPhotonEt);
+    T_Muon_sumPUPtR04            -> push_back(selected_muons[k].pfIsolationR04().sumPUPt);
+  }
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Tau variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /*
+  T_Tau_Px     = new std::vector<float>;
+  T_Tau_Py     = new std::vector<float>;
+  T_Tau_Pz     = new std::vector<float>;
+  T_Tau_Energy = new std::vector<float>;
+  T_Tau_Charge = new std::vector<int>;
+  
+  std::map<float,pat::Tau> tauMap;
+  for (size_t i=0; i<tauHandle->size(); ++i) {
+    tauMap[(*tauHandle)[i].pt()] = (*tauHandle)[i];
+  }
+
+  std::vector<pat::Tau> selected_Taus;
+  for (std::map<float,pat::Tau>::reverse_iterator rit=tauMap.rbegin(); rit!=tauMap.rend(); ++rit) {
+    selected_Taus.push_back((*rit).second);
   }
   
-  
-  //************ TAUS ************************
-  
-  /*
-    T_Tau_Px = new std::vector<float>;
-    T_Tau_Py = new std::vector<float>;
-    T_Tau_Pz = new std::vector<float>;
-    T_Tau_Energy = new std::vector<float>;
-    T_Tau_Charge = new std::vector<int>;
-    //no estoy seguro de que haga falta ordenar (se puede usar para filtrar en el futuro)
-    std::map<float,pat::Tau> tauMap;
-    for (size_t i = 0; i< tauHandle->size(); ++i) {
-    tauMap[(*tauHandle)[i].pt()]=(*tauHandle)[i];
-    }
-    std::vector<pat::Tau> selected_Taus;
-    for( std::map<float,pat::Tau>::reverse_iterator rit=tauMap.rbegin(); rit!=tauMap.rend(); ++rit){
-    selected_Taus.push_back( (*rit).second );
-    }
-    for (size_t k = 0; k < selected_Taus.size(); ++k) {
-    T_Tau_Px->push_back(selected_Taus[k].px());
-    T_Tau_Py->push_back(selected_Taus[k].py());
-    T_Tau_Pz->push_back(selected_Taus[k].pz());
-    T_Tau_Energy->push_back(selected_Taus[k].energy());
-    T_Tau_Charge->push_back(selected_Taus[k].charge());
-    }
-  */  
+  for (size_t k=0; k<selected_Taus.size(); ++k) {
+
+    T_Tau_Px     -> push_back(selected_Taus[k].px());
+    T_Tau_Py     -> push_back(selected_Taus[k].py());
+    T_Tau_Pz     -> push_back(selected_Taus[k].pz());
+    T_Tau_Energy -> push_back(selected_Taus[k].energy());
+    T_Tau_Charge -> push_back(selected_Taus[k].charge());
+  }
+  */
 
 
-  //*****************ELECTRONS*****************
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Electron variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   T_Elec_Eta  = new std::vector<float>;
   T_Elec_IPwrtAveBS = new std::vector<float>;
   T_Elec_IPwrtPV = new std::vector<float>;
@@ -1789,27 +1888,39 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     
     T_Elec_neutralIsoPFweight->push_back(electron_neutralIsoPFweightR04);
   }
-  
-  
-  
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Jet variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   SetJetInfo(0, jetsPF, vtxs, false);
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // MET variables
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  const pat::METCollection *pMet = patMET.product();
+  const pat::METCollection::const_iterator met = pMet->begin();
+  const pat::MET theMET = *met;
   
+  T_METPF_ET  = theMET.pt();
+  T_METPF_Phi = theMET.phi();
   
-  //******************MET***************
- 
-    const pat::METCollection *pMet = patMET.product();
-    const pat::METCollection::const_iterator met = pMet->begin();
-    const pat::MET theMET = *met;
-  
-   T_METPF_ET = theMET.pt();
-   T_METPF_Phi = theMET.phi();
-  
-  if(!IsRealData){
-    T_METgen_ET = theMET.genMET()->pt();
+  if (!IsRealData) {
+    T_METgen_ET  = theMET.genMET()->pt();
     T_METgen_Phi = theMET.genMET()->phi();
   }
- 
+
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Fil the tree
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Tree->Fill();
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Delete
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   //Gen
 
@@ -2822,9 +2933,7 @@ SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Elec_MVAoutput","std::vector<float>", &T_Elec_MVAoutput);
   
   //Jets
-  //  SetJetBranchAddress(0, "T_JetAK", true);
   SetJetBranchAddress(0, "T_JetAKCHS", true);
-  //  SetJetBranchAddress(2, "T_JetAKPF2PAT", false);
 
   
   
