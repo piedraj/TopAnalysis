@@ -46,7 +46,6 @@ Implementation:
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -115,120 +114,127 @@ private:
   
   EGammaMvaEleEstimatorCSA14* myMVATrig;
 
-  // Event variables
-  bool T_EventF_HBHENoiseFilter,T_EventF_CSCTightHaloFilter;
-  bool T_EventF_hcalLaserEventFilter,T_EventF_EcalDeadCellTriggerPrimitiveFilter;
-  bool T_EventF_goodVertices,T_EventF_trackingFailureFilter,T_EventF_eeBadScFilter,T_EventF_ecalLaserCorrFilter;
-  bool T_EventF_trkPOGFilters,T_EventF_trkPOG_manystripclus53X;
-  bool T_EventF_trkPOG_toomanystripclus53X,T_EventF_trkPOG_logErrorTooManyClusters,T_EventF_METFilters;
+  // MET filters
+  bool T_EventF_HBHENoiseFilter;
+  bool T_EventF_CSCTightHaloFilter;
+  bool T_EventF_hcalLaserEventFilter;
+  bool T_EventF_EcalDeadCellTriggerPrimitiveFilter;
+  bool T_EventF_goodVertices;
+  bool T_EventF_trackingFailureFilter;
+  bool T_EventF_eeBadScFilter;
+  bool T_EventF_ecalLaserCorrFilter;
+  bool T_EventF_trkPOGFilters;
+  bool T_EventF_trkPOG_manystripclus53X;
+  bool T_EventF_trkPOG_toomanystripclus53X;
+  bool T_EventF_trkPOG_logErrorTooManyClusters;
+  bool T_EventF_METFilters;
 
-  int T_Event_RunNumber;
-  int T_Event_EventNumber;
-  int T_Event_LuminosityBlock;
-  int T_Event_processID;
-  int T_Event_nPU;
+  // Event variables
+  int   T_Event_RunNumber;
+  int   T_Event_EventNumber;
+  int   T_Event_LuminosityBlock;
+  int   T_Event_processID;
+  int   T_Event_nPU;
+  int   T_Event_nPUm;
+  int   T_Event_nPUp;
   float T_Event_nTruePU;
-  int T_Event_nPUm;
-  int T_Event_nPUp;
   float T_Event_AveNTruePU;
   float T_Event_Rho;
 
-  //Gen
-
+  // Gen variables
   std::vector<float> *T_Gen_StopMass;
   std::vector<float> *T_Gen_Chi0Mass;
   std::vector<float> *T_Gen_CharginoMass;
 
-
-  std::vector<int> *T_Gen_PromptMuon_pdgId;
+  std::vector<int>   *T_Gen_PromptMuon_pdgId;
   std::vector<float> *T_Gen_PromptMuon_Px;
   std::vector<float> *T_Gen_PromptMuon_Py;
   std::vector<float> *T_Gen_PromptMuon_Pz;
   std::vector<float> *T_Gen_PromptMuon_Energy;
   
-  std::vector<int> *T_Gen_PromptElec_pdgId;
+  std::vector<int>   *T_Gen_PromptElec_pdgId;
   std::vector<float> *T_Gen_PromptElec_Px;
   std::vector<float> *T_Gen_PromptElec_Py;
   std::vector<float> *T_Gen_PromptElec_Pz;
   std::vector<float> *T_Gen_PromptElec_Energy;
   
-  std::vector<int> *T_Gen_Promptb_pdgId;
+  std::vector<int>   *T_Gen_Promptb_pdgId;
   std::vector<float> *T_Gen_Promptb_Px;
   std::vector<float> *T_Gen_Promptb_Py;
   std::vector<float> *T_Gen_Promptb_Pz;
   std::vector<float> *T_Gen_Promptb_Energy;
 
-  std::vector<int> *T_Gen_PromptMuon_MpdgId;
+  std::vector<int>   *T_Gen_PromptMuon_MpdgId;
   std::vector<float> *T_Gen_PromptMuon_MPx;
   std::vector<float> *T_Gen_PromptMuon_MPy;
   std::vector<float> *T_Gen_PromptMuon_MPz;
   std::vector<float> *T_Gen_PromptMuon_MEnergy;
-  std::vector<int> *T_Gen_PromptMuon_MSt;
+  std::vector<int>   *T_Gen_PromptMuon_MSt;
 
-  std::vector<int> *T_Gen_PromptElec_MpdgId;
+  std::vector<int>   *T_Gen_PromptElec_MpdgId;
   std::vector<float> *T_Gen_PromptElec_MPx;
   std::vector<float> *T_Gen_PromptElec_MPy;
   std::vector<float> *T_Gen_PromptElec_MPz;
   std::vector<float> *T_Gen_PromptElec_MEnergy;
-  std::vector<int> *T_Gen_PromptElec_MSt;
+  std::vector<int>   *T_Gen_PromptElec_MSt;
 
-  std::vector<int> *T_Gen_Promptb_MpdgId;
+  std::vector<int>   *T_Gen_Promptb_MpdgId;
   std::vector<float> *T_Gen_Promptb_MPx;
   std::vector<float> *T_Gen_Promptb_MPy;
   std::vector<float> *T_Gen_Promptb_MPz;
   std::vector<float> *T_Gen_Promptb_MEnergy;
-  std::vector<int> *T_Gen_Promptb_MSt;
+  std::vector<int>   *T_Gen_Promptb_MSt;
   
-  std::vector<int> *T_Gen_Muon_pdgId;
+  std::vector<int>   *T_Gen_Muon_pdgId;
   std::vector<float> *T_Gen_Muon_Px;
   std::vector<float> *T_Gen_Muon_Py;
   std::vector<float> *T_Gen_Muon_Pz;
   std::vector<float> *T_Gen_Muon_Energy;
   
-  std::vector<int> *T_Gen_Elec_pdgId;
+  std::vector<int>   *T_Gen_Elec_pdgId;
   std::vector<float> *T_Gen_Elec_Px;
   std::vector<float> *T_Gen_Elec_Py;
   std::vector<float> *T_Gen_Elec_Pz;
   std::vector<float> *T_Gen_Elec_Energy;
  
-  std::vector<int> *T_Gen_FinalMuon_pdgId;
+  std::vector<int>   *T_Gen_FinalMuon_pdgId;
   std::vector<float> *T_Gen_FinalMuon_Px;
   std::vector<float> *T_Gen_FinalMuon_Py;
   std::vector<float> *T_Gen_FinalMuon_Pz;
   std::vector<float> *T_Gen_FinalMuon_Energy;
 
-  std::vector<int> *T_Gen_FinalElec_pdgId;
+  std::vector<int>   *T_Gen_FinalElec_pdgId;
   std::vector<float> *T_Gen_FinalElec_Px;
   std::vector<float> *T_Gen_FinalElec_Py;
   std::vector<float> *T_Gen_FinalElec_Pz;
   std::vector<float> *T_Gen_FinalElec_Energy;
  
-  std::vector<int> *T_Gen_b_pdgId;
+  std::vector<int>   *T_Gen_b_pdgId;
   std::vector<float> *T_Gen_b_Px;
   std::vector<float> *T_Gen_b_Py;
   std::vector<float> *T_Gen_b_Pz;
   std::vector<float> *T_Gen_b_Energy;
 
-  std::vector<int> *T_Gen_Muon_MpdgId;
+  std::vector<int>   *T_Gen_Muon_MpdgId;
   std::vector<float> *T_Gen_Muon_MPx;
   std::vector<float> *T_Gen_Muon_MPy;
   std::vector<float> *T_Gen_Muon_MPz;
   std::vector<float> *T_Gen_Muon_MEnergy;
-  std::vector<int> *T_Gen_Muon_MSt;
+  std::vector<int>   *T_Gen_Muon_MSt;
 
-  std::vector<int> *T_Gen_Elec_MpdgId;
+  std::vector<int>   *T_Gen_Elec_MpdgId;
   std::vector<float> *T_Gen_Elec_MPx;
   std::vector<float> *T_Gen_Elec_MPy;
   std::vector<float> *T_Gen_Elec_MPz;
   std::vector<float> *T_Gen_Elec_MEnergy;
-  std::vector<int> *T_Gen_Elec_MSt;
+  std::vector<int>   *T_Gen_Elec_MSt;
 
-  std::vector<int> *T_Gen_b_MpdgId;
+  std::vector<int>   *T_Gen_b_MpdgId;
   std::vector<float> *T_Gen_b_MPx;
   std::vector<float> *T_Gen_b_MPy;
   std::vector<float> *T_Gen_b_MPz;
   std::vector<float> *T_Gen_b_MEnergy;
-  std::vector<int> *T_Gen_b_MSt;
+  std::vector<int>   *T_Gen_b_MSt;
 
   std::vector<int>   *T_Gen_Stop_pdgId;	
   std::vector<int>   *T_Gen_Stop_MpdgId;
@@ -291,8 +297,8 @@ private:
   std::vector<float> *T_Gen_PromptTau_MPz;
   std::vector<int>   *T_Gen_PromptTau_MSt;
   
-  std::vector<bool> *T_Gen_PromptTau_IsLepDec;
-  std::vector<int> *T_Gen_PromptTau_LepDec_pdgId;
+  std::vector<bool>  *T_Gen_PromptTau_IsLepDec;
+  std::vector<int>   *T_Gen_PromptTau_LepDec_pdgId;
   std::vector<float> *T_Gen_PromptTau_LepDec_Px;
   std::vector<float> *T_Gen_PromptTau_LepDec_Py;
   std::vector<float> *T_Gen_PromptTau_LepDec_Pz;
@@ -310,26 +316,27 @@ private:
   std::vector<float> *T_Gen_Tau_MPz;
   std::vector<int>   *T_Gen_Tau_MSt;
   
-  std::vector<bool> *T_Gen_Tau_IsLepDec;
-  std::vector<int> *T_Gen_Tau_LepDec_pdgId;
+  std::vector<bool>  *T_Gen_Tau_IsLepDec;
+  std::vector<int>   *T_Gen_Tau_LepDec_pdgId;
   std::vector<float> *T_Gen_Tau_LepDec_Px;
   std::vector<float> *T_Gen_Tau_LepDec_Py;
   std::vector<float> *T_Gen_Tau_LepDec_Pz;
   std::vector<float> *T_Gen_Tau_LepDec_Energy;
  
-  //Muons
-  //ID
+  // Muon variables
+  // ID
   std::vector<bool>  *T_Muon_IsGlobalMuon;
   std::vector<bool>  *T_Muon_IsPFMuon;
   std::vector<bool>  *T_Muon_IsTightMuon;
   std::vector<bool>  *T_Muon_IsGMPTMuons;
   std::vector<bool>  *T_Muon_IsAllStandAloneMuons;
-  std::vector<bool>  *T_Muon_IsTMLastStationTight;       // penetration depth Tight selector
-  std::vector<bool>  *T_Muon_IsAllTrackerMuons;          // checks isTrackerMuon flag
-  std::vector<bool>  *T_Muon_IsTrackerMuonArbitrated;    // resolve ambiguity of sharing segments
-  std::vector<bool>  *T_Muon_IsAllArbitrated;            // all muons with the tracker muon arbitrate
+  std::vector<bool>  *T_Muon_IsTMLastStationTight;       // Penetration depth Tight selector
+  std::vector<bool>  *T_Muon_IsAllTrackerMuons;          // Checks isTrackerMuon flag
+  std::vector<bool>  *T_Muon_IsTrackerMuonArbitrated;    // Resolve ambiguity of sharing segments
+  std::vector<bool>  *T_Muon_IsAllArbitrated;            // All muons with the tracker muon arbitrate
   std::vector<bool>  *T_Muon_IsTrackHighPurity;
-  //Kinematic
+
+  // Kinematics
   std::vector<float> *T_Muon_Eta;  
   std::vector<float> *T_Muon_Px;
   std::vector<float> *T_Muon_Py;
@@ -343,7 +350,8 @@ private:
   std::vector<float> *T_Muon_deltaPt;
   std::vector<float> *T_Muon_Energy;
   std::vector<int>   *T_Muon_Charge;
-  //Track info
+
+  // Track info
   std::vector<float> *T_Muon_vz;
   std::vector<float> *T_Muon_vy;
   std::vector<float> *T_Muon_vx;
@@ -367,11 +375,12 @@ private:
   std::vector<float> *T_Muon_dxyInTrack;
   std::vector<float> *T_Muon_dzGTrack;
   std::vector<float> *T_Muon_dzInTrack;
-  std::vector<float> *T_Muon_IPwrtAveBSInTrack;         // dxy w.r.t Beam Spot
+  std::vector<float> *T_Muon_IPwrtAveBSInTrack;
   std::vector<float> *T_Muon_BestTrack_dxy;
   std::vector<float> *T_Muon_BestTrack_dz;
-  std::vector<int>   *T_Muon_fromPV;                    // Association to the first PV. 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
-  //Isolation
+  std::vector<int>   *T_Muon_fromPV;                     // Association to the first PV. 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
+
+  // Isolation
   std::vector<float> *T_Muon_chargedHadronIsoR04;
   std::vector<float> *T_Muon_neutralHadronIsoR04;
   std::vector<float> *T_Muon_neutralIsoPFweightR04;
@@ -389,10 +398,10 @@ private:
       std::vector<float> *T_Tau_Py;
       std::vector<float> *T_Tau_Pz;
       std::vector<float> *T_Tau_Energy;
-      std::vector<int> *T_Tau_Charge;
+      std::vector<int>   *T_Tau_Charge;
   */
 
-  // Vertex
+  // Vertex variables
   std::vector<float> *T_Vertex_x;
   std::vector<float> *T_Vertex_y;
   std::vector<float> *T_Vertex_z;
@@ -402,9 +411,8 @@ private:
   std::vector<bool>  *T_Vertex_isFake;
   std::vector<int>   *T_Vertex_tracksSize;
   std::vector<int>   *T_Vertex_nTracks;
- 
-  
-  //Electrons
+   
+  // Electron variables
   std::vector<float> *T_Elec_Eta;
   std::vector<float> *T_Elec_IPwrtAveBS;
   std::vector<float> *T_Elec_IPwrtPV;
@@ -414,7 +422,7 @@ private:
   std::vector<float> *T_Elec_Pz;
   std::vector<float> *T_Elec_Pt;
   std::vector<float> *T_Elec_Energy;
-  std::vector<int> *T_Elec_Charge;
+  std::vector<int>   *T_Elec_Charge;
   std::vector<float> *T_Elec_puChargedHadronIso;
   std::vector<float> *T_Elec_chargedHadronIso;
   std::vector<float> *T_Elec_neutralHadronIso;
@@ -422,24 +430,24 @@ private:
   std::vector<float> *T_Elec_photonIso;
   std::vector<float> *T_Elec_pfIsoEA03;
 
-  std::vector<bool> *T_Elec_passConversionVeto;
+  std::vector<bool>  *T_Elec_passConversionVeto;
   std::vector<float> *T_Elec_vz;
   std::vector<float> *T_Elec_vy;
   std::vector<float> *T_Elec_vx;
-  std::vector<int> *T_Elec_nLost; 
-  std::vector<int> *T_Elec_nHits;
+  std::vector<int>   *T_Elec_nLost; 
+  std::vector<int>   *T_Elec_nHits;
   std::vector<float> *T_Elec_SC_Et;
   std::vector<float> *T_Elec_SC_Eta;
-  std::vector<int> *T_Elec_nBrems;
+  std::vector<int>   *T_Elec_nBrems;
   std::vector<float> *T_Elec_fBrem;
   std::vector<float> *T_Elec_eSuperClusterOverP;
   std::vector<float> *T_Elec_ecalEnergy;
   std::vector<float> *T_Elec_dr03TkSumPt;
   std::vector<float> *T_Elec_dr03EcalSumEt;
   std::vector<float> *T_Elec_dr03HcalSumEt;
-  std::vector<bool> *T_Elec_isEB;
-  std::vector<bool> *T_Elec_isEE;
-  std::vector<bool> *T_Elec_isPF;
+  std::vector<bool>  *T_Elec_isEB;
+  std::vector<bool>  *T_Elec_isEE;
+  std::vector<bool>  *T_Elec_isPF;
   std::vector<float> *T_Elec_PFElecPt;
   std::vector<float> *T_Elec_PFElecPx;
   std::vector<float> *T_Elec_PFElecPy;
@@ -448,11 +456,11 @@ private:
   std::vector<float> *T_Elec_deltaPhiIn;
   std::vector<float> *T_Elec_deltaEtaIn;
   std::vector<float> *T_Elec_sigmaIetaIeta;
-  std::vector<bool>   *T_Elec_isEcalDriven; 
+  std::vector<bool>  *T_Elec_isEcalDriven; 
   std::vector<float> *T_Elec_HtoE;
   std::vector<float> *T_Elec_MVAoutput;
 
-  //Jets vector
+  // Jet variables
   std::vector<float> *T_Jet_Px[NumberOfJetCollections];
   std::vector<float> *T_Jet_Py[NumberOfJetCollections];
   std::vector<float> *T_Jet_Pz[NumberOfJetCollections];
@@ -474,10 +482,9 @@ private:
   std::vector<float> *T_Jet_Parton_Py[NumberOfJetCollections];
   std::vector<float> *T_Jet_Parton_Pz[NumberOfJetCollections];
   std::vector<float> *T_Jet_Parton_Energy[NumberOfJetCollections];
-  std::vector<int> *T_Jet_Parton_Flavour[NumberOfJetCollections];  
+  std::vector<int>   *T_Jet_Parton_Flavour[NumberOfJetCollections];  
   std::vector<float> *T_Jet_Uncertainty[NumberOfJetCollections];
-  
-  
+    
   std::vector<float> *T_Jet_CharHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_NeutHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharEmEnergyFrac[NumberOfJetCollections]; 
@@ -486,11 +493,11 @@ private:
   std::vector<float> *T_Jet_NeutHadEnergy[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharEmEnergy[NumberOfJetCollections]; 
   std::vector<float> *T_Jet_NeutEmEnergy[NumberOfJetCollections];
-  std::vector<int> *T_Jet_MuonMultiplicity[NumberOfJetCollections];
-  std::vector<int> *T_Jet_NeutralMultiplicity[NumberOfJetCollections];
-  std::vector<int> *T_Jet_ChargedMultiplicity[NumberOfJetCollections];
-  std::vector<bool> *T_Jet_IDLoose[NumberOfJetCollections];
-  std::vector<int> *T_Jet_nDaughters[NumberOfJetCollections];
+  std::vector<int>   *T_Jet_MuonMultiplicity[NumberOfJetCollections];
+  std::vector<int>   *T_Jet_NeutralMultiplicity[NumberOfJetCollections];
+  std::vector<int>   *T_Jet_ChargedMultiplicity[NumberOfJetCollections];
+  std::vector<bool>  *T_Jet_IDLoose[NumberOfJetCollections];
+  std::vector<int>   *T_Jet_nDaughters[NumberOfJetCollections];
  
   std::vector<float> *T_Jet_GenJet_InvisibleE[NumberOfJetCollections];
   std::vector<float> *T_Jet_GenJet_Px[NumberOfJetCollections];
@@ -499,17 +506,13 @@ private:
   std::vector<float> *T_Jet_GenJet_Eta[NumberOfJetCollections];
   std::vector<float> *T_Jet_GenJet_Et[NumberOfJetCollections];
   std::vector<float> *T_Jet_GenJet_Energy[NumberOfJetCollections];
-  std::vector<bool> *T_Jet_IsGenJet[NumberOfJetCollections];      
+  std::vector<bool>  *T_Jet_IsGenJet[NumberOfJetCollections];      
 
-  
-  //MET 
+  // MET 
   float T_METPF_ET;
   float T_METPF_Phi;
   float T_METgen_ET;
   float T_METgen_Phi;
-  
-  //HLT
-  bool T_HLT_Mu_vx;
 };
 
 //
@@ -524,8 +527,8 @@ private:
 // constructors and destructor
 //
 
+
 SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
-//  theHistosFileName(iConfig.getUntrackedParameter<string>("histosFileName")),
   muoLabel_(iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
   jetPFLabel_(iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
   metLabel_(iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
@@ -535,24 +538,23 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
   tauLabel_(iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
   pfLabel_(iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
 {
- //CSA14 EleMVAID
-   std::vector<std::string> myManualCatWeigths;
-     myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
-       myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EE_BDT.weights.xml");
+  // CSA14 EleMVAID
+  std::vector<std::string> myManualCatWeigths;
+  myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
+  myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EE_BDT.weights.xml");
  
-         vector<string> myManualCatWeigthsTrig;
-           string the_path;
-              for (unsigned i = 0 ; i < myManualCatWeigths.size() ; i++){
-                      the_path = edm::FileInPath ( myManualCatWeigths[i] ).fullPath();
-                              myManualCatWeigthsTrig.push_back(the_path);
-                                      }
-                                        myMVATrig = new EGammaMvaEleEstimatorCSA14();
-                                          myMVATrig->initialize("BDT",
-                                            EGammaMvaEleEstimatorCSA14::kTrig,
-                                                    true,
-                                                            myManualCatWeigthsTrig);
- 
+  vector<string> myManualCatWeigthsTrig;
+  string the_path;
+  for (unsigned i=0; i<myManualCatWeigths.size(); i++) {
+    the_path = edm::FileInPath(myManualCatWeigths[i]).fullPath();
+    myManualCatWeigthsTrig.push_back(the_path);
+  }
 
+  myMVATrig = new EGammaMvaEleEstimatorCSA14();
+  myMVATrig->initialize("BDT",
+			EGammaMvaEleEstimatorCSA14::kTrig,
+			true,
+			myManualCatWeigthsTrig);
 }
 
 
@@ -560,24 +562,18 @@ SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
 {}
 
 
-
 void
 SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  
-  //{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
-  // first: get all objects from the event.
-  //{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
-
-  //for the moment decide if is real data if collection of gen particles is found
+  // Decide that it is real data if the genParticles collection is not found
   IsRealData = false;
   edm::Handle <reco::GenParticleCollection> genParticles;
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
-    //I need to call genParticles size to forze the exception
+    // I need to call genParticles size to forze the exception
     int aux = genParticles->size();
-    //to avoid warnings I add the line aux = 0
-    aux = 0+aux;
+    // To avoid warnings I add the line aux = 0
+    aux = 0 + aux;
   }
   catch(...) {IsRealData = true;} 
 
@@ -595,153 +591,103 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   iEvent.getByLabel(pfLabel_, pfHandle);
 
   edm::Handle<edm::View<pat::Jet> > jetPFHandle;
-  iEvent.getByLabel(jetPFLabel_,jetPFHandle);
+  iEvent.getByLabel(jetPFLabel_, jetPFHandle);
   edm::View<pat::Jet> jetsPF = *jetPFHandle;
 
-   edm::Handle<pat::METCollection> patMET;
-  iEvent.getByLabel(metLabel_,patMET);
+  edm::Handle<pat::METCollection> patMET;
+  iEvent.getByLabel(metLabel_, patMET);
 
   edm::Handle<VertexCollection> vertex;
-  iEvent.getByLabel(PVLabel_,vertex);
+  iEvent.getByLabel(PVLabel_, vertex);
   const reco::VertexCollection& vtxs = *(vertex.product());
 
-  
-  //Events
-  EventID eventID = iEvent.id();
-  T_Event_EventNumber = eventID.event();
-  //cout<<"T_Event_EventNumber: "<<T_Event_EventNumber<<endl;
-  T_Event_RunNumber = eventID.run();
-  T_Event_LuminosityBlock = iEvent.luminosityBlock();  
 
-  T_Event_nPU =-1;
-  T_Event_nPUp=-1;
-  T_Event_nPUm=-1;
-  T_Event_AveNTruePU=-1.;
-  float truePu=0.;
-  if(!IsRealData){
+  // Event variables
+  T_Event_EventNumber     = iEvent.id().event();
+  T_Event_RunNumber       = iEvent.id().run();
+  T_Event_LuminosityBlock = iEvent.luminosityBlock();
+
+  T_Event_nPU        = -1;
+  T_Event_nPUp       = -1;
+  T_Event_nPUm       = -1;
+  T_Event_AveNTruePU = -1.;
+
+  if (!IsRealData) {
+
+    float truePu = 0.;
+
     Handle<std::vector< PileupSummaryInfo > > puInfo;
     try {
-      iEvent.getByLabel("addPileupInfo",puInfo);
+      iEvent.getByLabel("addPileupInfo", puInfo);
       std::vector<PileupSummaryInfo>::const_iterator PVI;
-      //The in-time crossing is getBunchCrossing = 0; negative ones are early, positive ones are late.
-      for(PVI = puInfo->begin(); PVI != puInfo->end(); ++PVI) {
 
-	//    std::cout << " Pileup Information: bunchXing, nvtx: " << PVI->getBunchCrossing() << " " << PVI->getPU_NumInteractions() << std::endl;
-	if(PVI->getBunchCrossing()==0){
-	  T_Event_nPU =PVI->getPU_NumInteractions();
-	  T_Event_nTruePU=PVI->getTrueNumInteractions();
+      // The in-time crossing is getBunchCrossing = 0; negative ones are early, positive ones are late.
+      for (PVI=puInfo->begin(); PVI!=puInfo->end(); ++PVI) {
 
+	truePu += PVI->getTrueNumInteractions();
+
+	if (PVI->getBunchCrossing() == 0) {
+	  T_Event_nPU     = PVI->getPU_NumInteractions();
+	  T_Event_nTruePU = PVI->getTrueNumInteractions();
 	}
-
-	else if(PVI->getBunchCrossing()==-1){
-	  T_Event_nPUm=PVI->getPU_NumInteractions();
+	else if (PVI->getBunchCrossing() == -1) {
+	  T_Event_nPUm = PVI->getPU_NumInteractions();
 	}
-	else if(PVI->getBunchCrossing()==1){
+	else if (PVI->getBunchCrossing() == 1) {
 	  T_Event_nPUp=PVI->getPU_NumInteractions();
 	}
-	truePu += PVI->getTrueNumInteractions();
       }
     } catch (...) {}
 	
+    T_Event_AveNTruePU = truePu / 3.;
   }
-  T_Event_AveNTruePU=truePu/3.;
 
 
-     
-  //Rho 
+  // Rho 
   edm::Handle<double> rhoH;
-  iEvent.getByLabel(edm::InputTag("fixedGridRhoAll"),rhoH);
+  iEvent.getByLabel(edm::InputTag("fixedGridRhoAll"), rhoH);
   T_Event_Rho=*rhoH; 
-  
 
-  //MET filters result
- T_EventF_HBHENoiseFilter=false;
- T_EventF_CSCTightHaloFilter=false;
- T_EventF_hcalLaserEventFilter=false;
- T_EventF_EcalDeadCellTriggerPrimitiveFilter=false;
- T_EventF_goodVertices=false;
- T_EventF_trackingFailureFilter=false;
- T_EventF_eeBadScFilter=false;
- T_EventF_ecalLaserCorrFilter=false;
- T_EventF_trkPOGFilters=false;
- T_EventF_trkPOG_manystripclus53X=false;
- T_EventF_trkPOG_toomanystripclus53X=false;
- T_EventF_trkPOG_logErrorTooManyClusters=false;
- T_EventF_METFilters=false;
 
+  // MET filters result
+  T_EventF_HBHENoiseFilter                    = false;
+  T_EventF_CSCTightHaloFilter                 = false;
+  T_EventF_hcalLaserEventFilter               = false;
+  T_EventF_EcalDeadCellTriggerPrimitiveFilter = false;
+  T_EventF_goodVertices                       = false;
+  T_EventF_trackingFailureFilter              = false;
+  T_EventF_eeBadScFilter                      = false;
+  T_EventF_ecalLaserCorrFilter                = false;
+  T_EventF_trkPOGFilters                      = false;
+  T_EventF_trkPOG_manystripclus53X            = false;
+  T_EventF_trkPOG_toomanystripclus53X         = false;
+  T_EventF_trkPOG_logErrorTooManyClusters     = false;
+  T_EventF_METFilters                         = false;
   
   try {
     edm::Handle<edm::TriggerResults> metFilters;
-
     iEvent.getByLabel("TriggerResults::PAT", metFilters);
 
     const edm::TriggerNames &names = iEvent.triggerNames(*metFilters);
-//    std::cout << "\n === MET Filters === " << std::endl;
-    for (unsigned int i = 0, n = metFilters->size(); i < n; ++i) {
-//        std::cout << "Trigger " << names.triggerName(i) << 
-//                ", prescale " << triggerPrescales->getPrescaleForIndex(i) <<
-//                ": " << (triggerBits->accept(i) ? "PASS" : "fail (or not run)") 
-//                << std::endl;
-   if (names.triggerName(i) == "HBHENoiseFilter") {
-      if (metFilters.product()->accept(i)) T_EventF_HBHENoiseFilter = true;}
 
-   if (names.triggerName(i) == "CSCTightHaloFilter") {
-      if (metFilters.product()->accept(i))  T_EventF_CSCTightHaloFilter= true;}
+    for (unsigned int i=0, n=metFilters->size(); i<n; ++i) {
 
-   if (names.triggerName(i) == "hcalLaserEventFilter") {
-      if (metFilters.product()->accept(i))  T_EventF_hcalLaserEventFilter= true;}
-
-   if (names.triggerName(i) == "EcalDeadCellTriggerPrimitiveFilter") {
-      if (metFilters.product()->accept(i))  T_EventF_EcalDeadCellTriggerPrimitiveFilter= true;}
-
-   if (names.triggerName(i) == "goodVertices") {
-      if (metFilters.product()->accept(i))  T_EventF_goodVertices= true;}
-
-   if (names.triggerName(i) == "trackingFailureFilter") {
-      if (metFilters.product()->accept(i))  T_EventF_trackingFailureFilter= true;}
-
-   if (names.triggerName(i) == "eeBadScFilter") {
-      if (metFilters.product()->accept(i))  T_EventF_eeBadScFilter= true;}
-
-   if (names.triggerName(i) == "ecalLaserCorrFilter") {
-      if (metFilters.product()->accept(i))   T_EventF_ecalLaserCorrFilter= true;}
-
-   if (names.triggerName(i) == "trkPOGFilters") {
-      if (metFilters.product()->accept(i))   T_EventF_trkPOGFilters= true;}
-
-//and the sub-filters
-   if (names.triggerName(i) == "manystripclus53X") {
-      if (metFilters.product()->accept(i))   T_EventF_trkPOG_manystripclus53X= true;}
-
-   if (names.triggerName(i) == "toomanystripclus53X") {
-      if (metFilters.product()->accept(i))   T_EventF_trkPOG_toomanystripclus53X= true;}
-
-   if (names.triggerName(i) == "logErrorTooManyClusters") {
-      if (metFilters.product()->accept(i))   T_EventF_trkPOG_logErrorTooManyClusters = true;}
-
-// summary
-   if (names.triggerName(i) == "METFilters") {
-      if (metFilters.product()->accept(i)) T_EventF_METFilters= true;}
-  }
+      if (names.triggerName(i) == "HBHENoiseFilter"                    && metFilters.product()->accept(i)) T_EventF_HBHENoiseFilter                    = true;
+      if (names.triggerName(i) == "CSCTightHaloFilter"                 && metFilters.product()->accept(i)) T_EventF_CSCTightHaloFilter                 = true;
+      if (names.triggerName(i) == "hcalLaserEventFilter"               && metFilters.product()->accept(i)) T_EventF_hcalLaserEventFilter               = true;
+      if (names.triggerName(i) == "EcalDeadCellTriggerPrimitiveFilter" && metFilters.product()->accept(i)) T_EventF_EcalDeadCellTriggerPrimitiveFilter = true;
+      if (names.triggerName(i) == "goodVertices"                       && metFilters.product()->accept(i)) T_EventF_goodVertices                       = true;
+      if (names.triggerName(i) == "trackingFailureFilter"              && metFilters.product()->accept(i)) T_EventF_trackingFailureFilter              = true;
+      if (names.triggerName(i) == "eeBadScFilter"                      && metFilters.product()->accept(i)) T_EventF_eeBadScFilter                      = true;
+      if (names.triggerName(i) == "ecalLaserCorrFilter"                && metFilters.product()->accept(i)) T_EventF_ecalLaserCorrFilter                = true;
+      if (names.triggerName(i) == "trkPOGFilters"                      && metFilters.product()->accept(i)) T_EventF_trkPOGFilters                      = true;
+      if (names.triggerName(i) == "manystripclus53X"                   && metFilters.product()->accept(i)) T_EventF_trkPOG_manystripclus53X            = true;
+      if (names.triggerName(i) == "toomanystripclus53X"                && metFilters.product()->accept(i)) T_EventF_trkPOG_toomanystripclus53X         = true;
+      if (names.triggerName(i) == "logErrorTooManyClusters"            && metFilters.product()->accept(i)) T_EventF_trkPOG_logErrorTooManyClusters     = true;
+      if (names.triggerName(i) == "METFilters"                         && metFilters.product()->accept(i)) T_EventF_METFilters                         = true;
+    }
   } catch(...) {;} 
-  //HLT
 
-  Handle<TriggerResults> trh;
-  try {iEvent.getByLabel(trigLabel_,trh);
-    unsigned int aux = trh.product()->size();
-    aux = 0 + aux;
-  } catch(...) {;}
-//  const edm::TriggerNames &triggerNames_=iEvent.triggerNames(*trh);
-
-//    T_HLT_Mu_vx=false;
-
-//  for (unsigned int i= 0; i < trh.product()->size(); ++i) { 
-    /*
-      if (triggerNames_.triggerName(i) == "HLT_Mu_vx") {
-      if (trh.product()->accept(i)) T_HLT_Mu_vx = true;
-      }*/
-
-//  } // loop in i
 
   //  if(!IsRealData){
   //Gen
@@ -1304,12 +1250,30 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       T_Vertex_rho       ->push_back(vtxs[i].position().Rho());
       T_Vertex_isFake    ->push_back(vtxs[i].isFake());
       T_Vertex_tracksSize->push_back(vtxs[i].tracksSize());      
-      T_Vertex_nTracks   ->push_back(vtxs[i].nTracks());      
+      T_Vertex_nTracks   ->push_back(vtxs[i].nTracks());
     }
   } 
-  
-  
-  
+
+
+  // TEST
+  //~~~~~~
+  //  int   ntrack_fromPV = 0;
+  //  float ntrack_ndof   = -1;
+  //
+  //  for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
+  //
+  //    const pat::PackedCandidate &pfi = (*pfHandle)[i];
+  //
+  //    if (pfi.fromPV() >= 3) ntrack_fromPV++;
+  //  }
+  //
+  //  if (vtxs.size() != 0) ntrack_ndof = (vtxs[0].ndof() + 3.) / 2.;
+  //
+  //  printf("ntrack_fromPV: %d, \t ntrack_ndof: %.1f\n", ntrack_fromPV, ntrack_ndof);
+  //~~~~~~
+  // TEST
+
+
   //********************MUONS*******************
   T_Muon_Eta = new std::vector<float>;
   T_Muon_IsGlobalMuon = new std::vector<bool>;
@@ -2145,8 +2109,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   /*  delete T_Tau_Px;
       delete T_Tau_Py;
       delete T_Tau_Pz;
-      delete T_Tau_Energy ;
-      delete T_Tau_Charge ;
+      delete T_Tau_Energy;
+      delete T_Tau_Charge;
   */
 
   //***************Jets***********
@@ -2367,9 +2331,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx, edm::View<pat::Jet> JET, const reco:
     }
    
     if(!IsRealData){
-//         std::cout<<"GenJet"<<endl;
   try{    const reco::GenJet * mygenJet=jet_iter->genJet();
-//      std::cout<<"No way"<<endl;
     
       if (mygenJet != 0) {
 	T_Jet_IsGenJet[idx]->push_back(true);
@@ -2511,8 +2473,6 @@ void
 SUSYSkimToTreeTFS::beginJob()
 {
   edm::Service<TFileService> fs;
- // theHistosFile = new TFile(theHistosFileName.c_str(), "RECREATE");
- // theHistosFile->cd();
   
   Tree = fs->make<TTree>("Tree","Tree",0);
   //Events
@@ -2538,13 +2498,11 @@ SUSYSkimToTreeTFS::beginJob()
   //  }
   
   Tree->Branch("T_Event_nPU", &T_Event_nPU, "T_Event_nPU/I");
-  Tree->Branch("T_Event_nTruePU", &T_Event_nTruePU, "T_Event_nTruePU/F");
   Tree->Branch("T_Event_nPUm", &T_Event_nPUm, "T_Event_nPUm/I");
   Tree->Branch("T_Event_nPUp", &T_Event_nPUp, "T_Event_nPUp/I");
+  Tree->Branch("T_Event_nTruePU", &T_Event_nTruePU, "T_Event_nTruePU/F");
   Tree->Branch("T_Event_AveNTruePU", &T_Event_AveNTruePU, "T_Event_AveNTruePU/F"); 
 
-  //HLT
-  //Tree->Branch("T_HLT_Mu_vx", &T_HLT_Mu_vx, "T_HLT_Mu_vx/O");
 
   //  if(!IsRealData){
   //Gen 

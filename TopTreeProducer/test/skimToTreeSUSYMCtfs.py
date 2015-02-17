@@ -53,16 +53,15 @@ process.TFileService = cms.Service("TFileService",
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
-process.p = cms.Path(process.preYieldFilter*process.demo)
+#process.p = cms.Path(process.preYieldFilter*process.demo)
 # No skim
-#process.p = cms.Path(process.demo)
+process.p = cms.Path(process.demo)
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU30bx50_PHYS14_25_V1-v1/00000/003B6371-8D81-E411-8467-003048F0E826.root')
-
-process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/CMSSW_projects/CMSSW_7_2_0/src/0CBDD8C3-B67F-E411-9AFA-0025901D4764.root')
+#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/CMSSW_projects/CMSSW_7_2_0/src/0CBDD8C3-B67F-E411-9AFA-0025901D4764.root')
+process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/325BE5B9-AAA6-E411-8371-001E673972E2.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
