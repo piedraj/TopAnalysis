@@ -34,7 +34,7 @@ Do a test run
 ====
 
     cmsenv
-    voms-proxy-init
+    voms-proxy-init -voms cms
 
     cd TopTreeProducer/test
     cmsRun skimToTreeSUSYMCtfs.py
@@ -45,7 +45,7 @@ CRAB3
 
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
-    voms-proxy-init
+    voms-proxy-init -voms cms
 
     cd TopTreeProducer/test/
     crab submit -c crabConfig.py
