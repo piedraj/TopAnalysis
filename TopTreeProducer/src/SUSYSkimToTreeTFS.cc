@@ -333,16 +333,17 @@ private:
   std::vector<bool>  *T_Vertex_isFake;
   std::vector<int>   *T_Vertex_tracksSize;
   std::vector<int>   *T_Vertex_nTracks;
+  std::vector<bool>  *T_Vertex_isGood;
 
   // Muon variables
   // ID
-  std::vector<bool>  *T_Muon_IsGlobalMuon;
-  std::vector<bool>  *T_Muon_IsPFMuon;
   std::vector<bool>  *T_Muon_IsTightMuon;
+  std::vector<bool>  *T_Muon_IsPFMuon;
+  std::vector<bool>  *T_Muon_IsGlobalMuon;
+  std::vector<bool>  *T_Muon_IsTrackerMuon;
+  std::vector<bool>  *T_Muon_IsStandAloneMuon;             
   std::vector<bool>  *T_Muon_IsGMPTMuons;
-  std::vector<bool>  *T_Muon_IsAllStandAloneMuons;
   std::vector<bool>  *T_Muon_IsTMLastStationTight;       // Penetration depth Tight selector
-  std::vector<bool>  *T_Muon_IsAllTrackerMuons;          // Checks isTrackerMuon flag
   std::vector<bool>  *T_Muon_IsTrackerMuonArbitrated;    // Resolve ambiguity of sharing segments
   std::vector<bool>  *T_Muon_IsAllArbitrated;            // All muons with the tracker muon arbitrate
   std::vector<bool>  *T_Muon_IsTrackHighPurity;
@@ -1290,10 +1291,29 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Vertex_rho        = new std::vector<float>;
   T_Vertex_isFake     = new std::vector<bool>;
   T_Vertex_tracksSize = new std::vector<int>; 
-  T_Vertex_nTracks    = new std::vector<int>; 
+  T_Vertex_nTracks    = new std::vector<int>;
+  T_Vertex_isGood     = new std::vector<bool>;
+
+  int FirstGoodVertex = -999;
   
+  //Loop over vertices
+
   if (vtxs.size() != 0) {
     for (size_t i=0; i<vtxs.size(); i++) {
+
+      bool isGoodVertex  = false;
+
+      if ( fabs(vtxs[i].z())        < 24 &&
+	   vtxs[i].position().Rho() < 2  &&
+	   vtxs[i].ndof()           > 4  &&
+	   !(vtxs[i].isFake())              ) {
+
+	isGoodVertex = true;
+
+	if (FirstGoodVertex == -999) FirstGoodVertex = i;
+
+      }
+
       T_Vertex_x          -> push_back(vtxs[i].x());
       T_Vertex_y          -> push_back(vtxs[i].y());
       T_Vertex_z          -> push_back(vtxs[i].z());
@@ -1303,6 +1323,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       T_Vertex_isFake     -> push_back(vtxs[i].isFake());
       T_Vertex_tracksSize -> push_back(vtxs[i].tracksSize());      
       T_Vertex_nTracks    -> push_back(vtxs[i].nTracks());
+      T_Vertex_isGood     -> push_back(isGoodVertex);
     }
   } 
 
@@ -1330,13 +1351,13 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // Muon variables
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // ID
-  T_Muon_IsGlobalMuon            = new std::vector<bool>;
-  T_Muon_IsPFMuon                = new std::vector<bool>;
   T_Muon_IsTightMuon             = new std::vector<bool>;
+  T_Muon_IsPFMuon                = new std::vector<bool>;
+  T_Muon_IsGlobalMuon            = new std::vector<bool>;
+  T_Muon_IsTrackerMuon           = new std::vector<bool>;
+  T_Muon_IsStandAloneMuon        = new std::vector<bool>;
   T_Muon_IsGMPTMuons             = new std::vector<bool>;
-  T_Muon_IsAllStandAloneMuons    = new std::vector<bool>;
   T_Muon_IsTMLastStationTight    = new std::vector<bool>; 
-  T_Muon_IsAllTrackerMuons       = new std::vector<bool>;
   T_Muon_IsTrackerMuonArbitrated = new std::vector<bool>;
   T_Muon_IsAllArbitrated         = new std::vector<bool>;
   T_Muon_IsTrackHighPurity       = new std::vector<bool>;
@@ -1423,8 +1444,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       normchi2 = selected_muons[k].globalTrack()->normalizedChi2();
 
       if (vtxs.size() > 0) {
-	IP = selected_muons[k].globalTrack()->dxy(vtxs[0].position());
-	dZ = selected_muons[k].globalTrack()->dz(vtxs[0].position());
+	IP = selected_muons[k].globalTrack()->dxy(vtxs[FirstGoodVertex].position());
+	dZ = selected_muons[k].globalTrack()->dz(vtxs[FirstGoodVertex].position());
       }
     }
 
@@ -1450,8 +1471,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       deltaPt           = selected_muons[k].innerTrack()->ptError();
 
       if (vtxs.size() > 0) {
-	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[0].position());
-	dZIn = selected_muons[k].innerTrack()->dz(vtxs[0].position());
+	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[FirstGoodVertex].position());
+	dZIn = selected_muons[k].innerTrack()->dz(vtxs[FirstGoodVertex].position());
       }
     }
 
@@ -1479,8 +1500,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       besttrack_Phi = selected_muons[k].muonBestTrack()->phi();
 
       if (vtxs.size() > 0) {
-	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[0].position());
-	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[0].position());
+	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[FirstGoodVertex].position());
+	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[FirstGoodVertex].position());
       }
     }
 
@@ -1499,7 +1520,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
     bool isTightMuon = false;
     if (vtxs.size() > 0) {
-      isTightMuon = selected_muons[k].isTightMuon(vtxs[0]);
+      isTightMuon = selected_muons[k].isTightMuon(vtxs[FirstGoodVertex]);
     }
 
 
@@ -1592,13 +1613,13 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 
     // ID
-    T_Muon_IsGlobalMuon            -> push_back(selected_muons[k].isGlobalMuon());
-    T_Muon_IsPFMuon                -> push_back(selected_muons[k].isPFMuon());
     T_Muon_IsTightMuon             -> push_back(isTightMuon);
+    T_Muon_IsPFMuon                -> push_back(selected_muons[k].isPFMuon());
+    T_Muon_IsGlobalMuon            -> push_back(selected_muons[k].isGlobalMuon());
+    T_Muon_IsTrackerMuon           -> push_back(selected_muons[k].isTrackerMuon());
+    T_Muon_IsStandAloneMuon        -> push_back(selected_muons[k].isStandAloneMuon());
     T_Muon_IsGMPTMuons             -> push_back(selected_muons[k].muonID("GlobalMuonPromptTight"));
-    T_Muon_IsAllStandAloneMuons    -> push_back(selected_muons[k].muonID("AllStandAloneMuons"));
     T_Muon_IsTMLastStationTight    -> push_back(selected_muons[k].muonID("TMLastStationTight"));
-    T_Muon_IsAllTrackerMuons       -> push_back(selected_muons[k].muonID("AllTrackerMuons"));
     T_Muon_IsTrackerMuonArbitrated -> push_back(selected_muons[k].muonID("TrackerMuonArbitrated"));
     T_Muon_IsAllArbitrated         -> push_back(selected_muons[k].muonID("AllArbitrated"));
     T_Muon_IsTrackHighPurity       -> push_back(muon_trackHighPurity);
@@ -2096,15 +2117,16 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Vertex_isFake; 
   delete T_Vertex_tracksSize;
   delete T_Vertex_nTracks;
+  delete T_Vertex_isGood;
 
   // Muon variables
   delete T_Muon_Eta;
   delete T_Muon_IsGlobalMuon;
   delete T_Muon_IsGMPTMuons;
-  delete T_Muon_IsAllTrackerMuons;
+  delete T_Muon_IsTrackerMuon;
   delete T_Muon_IsTrackerMuonArbitrated;
   delete T_Muon_IsAllArbitrated;
-  delete T_Muon_IsAllStandAloneMuons;
+  delete T_Muon_IsStandAloneMuon;
   delete T_Muon_IsTMLastStationTight;
   delete T_Muon_Px;
   delete T_Muon_Py;
@@ -2784,16 +2806,27 @@ void SUSYSkimToTreeTFS::beginJob()
     Tree->Branch("T_Gen_Tau_LepDec_Energy", "std::vector<float>", &T_Gen_Tau_LepDec_Energy);
   }
 
+  // Vertex
+  Tree->Branch("T_Vertex_x",          "std::vector<float>", &T_Vertex_x);
+  Tree->Branch("T_Vertex_y",          "std::vector<float>", &T_Vertex_y);
+  Tree->Branch("T_Vertex_z",          "std::vector<float>", &T_Vertex_z);
+  Tree->Branch("T_Vertex_Chi2Prob",   "std::vector<float>", &T_Vertex_Chi2Prob);
+  Tree->Branch("T_Vertex_ndof",       "std::vector<float>", &T_Vertex_ndof);
+  Tree->Branch("T_Vertex_rho",        "std::vector<float>", &T_Vertex_rho);
+  Tree->Branch("T_Vertex_isFake",     "std::vector<bool>",  &T_Vertex_isFake);
+  Tree->Branch("T_Vertex_tracksSize", "std::vector<int>",   &T_Vertex_tracksSize);
+  Tree->Branch("T_Vertex_nTracks",    "std::vector<int>",   &T_Vertex_nTracks);
+  Tree->Branch("T_Vertex_isGood",     "std::vector<bool>",  &T_Vertex_isGood);
 
   // Muons
-  Tree->Branch("T_Muon_IsGlobalMuon",            "std::vector<bool>", &T_Muon_IsGlobalMuon);
-  Tree->Branch("T_Muon_IsPFMuon",                "std::vector<bool>", &T_Muon_IsPFMuon);
   Tree->Branch("T_Muon_IsTightMuon",             "std::vector<bool>", &T_Muon_IsTightMuon);
-  Tree->Branch("T_Muon_IsAllTrackerMuons",       "std::vector<bool>", &T_Muon_IsAllTrackerMuons);
+  Tree->Branch("T_Muon_IsPFMuon",                "std::vector<bool>", &T_Muon_IsPFMuon);
+  Tree->Branch("T_Muon_IsGlobalMuon",            "std::vector<bool>", &T_Muon_IsGlobalMuon);
+  Tree->Branch("T_Muon_IsTrackerMuon",           "std::vector<bool>", &T_Muon_IsTrackerMuon);
+  Tree->Branch("T_Muon_IsStandAloneMuon",        "std::vector<bool>", &T_Muon_IsStandAloneMuon);
   Tree->Branch("T_Muon_IsTrackerMuonArbitrated", "std::vector<bool>", &T_Muon_IsTrackerMuonArbitrated);
   Tree->Branch("T_Muon_IsAllArbitrated",         "std::vector<bool>", &T_Muon_IsAllArbitrated);
   Tree->Branch("T_Muon_IsGMPTMuons",             "std::vector<bool>", &T_Muon_IsGMPTMuons);
-  Tree->Branch("T_Muon_IsAllStandAloneMuons",    "std::vector<bool>", &T_Muon_IsAllStandAloneMuons);
   Tree->Branch("T_Muon_IsTMLastStationTight",    "std::vector<bool>", &T_Muon_IsTMLastStationTight);
   Tree->Branch("T_Muon_IsTrackHighPurity",       "std::vector<bool>", &T_Muon_IsTrackHighPurity);
  
@@ -2857,17 +2890,6 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Tau_Pz",     "std::vector<float>", &T_Tau_Pz);
   Tree->Branch("T_Tau_Energy", "std::vector<float>", &T_Tau_Energy);
   Tree->Branch("T_Tau_Charge", "std::vector<int>",   &T_Tau_Charge);
-  
-  // Vertex
-  Tree->Branch("T_Vertex_x",          "std::vector<float>", &T_Vertex_x);
-  Tree->Branch("T_Vertex_y",          "std::vector<float>", &T_Vertex_y);
-  Tree->Branch("T_Vertex_z",          "std::vector<float>", &T_Vertex_z);
-  Tree->Branch("T_Vertex_Chi2Prob",   "std::vector<float>", &T_Vertex_Chi2Prob);
-  Tree->Branch("T_Vertex_ndof",       "std::vector<float>", &T_Vertex_ndof);
-  Tree->Branch("T_Vertex_rho",        "std::vector<float>", &T_Vertex_rho);
-  Tree->Branch("T_Vertex_isFake",     "std::vector<bool>",  &T_Vertex_isFake);
-  Tree->Branch("T_Vertex_tracksSize", "std::vector<int>",   &T_Vertex_tracksSize);
-  Tree->Branch("T_Vertex_nTracks",    "std::vector<int>",   &T_Vertex_nTracks);
 
   // Electrons  
   Tree->Branch("T_Elec_Eta", "std::vector<float>", &T_Elec_Eta);
