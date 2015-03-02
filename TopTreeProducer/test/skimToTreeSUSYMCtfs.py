@@ -53,9 +53,9 @@ process.TFileService = cms.Service("TFileService",
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
-#process.p = cms.Path(process.preYieldFilter*process.demo)
+process.p = cms.Path(process.preYieldFilter*process.demo)
 # No skim
-process.p = cms.Path(process.demo)
+#process.p = cms.Path(process.demo)
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))

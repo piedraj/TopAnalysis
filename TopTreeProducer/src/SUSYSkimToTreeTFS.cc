@@ -375,7 +375,7 @@ private:
 
   std::vector<float> *T_Muon_NormChi2GTrk;
   std::vector<float> *T_Muon_Chi2InTrk;
-  std::vector<float> *T_Muon_StaTrkMatchChi2;            // Chi2 of matching STA-TK tracks
+  std::vector<float> *T_Muon_StaTrkMatchChi2;
   std::vector<float> *T_Muon_dofInTrk;
   std::vector<int>   *T_Muon_NValidHitsInTrk;
   std::vector<int>   *T_Muon_NValidPixelHitsInTrk;
@@ -391,8 +391,7 @@ private:
   std::vector<float> *T_Muon_dzGTrack;
   std::vector<float> *T_Muon_dzInTrack;
   std::vector<float> *T_Muon_IPwrtAveBSInTrack;
-  std::vector<int>   *T_Muon_fromPV;                     // Association to the first PV. 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
-
+  std::vector<int>   *T_Muon_fromPV;
 
   // Isolation
   std::vector<float> *T_Muon_chargedHadronIsoR04;
@@ -407,7 +406,7 @@ private:
   std::vector<float> *T_Muon_photonIsoR03;
   std::vector<float> *T_Muon_sumPUPtR03;
 
-  // Tau
+  // Tau variables
   std::vector<float> *T_Tau_Px;
   std::vector<float> *T_Tau_Py;
   std::vector<float> *T_Tau_Pz;
@@ -510,7 +509,7 @@ private:
   std::vector<float> *T_Jet_GenJet_Energy[NumberOfJetCollections];
   std::vector<bool>  *T_Jet_IsGenJet[NumberOfJetCollections];      
 
-  // MET 
+  // MET variables
   float T_METPF_ET;
   float T_METPF_Phi;
   float T_METgen_ET;
@@ -531,14 +530,14 @@ private:
 
 
 SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
-  muoLabel_(iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
+  muoLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
   jetPFLabel_(iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
-  metLabel_(iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
-  PVLabel_(iConfig.getUntrackedParameter<edm::InputTag>("PVTag")),
-  trigLabel_(iConfig.getUntrackedParameter<edm::InputTag>("trigTag")),
-  elecLabel_(iConfig.getUntrackedParameter<edm::InputTag>("electronTag")),
-  tauLabel_(iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
-  pfLabel_(iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
+  metLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
+  PVLabel_   (iConfig.getUntrackedParameter<edm::InputTag>("PVTag")),
+  trigLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("trigTag")),
+  elecLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("electronTag")),
+  tauLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
+  pfLabel_   (iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
 {
   // CSA14 EleMVAID
   std::vector<std::string> myManualCatWeigths;
@@ -1296,8 +1295,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
   int FirstGoodVertex = -999;
   
-  //Loop over vertices
-
+  // Loop over vertices
   if (vtxs.size() != 0) {
     for (size_t i=0; i<vtxs.size(); i++) {
 
@@ -1311,7 +1309,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	isGoodVertex = true;
 
 	if (FirstGoodVertex < 0) FirstGoodVertex = i;
-
       }
 
       T_Vertex_x          -> push_back(vtxs[i].x());
@@ -1545,7 +1542,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       // PF candidate-based footprint removal
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
 
-	muon_fromPV          = pf.fromPV();
+	muon_fromPV          = pf.fromPV();  // 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
 	muon_trackHighPurity = pf.trackHighPurity();
 
 	continue;
@@ -1650,7 +1647,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     T_Muon_vz                   -> push_back(selected_muons[k].vz());
     T_Muon_NormChi2GTrk         -> push_back(normchi2);
     T_Muon_Chi2InTrk            -> push_back(chi2innertracker);
-    T_Muon_StaTrkMatchChi2      -> push_back(selected_muons[k].combinedQuality().staRelChi2);
+    T_Muon_StaTrkMatchChi2      -> push_back(selected_muons[k].combinedQuality().staRelChi2);  // Chi2 of matching STA-TK tracks
     T_Muon_dofInTrk             -> push_back(dofinnertracker);
     T_Muon_NValidHitsInTrk      -> push_back(nhitsinnertracker);
     T_Muon_NValidPixelHitsInTrk -> push_back(pixelHits);
