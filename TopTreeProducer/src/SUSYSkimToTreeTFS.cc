@@ -1310,7 +1310,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 	isGoodVertex = true;
 
-	if (FirstGoodVertex == -999) FirstGoodVertex = i;
+	if (FirstGoodVertex < 0) FirstGoodVertex = i;
 
       }
 
@@ -1443,7 +1443,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     
       normchi2 = selected_muons[k].globalTrack()->normalizedChi2();
 
-      if (vtxs.size() > 0) {
+      if (FirstGoodVertex > -1) {
 	IP = selected_muons[k].globalTrack()->dxy(vtxs[FirstGoodVertex].position());
 	dZ = selected_muons[k].globalTrack()->dz(vtxs[FirstGoodVertex].position());
       }
@@ -1470,7 +1470,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       dofinnertracker   = selected_muons[k].innerTrack()->ndof();
       deltaPt           = selected_muons[k].innerTrack()->ptError();
 
-      if (vtxs.size() > 0) {
+      if (FirstGoodVertex > -1) {
 	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[FirstGoodVertex].position());
 	dZIn = selected_muons[k].innerTrack()->dz(vtxs[FirstGoodVertex].position());
       }
@@ -1499,7 +1499,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       besttrack_Pt  = selected_muons[k].muonBestTrack()->pt();
       besttrack_Phi = selected_muons[k].muonBestTrack()->phi();
 
-      if (vtxs.size() > 0) {
+      if (FirstGoodVertex > -1) {
 	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[FirstGoodVertex].position());
 	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[FirstGoodVertex].position());
       }
@@ -1519,7 +1519,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     }
 
     bool isTightMuon = false;
-    if (vtxs.size() > 0) {
+    if (FirstGoodVertex > -1) {
       isTightMuon = selected_muons[k].isTightMuon(vtxs[FirstGoodVertex]);
     }
 
