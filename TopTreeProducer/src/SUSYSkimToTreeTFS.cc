@@ -1325,25 +1325,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   } 
 
 
-  // TEST
-  //~~~~~~
-  //  int   ntrack_fromPV = 0;
-  //  float ntrack_ndof   = -1;
-  //
-  //  for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
-  //
-  //    const pat::PackedCandidate &pfi = (*pfHandle)[i];
-  //
-  //    if (pfi.fromPV() >= 3) ntrack_fromPV++;
-  //  }
-  //
-  //  if (vtxs.size() != 0) ntrack_ndof = (vtxs[0].ndof() + 3.) / 2.;
-  //
-  //  printf("ntrack_fromPV: %d, \t ntrack_ndof: %.1f\n", ntrack_fromPV, ntrack_ndof);
-  //~~~~~~
-  // TEST
-
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Muon variables
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
