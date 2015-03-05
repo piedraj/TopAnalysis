@@ -33,10 +33,10 @@ Go to the master repository (https://github.com/piedraj/TopAnalysis) and click *
 Do a test run
 ====
 
+    cd CMSSW_7_2_0/src
     cmsenv
     scram b -j 10
     voms-proxy-init -voms cms
-
     cd TopTreeProducer/test
     cmsRun skimToTreeSUSYMCtfs.py
 
@@ -44,10 +44,10 @@ Do a test run
 CRAB3
 ====
 
+    cd CMSSW_7_2_0/src/TopTreeProducer/test
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
     voms-proxy-init -voms cms
-
     cd TopTreeProducer/test/
     crab submit -c crabConfig.py
     crab status --dir crab_TTJets_PU30bx50
