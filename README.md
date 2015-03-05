@@ -20,20 +20,21 @@ Now we can choose our favorite CMSSW release.
     cmsenv
 
 
-Get the material and compile it
+It is time to get the material
 ====
 
-    git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
-    git clone https://github.com/piedraj/TopAnalysis.git TopAnalysis
-    mkdir TopAnalysis/TopTreeProducer/interface
+Go to the master repository (https://github.com/piedraj/TopAnalysis) and click **Fork** in the top-right corner of the page. Now get the code in your working area.
 
-    scram b -j 10
+    git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
+    git clone https://github.com/YOUR-USERNAME/TopAnalysis.git TopAnalysis
+    mkdir TopAnalysis/TopTreeProducer/interface
 
 
 Do a test run
 ====
 
     cmsenv
+    scram b -j 10
     voms-proxy-init -voms cms
 
     cd TopTreeProducer/test
@@ -65,4 +66,6 @@ And then commit your changes.
     git add <filepattern>
     git commit -m 'Modified'
     git push origin master
+
+If the changes have been made in a fork of the master, go to https://github.com/YOUR-USERNAME/TopAnalysis.git and click **Pull Request**.
 
