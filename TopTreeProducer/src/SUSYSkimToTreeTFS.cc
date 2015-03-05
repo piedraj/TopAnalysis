@@ -1,4 +1,4 @@
-// 
+//
 // Package:  SUSYSkimToTreeTFS
 // Class:    SUSYSkimToTreeTFS
 // 
@@ -424,11 +424,15 @@ private:
   std::vector<float> *T_Elec_Pt;
   std::vector<float> *T_Elec_Energy;
   std::vector<int>   *T_Elec_Charge;
-  std::vector<float> *T_Elec_puChargedHadronIso;
   std::vector<float> *T_Elec_chargedHadronIso;
   std::vector<float> *T_Elec_neutralHadronIso;
   std::vector<float> *T_Elec_neutralIsoPFweight;
   std::vector<float> *T_Elec_photonIso;
+  std::vector<float> *T_Elec_puChargedHadronIso;
+  std::vector<float> *T_Elec_sumChargedHadronPt;
+  std::vector<float> *T_Elec_sumNeutralHadronEt;
+  std::vector<float> *T_Elec_sumPhotonEt;
+  std::vector<float> *T_Elec_sumPUPt;
   std::vector<float> *T_Elec_pfIsoEA03;
 
   std::vector<bool>  *T_Elec_passConversionVeto;
@@ -1732,6 +1736,10 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Elec_neutralIsoPFweight    = new std::vector<float>;
   T_Elec_photonIso             = new std::vector<float>;
   T_Elec_puChargedHadronIso    = new std::vector<float>;
+  T_Elec_sumChargedHadronPt    = new std::vector<float>;
+  T_Elec_sumNeutralHadronEt    = new std::vector<float>;
+  T_Elec_sumPhotonEt           = new std::vector<float>;
+  T_Elec_sumPUPt               = new std::vector<float>;
   T_Elec_isPF                  = new std::vector<bool>;
   T_Elec_PFElecPt              = new std::vector<float>;
   T_Elec_PFElecPx              = new std::vector<float>;
@@ -1769,64 +1777,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       nHits = trRef_elec->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
       nLost = trRef_elec->numberOfLostHits(); 
     }
-
-    T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
-    T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
-    T_Elec_IPwrtPV               -> push_back(IP); 
-    T_Elec_dzwrtPV               -> push_back(dz); 
-    T_Elec_Px                    -> push_back(selected_electrons[k].px());
-    T_Elec_Py                    -> push_back(selected_electrons[k].py());
-    T_Elec_Pz                    -> push_back(selected_electrons[k].pz());
-    T_Elec_Pt                    -> push_back(selected_electrons[k].pt());
-    T_Elec_Energy                -> push_back(selected_electrons[k].energy());
-    T_Elec_Charge                -> push_back(selected_electrons[k].charge());
-    T_Elec_nBrems                -> push_back(selected_electrons[k].numberOfBrems());
-    T_Elec_fBrem                 -> push_back(selected_electrons[k].fbrem());
-    T_Elec_eSuperClusterOverP    -> push_back(selected_electrons[k].eSuperClusterOverP());
-    T_Elec_ecalEnergy            -> push_back(selected_electrons[k].ecalEnergy());
-    T_Elec_dr03TkSumPt           -> push_back(selected_electrons[k].dr03TkSumPt());
-    T_Elec_dr03EcalSumEt         -> push_back(selected_electrons[k].dr03EcalRecHitSumEt());
-    T_Elec_dr03HcalSumEt         -> push_back(selected_electrons[k].dr03HcalTowerSumEt());
-    T_Elec_vz                    -> push_back(selected_electrons[k].vz());
-    T_Elec_vy                    -> push_back(selected_electrons[k].vy());
-    T_Elec_vx                    -> push_back(selected_electrons[k].vx());	
-    T_Elec_nLost                 -> push_back(nLost); 
-    T_Elec_nHits                 -> push_back(nHits);
-    T_Elec_SC_Et                 -> push_back(selected_electrons[k].superCluster()->energy()/TMath::CosH(selected_electrons[k].superCluster()->eta()));
-    T_Elec_SC_Eta                -> push_back(selected_electrons[k].superCluster()->eta());
-    T_Elec_chargedHadronIso      -> push_back(selected_electrons[k].chargedHadronIso());
-    T_Elec_neutralHadronIso      -> push_back(selected_electrons[k].neutralHadronIso());
-    T_Elec_photonIso             -> push_back(selected_electrons[k].photonIso());
-    T_Elec_puChargedHadronIso    -> push_back(selected_electrons[k].puChargedHadronIso());
-    T_Elec_passConversionVeto    -> push_back(selected_electrons[k].passConversionVeto());
-    T_Elec_sigmaIetaIeta         -> push_back(selected_electrons[k].sigmaIetaIeta());
-    T_Elec_sigmaIetaIetaFull5by5 -> push_back(selected_electrons[k].full5x5_sigmaIetaIeta());
-    T_Elec_deltaPhiIn            -> push_back(selected_electrons[k].deltaPhiSuperClusterTrackAtVtx());
-    T_Elec_deltaEtaIn            -> push_back(selected_electrons[k].deltaEtaSuperClusterTrackAtVtx());
-    T_Elec_isEcalDriven          -> push_back(selected_electrons[k].ecalDrivenSeed());
-    T_Elec_HtoE                  -> push_back(selected_electrons[k].hadronicOverEm());
-    T_Elec_isEB                  -> push_back(selected_electrons[k].isEB());
-    T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
-    T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
-    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
-
-    reco::GsfElectron::P4Kind pf = reco::GsfElectron::P4_PFLOW_COMBINATION;
-
-    if (selected_electrons[k].isPF()) {
-      T_Elec_PFElecPt -> push_back(selected_electrons[k].p4(pf).pt());
-      T_Elec_PFElecPx -> push_back(selected_electrons[k].p4(pf).px());
-      T_Elec_PFElecPy -> push_back(selected_electrons[k].p4(pf).py());
-      T_Elec_PFElecPz -> push_back(selected_electrons[k].p4(pf).pz());
-      T_Elec_PFElecE  -> push_back(selected_electrons[k].p4(pf).E());
-    }
-    else {
-      T_Elec_PFElecPt -> push_back(-99999.);
-      T_Elec_PFElecPx -> push_back(-99999.);
-      T_Elec_PFElecPy -> push_back(-99999.);
-      T_Elec_PFElecPz -> push_back(-99999.);
-      T_Elec_PFElecE  -> push_back(-99999.);
-    }
-
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double electron_neutralIsoPFweightR04 = 0;
@@ -1879,8 +1829,68 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	}
       }
     }
-    
-    T_Elec_neutralIsoPFweight->push_back(electron_neutralIsoPFweightR04);
+
+    T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
+    T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
+    T_Elec_IPwrtPV               -> push_back(IP); 
+    T_Elec_dzwrtPV               -> push_back(dz); 
+    T_Elec_Px                    -> push_back(selected_electrons[k].px());
+    T_Elec_Py                    -> push_back(selected_electrons[k].py());
+    T_Elec_Pz                    -> push_back(selected_electrons[k].pz());
+    T_Elec_Pt                    -> push_back(selected_electrons[k].pt());
+    T_Elec_Energy                -> push_back(selected_electrons[k].energy());
+    T_Elec_Charge                -> push_back(selected_electrons[k].charge());
+    T_Elec_nBrems                -> push_back(selected_electrons[k].numberOfBrems());
+    T_Elec_fBrem                 -> push_back(selected_electrons[k].fbrem());
+    T_Elec_eSuperClusterOverP    -> push_back(selected_electrons[k].eSuperClusterOverP());
+    T_Elec_ecalEnergy            -> push_back(selected_electrons[k].ecalEnergy());
+    T_Elec_dr03TkSumPt           -> push_back(selected_electrons[k].dr03TkSumPt());
+    T_Elec_dr03EcalSumEt         -> push_back(selected_electrons[k].dr03EcalRecHitSumEt());
+    T_Elec_dr03HcalSumEt         -> push_back(selected_electrons[k].dr03HcalTowerSumEt());
+    T_Elec_vz                    -> push_back(selected_electrons[k].vz());
+    T_Elec_vy                    -> push_back(selected_electrons[k].vy());
+    T_Elec_vx                    -> push_back(selected_electrons[k].vx());	
+    T_Elec_nLost                 -> push_back(nLost); 
+    T_Elec_nHits                 -> push_back(nHits);
+    T_Elec_SC_Et                 -> push_back(selected_electrons[k].superCluster()->energy()/TMath::CosH(selected_electrons[k].superCluster()->eta()));
+    T_Elec_SC_Eta                -> push_back(selected_electrons[k].superCluster()->eta());
+    T_Elec_chargedHadronIso      -> push_back(selected_electrons[k].chargedHadronIso());
+    T_Elec_neutralHadronIso      -> push_back(selected_electrons[k].neutralHadronIso());
+    T_Elec_neutralIsoPFweight    -> push_back(electron_neutralIsoPFweightR04);
+    T_Elec_photonIso             -> push_back(selected_electrons[k].photonIso());
+    T_Elec_puChargedHadronIso    -> push_back(selected_electrons[k].puChargedHadronIso());
+    T_Elec_sumChargedHadronPt    -> push_back(selected_electrons[k].pfIsolationVariables().sumChargedHadronPt);
+    T_Elec_sumNeutralHadronEt    -> push_back(selected_electrons[k].pfIsolationVariables().sumNeutralHadronEt);
+    T_Elec_sumPhotonEt           -> push_back(selected_electrons[k].pfIsolationVariables().sumPhotonEt);
+    T_Elec_sumPUPt               -> push_back(selected_electrons[k].pfIsolationVariables().sumPUPt);
+    T_Elec_passConversionVeto    -> push_back(selected_electrons[k].passConversionVeto());
+    T_Elec_sigmaIetaIeta         -> push_back(selected_electrons[k].sigmaIetaIeta());
+    T_Elec_sigmaIetaIetaFull5by5 -> push_back(selected_electrons[k].full5x5_sigmaIetaIeta());
+    T_Elec_deltaPhiIn            -> push_back(selected_electrons[k].deltaPhiSuperClusterTrackAtVtx());
+    T_Elec_deltaEtaIn            -> push_back(selected_electrons[k].deltaEtaSuperClusterTrackAtVtx());
+    T_Elec_isEcalDriven          -> push_back(selected_electrons[k].ecalDrivenSeed());
+    T_Elec_HtoE                  -> push_back(selected_electrons[k].hadronicOverEm());
+    T_Elec_isEB                  -> push_back(selected_electrons[k].isEB());
+    T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
+    T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
+    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
+
+    reco::GsfElectron::P4Kind pf = reco::GsfElectron::P4_PFLOW_COMBINATION;
+
+    if (selected_electrons[k].isPF()) {
+      T_Elec_PFElecPt -> push_back(selected_electrons[k].p4(pf).pt());
+      T_Elec_PFElecPx -> push_back(selected_electrons[k].p4(pf).px());
+      T_Elec_PFElecPy -> push_back(selected_electrons[k].p4(pf).py());
+      T_Elec_PFElecPz -> push_back(selected_electrons[k].p4(pf).pz());
+      T_Elec_PFElecE  -> push_back(selected_electrons[k].p4(pf).E());
+    }
+    else {
+      T_Elec_PFElecPt -> push_back(-99999.);
+      T_Elec_PFElecPx -> push_back(-99999.);
+      T_Elec_PFElecPy -> push_back(-99999.);
+      T_Elec_PFElecPz -> push_back(-99999.);
+      T_Elec_PFElecE  -> push_back(-99999.);
+    }
   }
 
 
@@ -2201,6 +2211,10 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Elec_neutralIsoPFweight;
   delete T_Elec_photonIso;
   delete T_Elec_puChargedHadronIso;
+  delete T_Elec_sumChargedHadronPt;
+  delete T_Elec_sumNeutralHadronEt;
+  delete T_Elec_sumPhotonEt;
+  delete T_Elec_sumPUPt;
   delete T_Elec_passConversionVeto;
   delete T_Elec_PFElecPt;
   delete T_Elec_PFElecPx;
@@ -2893,6 +2907,10 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Elec_neutralIsoPFweight", "std::vector<float>", &T_Elec_neutralIsoPFweight);
   Tree->Branch("T_Elec_photonIso",          "std::vector<float>", &T_Elec_photonIso);
   Tree->Branch("T_Elec_puChargedHadronIso", "std::vector<float>", &T_Elec_puChargedHadronIso);
+  Tree->Branch("T_Elec_sumChargedHadronPt", "std::vector<float>", &T_Elec_sumChargedHadronPt);
+  Tree->Branch("T_Elec_sumNeutralHadronEt", "std::vector<float>", &T_Elec_sumNeutralHadronEt);
+  Tree->Branch("T_Elec_sumPhotonEt",        "std::vector<float>", &T_Elec_sumPhotonEt);
+  Tree->Branch("T_Elec_sumPUPt",            "std::vector<float>", &T_Elec_sumPUPt);
   Tree->Branch("T_Elec_passConversionVeto", "std::vector<bool>",  &T_Elec_passConversionVeto);
     
   Tree->Branch("T_Elec_sigmaIetaIeta",         "std::vector<float>", &T_Elec_sigmaIetaIeta);
