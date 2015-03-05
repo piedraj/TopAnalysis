@@ -457,6 +457,7 @@ private:
   std::vector<float> *T_Elec_deltaPhiIn;
   std::vector<float> *T_Elec_deltaEtaIn;
   std::vector<float> *T_Elec_sigmaIetaIeta;
+  std::vector<float> *T_Elec_sigmaIetaIetaFull5by5;
   std::vector<bool>  *T_Elec_isEcalDriven; 
   std::vector<float> *T_Elec_HtoE;
   std::vector<float> *T_Elec_MVAoutput;
@@ -823,12 +824,12 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Gen_Nu_eta    = new std::vector<float>;	
   T_Gen_Nu_phi    = new std::vector<float>;      
 
-  T_Gen_Z_pdgId = new std::vector<int>;	
+  T_Gen_Z_pdgId  = new std::vector<int>;	
   T_Gen_Z_MpdgId = new std::vector<int>;
   T_Gen_Z_energy = new std::vector<float>;   
-  T_Gen_Z_pt = new std::vector<float>;	
-  T_Gen_Z_eta = new std::vector<float>;	
-  T_Gen_Z_phi = new std::vector<float>;      
+  T_Gen_Z_pt     = new std::vector<float>;	
+  T_Gen_Z_eta    = new std::vector<float>;	
+  T_Gen_Z_phi    = new std::vector<float>;      
 
   T_Gen_W_pdgId  = new std::vector<int>;	
   T_Gen_W_MpdgId = new std::vector<int>;
@@ -1693,50 +1694,51 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Electron variables
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  T_Elec_Eta                = new std::vector<float>;
-  T_Elec_IPwrtAveBS         = new std::vector<float>;
-  T_Elec_IPwrtPV            = new std::vector<float>;
-  T_Elec_dzwrtPV            = new std::vector<float>;
-  T_Elec_Px                 = new std::vector<float>;
-  T_Elec_Py                 = new std::vector<float>;
-  T_Elec_Pz                 = new std::vector<float>;
-  T_Elec_Pt                 = new std::vector<float>;
-  T_Elec_Energy             = new std::vector<float>;
-  T_Elec_Charge             = new std::vector<int>;
-  T_Elec_vz                 = new std::vector<float>;
-  T_Elec_vy                 = new std::vector<float>;  
-  T_Elec_vx                 = new std::vector<float>;
-  T_Elec_nLost              = new std::vector<int>; 
-  T_Elec_nHits              = new std::vector<int>;
-  T_Elec_SC_Et              = new std::vector<float>;
-  T_Elec_SC_Eta             = new std::vector<float>; 
-  T_Elec_nBrems             = new std::vector<int>;
-  T_Elec_fBrem              = new std::vector<float>;
-  T_Elec_eSuperClusterOverP = new std::vector<float>;
-  T_Elec_ecalEnergy         = new std::vector<float>;
-  T_Elec_dr03TkSumPt        = new std::vector<float>; 
-  T_Elec_dr03EcalSumEt      = new std::vector<float>; 
-  T_Elec_dr03HcalSumEt      = new std::vector<float>; 
-  T_Elec_passConversionVeto = new std::vector<bool>;
-  T_Elec_isEB               = new std::vector<bool>;
-  T_Elec_isEE               = new std::vector<bool>;
-  T_Elec_sigmaIetaIeta      = new std::vector<float>;
-  T_Elec_deltaPhiIn         = new std::vector<float>;
-  T_Elec_deltaEtaIn         = new std::vector<float>;
-  T_Elec_isEcalDriven       = new std::vector<bool>;
-  T_Elec_HtoE               = new std::vector<float>;
-  T_Elec_chargedHadronIso   = new std::vector<float>;
-  T_Elec_neutralHadronIso   = new std::vector<float>;
-  T_Elec_neutralIsoPFweight = new std::vector<float>;
-  T_Elec_photonIso          = new std::vector<float>;
-  T_Elec_puChargedHadronIso = new std::vector<float>;
-  T_Elec_isPF               = new std::vector<bool>;
-  T_Elec_PFElecPt           = new std::vector<float>;
-  T_Elec_PFElecPx           = new std::vector<float>;
-  T_Elec_PFElecPy           = new std::vector<float>;
-  T_Elec_PFElecPz           = new std::vector<float>;
-  T_Elec_PFElecE            = new std::vector<float>;
-  T_Elec_MVAoutput          = new std::vector<float>;
+  T_Elec_Eta                   = new std::vector<float>;
+  T_Elec_IPwrtAveBS            = new std::vector<float>;
+  T_Elec_IPwrtPV               = new std::vector<float>;
+  T_Elec_dzwrtPV               = new std::vector<float>;
+  T_Elec_Px                    = new std::vector<float>;
+  T_Elec_Py                    = new std::vector<float>;
+  T_Elec_Pz                    = new std::vector<float>;
+  T_Elec_Pt                    = new std::vector<float>;
+  T_Elec_Energy                = new std::vector<float>;
+  T_Elec_Charge                = new std::vector<int>;
+  T_Elec_vz                    = new std::vector<float>;
+  T_Elec_vy                    = new std::vector<float>;  
+  T_Elec_vx                    = new std::vector<float>;
+  T_Elec_nLost                 = new std::vector<int>; 
+  T_Elec_nHits                 = new std::vector<int>;
+  T_Elec_SC_Et                 = new std::vector<float>;
+  T_Elec_SC_Eta                = new std::vector<float>; 
+  T_Elec_nBrems                = new std::vector<int>;
+  T_Elec_fBrem                 = new std::vector<float>;
+  T_Elec_eSuperClusterOverP    = new std::vector<float>;
+  T_Elec_ecalEnergy            = new std::vector<float>;
+  T_Elec_dr03TkSumPt           = new std::vector<float>; 
+  T_Elec_dr03EcalSumEt         = new std::vector<float>; 
+  T_Elec_dr03HcalSumEt         = new std::vector<float>; 
+  T_Elec_passConversionVeto    = new std::vector<bool>;
+  T_Elec_isEB                  = new std::vector<bool>;
+  T_Elec_isEE                  = new std::vector<bool>;
+  T_Elec_sigmaIetaIeta         = new std::vector<float>;
+  T_Elec_sigmaIetaIetaFull5by5 = new std::vector<float>;
+  T_Elec_deltaPhiIn            = new std::vector<float>;
+  T_Elec_deltaEtaIn            = new std::vector<float>;
+  T_Elec_isEcalDriven          = new std::vector<bool>;
+  T_Elec_HtoE                  = new std::vector<float>;
+  T_Elec_chargedHadronIso      = new std::vector<float>;
+  T_Elec_neutralHadronIso      = new std::vector<float>;
+  T_Elec_neutralIsoPFweight    = new std::vector<float>;
+  T_Elec_photonIso             = new std::vector<float>;
+  T_Elec_puChargedHadronIso    = new std::vector<float>;
+  T_Elec_isPF                  = new std::vector<bool>;
+  T_Elec_PFElecPt              = new std::vector<float>;
+  T_Elec_PFElecPx              = new std::vector<float>;
+  T_Elec_PFElecPy              = new std::vector<float>;
+  T_Elec_PFElecPz              = new std::vector<float>;
+  T_Elec_PFElecE               = new std::vector<float>;
+  T_Elec_MVAoutput             = new std::vector<float>;
 
   std::map<float,pat::Electron> electronMap;
   for (size_t j=0; j<electronHandle->size(); ++j) {
@@ -1768,44 +1770,45 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       nLost = trRef_elec->numberOfLostHits(); 
     }
 
-    T_Elec_Eta                -> push_back(selected_electrons[k].eta());
-    T_Elec_IPwrtAveBS         -> push_back(selected_electrons[k].dB());
-    T_Elec_IPwrtPV            -> push_back(IP); 
-    T_Elec_dzwrtPV            -> push_back(dz); 
-    T_Elec_Px                 -> push_back(selected_electrons[k].px());
-    T_Elec_Py                 -> push_back(selected_electrons[k].py());
-    T_Elec_Pz                 -> push_back(selected_electrons[k].pz());
-    T_Elec_Pt                 -> push_back(selected_electrons[k].pt());
-    T_Elec_Energy             -> push_back(selected_electrons[k].energy());
-    T_Elec_Charge             -> push_back(selected_electrons[k].charge());
-    T_Elec_nBrems             -> push_back(selected_electrons[k].numberOfBrems());
-    T_Elec_fBrem              -> push_back(selected_electrons[k].fbrem());
-    T_Elec_eSuperClusterOverP -> push_back(selected_electrons[k].eSuperClusterOverP());
-    T_Elec_ecalEnergy         -> push_back(selected_electrons[k].ecalEnergy());
-    T_Elec_dr03TkSumPt        -> push_back(selected_electrons[k].dr03TkSumPt());
-    T_Elec_dr03EcalSumEt      -> push_back(selected_electrons[k].dr03EcalRecHitSumEt());
-    T_Elec_dr03HcalSumEt      -> push_back(selected_electrons[k].dr03HcalTowerSumEt());
-    T_Elec_vz                 -> push_back(selected_electrons[k].vz());
-    T_Elec_vy                 -> push_back(selected_electrons[k].vy());
-    T_Elec_vx                 -> push_back(selected_electrons[k].vx());	
-    T_Elec_nLost              -> push_back(nLost); 
-    T_Elec_nHits              -> push_back(nHits);
-    T_Elec_SC_Et              -> push_back(selected_electrons[k].superCluster()->energy()/TMath::CosH(selected_electrons[k].superCluster()->eta()));
-    T_Elec_SC_Eta             -> push_back(selected_electrons[k].superCluster()->eta());
-    T_Elec_chargedHadronIso   -> push_back(selected_electrons[k].chargedHadronIso());
-    T_Elec_neutralHadronIso   -> push_back(selected_electrons[k].neutralHadronIso());
-    T_Elec_photonIso          -> push_back(selected_electrons[k].photonIso());
-    T_Elec_puChargedHadronIso -> push_back(selected_electrons[k].puChargedHadronIso());
-    T_Elec_passConversionVeto -> push_back(selected_electrons[k].passConversionVeto());
-    T_Elec_sigmaIetaIeta      -> push_back(selected_electrons[k].sigmaIetaIeta());
-    T_Elec_deltaPhiIn         -> push_back(selected_electrons[k].deltaPhiSuperClusterTrackAtVtx());
-    T_Elec_deltaEtaIn         -> push_back(selected_electrons[k].deltaEtaSuperClusterTrackAtVtx());
-    T_Elec_isEcalDriven       -> push_back(selected_electrons[k].ecalDrivenSeed());
-    T_Elec_HtoE               -> push_back(selected_electrons[k].hadronicOverEm());
-    T_Elec_isEB               -> push_back(selected_electrons[k].isEB());
-    T_Elec_isEE               -> push_back(selected_electrons[k].isEE());
-    T_Elec_isPF               -> push_back(selected_electrons[k].isPF());
-    T_Elec_MVAoutput          -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
+    T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
+    T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
+    T_Elec_IPwrtPV               -> push_back(IP); 
+    T_Elec_dzwrtPV               -> push_back(dz); 
+    T_Elec_Px                    -> push_back(selected_electrons[k].px());
+    T_Elec_Py                    -> push_back(selected_electrons[k].py());
+    T_Elec_Pz                    -> push_back(selected_electrons[k].pz());
+    T_Elec_Pt                    -> push_back(selected_electrons[k].pt());
+    T_Elec_Energy                -> push_back(selected_electrons[k].energy());
+    T_Elec_Charge                -> push_back(selected_electrons[k].charge());
+    T_Elec_nBrems                -> push_back(selected_electrons[k].numberOfBrems());
+    T_Elec_fBrem                 -> push_back(selected_electrons[k].fbrem());
+    T_Elec_eSuperClusterOverP    -> push_back(selected_electrons[k].eSuperClusterOverP());
+    T_Elec_ecalEnergy            -> push_back(selected_electrons[k].ecalEnergy());
+    T_Elec_dr03TkSumPt           -> push_back(selected_electrons[k].dr03TkSumPt());
+    T_Elec_dr03EcalSumEt         -> push_back(selected_electrons[k].dr03EcalRecHitSumEt());
+    T_Elec_dr03HcalSumEt         -> push_back(selected_electrons[k].dr03HcalTowerSumEt());
+    T_Elec_vz                    -> push_back(selected_electrons[k].vz());
+    T_Elec_vy                    -> push_back(selected_electrons[k].vy());
+    T_Elec_vx                    -> push_back(selected_electrons[k].vx());	
+    T_Elec_nLost                 -> push_back(nLost); 
+    T_Elec_nHits                 -> push_back(nHits);
+    T_Elec_SC_Et                 -> push_back(selected_electrons[k].superCluster()->energy()/TMath::CosH(selected_electrons[k].superCluster()->eta()));
+    T_Elec_SC_Eta                -> push_back(selected_electrons[k].superCluster()->eta());
+    T_Elec_chargedHadronIso      -> push_back(selected_electrons[k].chargedHadronIso());
+    T_Elec_neutralHadronIso      -> push_back(selected_electrons[k].neutralHadronIso());
+    T_Elec_photonIso             -> push_back(selected_electrons[k].photonIso());
+    T_Elec_puChargedHadronIso    -> push_back(selected_electrons[k].puChargedHadronIso());
+    T_Elec_passConversionVeto    -> push_back(selected_electrons[k].passConversionVeto());
+    T_Elec_sigmaIetaIeta         -> push_back(selected_electrons[k].sigmaIetaIeta());
+    T_Elec_sigmaIetaIetaFull5by5 -> push_back(selected_electrons[k].full5x5_sigmaIetaIeta());
+    T_Elec_deltaPhiIn            -> push_back(selected_electrons[k].deltaPhiSuperClusterTrackAtVtx());
+    T_Elec_deltaEtaIn            -> push_back(selected_electrons[k].deltaEtaSuperClusterTrackAtVtx());
+    T_Elec_isEcalDriven          -> push_back(selected_electrons[k].ecalDrivenSeed());
+    T_Elec_HtoE                  -> push_back(selected_electrons[k].hadronicOverEm());
+    T_Elec_isEB                  -> push_back(selected_electrons[k].isEB());
+    T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
+    T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
+    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
 
     reco::GsfElectron::P4Kind pf = reco::GsfElectron::P4_PFLOW_COMBINATION;
 
@@ -2188,6 +2191,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Elec_isEB;
   delete T_Elec_isEE;
   delete T_Elec_sigmaIetaIeta;
+  delete T_Elec_sigmaIetaIetaFull5by5;
   delete T_Elec_deltaPhiIn;
   delete T_Elec_deltaEtaIn;
   delete T_Elec_isEcalDriven;
@@ -2272,52 +2276,52 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 				   const reco::VertexCollection& vtxs,
 				   bool calojet)
 {
-  T_Jet_Px[idx] = new std::vector<float>;
-  T_Jet_Py[idx] = new std::vector<float>;
-  T_Jet_Pz[idx] = new std::vector<float>;
-  T_Jet_Et[idx] = new std::vector<float>;
-  T_Jet_Eta[idx] = new std::vector<float>;
-  T_Jet_Corr[idx] = new std::vector<float>;
-  T_Jet_Energy[idx] = new std::vector<float>;
-  T_Jet_Parton_Px[idx] = new std::vector<float>;
-  T_Jet_Parton_Py[idx] = new std::vector<float>;
-  T_Jet_Parton_Pz[idx] = new std::vector<float>;
-  T_Jet_Parton_Energy[idx] = new std::vector<float>;
-  T_Jet_Parton_Flavour[idx] = new std::vector<int>;
-  T_Jet_Tag_HighEffTC[idx] = new std::vector<float>;
+  T_Jet_Px[idx]                      = new std::vector<float>;
+  T_Jet_Py[idx]                      = new std::vector<float>;
+  T_Jet_Pz[idx]                      = new std::vector<float>;
+  T_Jet_Et[idx]                      = new std::vector<float>;
+  T_Jet_Eta[idx]                     = new std::vector<float>;
+  T_Jet_Corr[idx]                    = new std::vector<float>;
+  T_Jet_Energy[idx]                  = new std::vector<float>;
+  T_Jet_Parton_Px[idx]               = new std::vector<float>;
+  T_Jet_Parton_Py[idx]               = new std::vector<float>;
+  T_Jet_Parton_Pz[idx]               = new std::vector<float>;
+  T_Jet_Parton_Energy[idx]           = new std::vector<float>;
+  T_Jet_Parton_Flavour[idx]          = new std::vector<int>;
+  T_Jet_Tag_HighEffTC[idx]           = new std::vector<float>;
   T_Jet_Tag_CombInclusiveSVtxV2[idx] = new std::vector<float>;
-  T_Jet_Tag_CombMVA[idx] = new std::vector<float>;
-  T_Jet_Tag_CombSVtx[idx] = new std::vector<float>;
-  T_Jet_Tag_pfCombinedSVtx[idx] = new std::vector<float>;
-  T_Jet_Tag_JetBProb[idx] = new std::vector<float>;
-  T_Jet_Tag_JetProb[idx] = new std::vector<float>;
-  T_Jet_Tag_HighPurSimpSVtx[idx] = new std::vector<float>;
-  T_Jet_Tag_HighEffSimpSVtx[idx] = new std::vector<float>;
-  T_Jet_Tag_HighPurTC[idx] = new std::vector<float>;
-  T_Jet_Uncertainty[idx] = new std::vector<float>;
+  T_Jet_Tag_CombMVA[idx]             = new std::vector<float>;
+  T_Jet_Tag_CombSVtx[idx]            = new std::vector<float>;
+  T_Jet_Tag_pfCombinedSVtx[idx]      = new std::vector<float>;
+  T_Jet_Tag_JetBProb[idx]            = new std::vector<float>;
+  T_Jet_Tag_JetProb[idx]             = new std::vector<float>;
+  T_Jet_Tag_HighPurSimpSVtx[idx]     = new std::vector<float>;
+  T_Jet_Tag_HighEffSimpSVtx[idx]     = new std::vector<float>;
+  T_Jet_Tag_HighPurTC[idx]           = new std::vector<float>;
+  T_Jet_Uncertainty[idx]             = new std::vector<float>;
  
-  T_Jet_CharHadEnergyFrac[idx] = new std::vector<float>;
-  T_Jet_NeutHadEnergyFrac[idx] = new std::vector<float>;
-  T_Jet_CharEmEnergyFrac[idx] = new std::vector<float>;
-  T_Jet_NeutEmEnergyFrac[idx] = new std::vector<float>;
-  T_Jet_CharHadEnergy[idx] = new std::vector<float>;
-  T_Jet_NeutHadEnergy[idx] = new std::vector<float>;
-  T_Jet_CharEmEnergy[idx] = new std::vector<float>;
-  T_Jet_NeutEmEnergy[idx] = new std::vector<float>;
-  T_Jet_MuonMultiplicity[idx] = new std::vector<int>;
+  T_Jet_CharHadEnergyFrac[idx]   = new std::vector<float>;
+  T_Jet_NeutHadEnergyFrac[idx]   = new std::vector<float>;
+  T_Jet_CharEmEnergyFrac[idx]    = new std::vector<float>;
+  T_Jet_NeutEmEnergyFrac[idx]    = new std::vector<float>;
+  T_Jet_CharHadEnergy[idx]       = new std::vector<float>;
+  T_Jet_NeutHadEnergy[idx]       = new std::vector<float>;
+  T_Jet_CharEmEnergy[idx]        = new std::vector<float>;
+  T_Jet_NeutEmEnergy[idx]        = new std::vector<float>;
+  T_Jet_MuonMultiplicity[idx]    = new std::vector<int>;
   T_Jet_NeutralMultiplicity[idx] = new std::vector<int>; 
   T_Jet_ChargedMultiplicity[idx] = new std::vector<int>;
-  T_Jet_IDLoose[idx] = new std::vector<bool>;
-  T_Jet_nDaughters[idx] = new std::vector<int>;
+  T_Jet_IDLoose[idx]             = new std::vector<bool>;
+  T_Jet_nDaughters[idx]          = new std::vector<int>;
   
   T_Jet_GenJet_InvisibleE[idx] = new std::vector<float>;
-  T_Jet_GenJet_Px[idx] = new std::vector<float>;
-  T_Jet_GenJet_Py[idx] = new std::vector<float>;
-  T_Jet_GenJet_Pz[idx] = new std::vector<float>;
-  T_Jet_GenJet_Et[idx] = new std::vector<float>;
-  T_Jet_GenJet_Eta[idx] = new std::vector<float>;
-  T_Jet_GenJet_Energy[idx] = new std::vector<float>;
-  T_Jet_IsGenJet[idx] = new std::vector<bool>;
+  T_Jet_GenJet_Px[idx]         = new std::vector<float>;
+  T_Jet_GenJet_Py[idx]         = new std::vector<float>;
+  T_Jet_GenJet_Pz[idx]         = new std::vector<float>;
+  T_Jet_GenJet_Et[idx]         = new std::vector<float>;
+  T_Jet_GenJet_Eta[idx]        = new std::vector<float>;
+  T_Jet_GenJet_Energy[idx]     = new std::vector<float>;
+  T_Jet_IsGenJet[idx]          = new std::vector<bool>;
   
   PFJetIDSelectionFunctor PFjetIDLoose(PFJetIDSelectionFunctor::FIRSTDATA,
 				       PFJetIDSelectionFunctor::LOOSE);
@@ -2441,38 +2445,38 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 	const reco::GenJet *mygenJet = jet_iter->genJet();
     
 	if (mygenJet != 0) {
-	  T_Jet_IsGenJet[idx]->push_back(true);
-	  T_Jet_GenJet_Px[idx]->push_back(mygenJet->px());
-	  T_Jet_GenJet_Py[idx]->push_back(mygenJet->py());
-	  T_Jet_GenJet_Pz[idx]->push_back(mygenJet->pz());
-	  T_Jet_GenJet_Et[idx]->push_back(mygenJet->et());
-	  T_Jet_GenJet_Eta[idx]->push_back(mygenJet->eta());
-	  T_Jet_GenJet_Energy[idx]->push_back(mygenJet->energy());
-	  T_Jet_GenJet_InvisibleE[idx]->push_back(mygenJet->invisibleEnergy());
+	  T_Jet_IsGenJet[idx]          -> push_back(true);
+	  T_Jet_GenJet_Px[idx]         -> push_back(mygenJet->px());
+	  T_Jet_GenJet_Py[idx]         -> push_back(mygenJet->py());
+	  T_Jet_GenJet_Pz[idx]         -> push_back(mygenJet->pz());
+	  T_Jet_GenJet_Et[idx]         -> push_back(mygenJet->et());
+	  T_Jet_GenJet_Eta[idx]        -> push_back(mygenJet->eta());
+	  T_Jet_GenJet_Energy[idx]     -> push_back(mygenJet->energy());
+	  T_Jet_GenJet_InvisibleE[idx] -> push_back(mygenJet->invisibleEnergy());
 	}
 	else {
-	  T_Jet_IsGenJet[idx]->push_back(false);
-	  T_Jet_GenJet_Px[idx]->push_back(0);
-	  T_Jet_GenJet_Py[idx]->push_back(0);
-	  T_Jet_GenJet_Pz[idx]->push_back(0);
-	  T_Jet_GenJet_Et[idx]->push_back(0);
-	  T_Jet_GenJet_Eta[idx]->push_back(0);
-	  T_Jet_GenJet_Energy[idx]->push_back(0);
-	  T_Jet_GenJet_InvisibleE[idx]->push_back(0);
+	  T_Jet_IsGenJet[idx]          -> push_back(false);
+	  T_Jet_GenJet_Px[idx]         -> push_back(0);
+	  T_Jet_GenJet_Py[idx]         -> push_back(0);
+	  T_Jet_GenJet_Pz[idx]         -> push_back(0);
+	  T_Jet_GenJet_Et[idx]         -> push_back(0);
+	  T_Jet_GenJet_Eta[idx]        -> push_back(0);
+	  T_Jet_GenJet_Energy[idx]     -> push_back(0);
+	  T_Jet_GenJet_InvisibleE[idx] -> push_back(0);
 	}
       } catch(...) {;}
     }
     
-    T_Jet_Tag_HighEffTC[idx]->push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
-    T_Jet_Tag_CombInclusiveSVtxV2[idx]->push_back(jet_iter->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
-    T_Jet_Tag_CombSVtx[idx]->push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));  // CSA14 only
-    T_Jet_Tag_CombMVA[idx]->push_back(jet_iter->bDiscriminator("combinedMVABJetTags"));
-    T_Jet_Tag_pfCombinedSVtx[idx]->push_back(jet_iter->bDiscriminator("pfCombinedSecondaryVertexBJetTags"));
-    T_Jet_Tag_JetBProb[idx]->push_back(jet_iter->bDiscriminator("jetBProbabilityBJetTags"));
-    T_Jet_Tag_JetProb[idx]->push_back(jet_iter->bDiscriminator("jetProbabilityBJetTags"));
-    T_Jet_Tag_HighEffSimpSVtx[idx]->push_back(jet_iter->bDiscriminator("simpleSecondaryVertexHighEffBJetTags"));
-    T_Jet_Tag_HighPurSimpSVtx[idx]->push_back(jet_iter->bDiscriminator("simpleSecondaryVertexHighPurBJetTags"));
-    T_Jet_Tag_HighPurTC[idx]->push_back(jet_iter->bDiscriminator("trackCountingHighPurBJetTags"));
+    T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
+    T_Jet_Tag_CombInclusiveSVtxV2[idx] -> push_back(jet_iter->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
+    T_Jet_Tag_CombSVtx[idx]            -> push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));  // CSA14 only
+    T_Jet_Tag_CombMVA[idx]             -> push_back(jet_iter->bDiscriminator("combinedMVABJetTags"));
+    T_Jet_Tag_pfCombinedSVtx[idx]      -> push_back(jet_iter->bDiscriminator("pfCombinedSecondaryVertexBJetTags"));
+    T_Jet_Tag_JetBProb[idx]            -> push_back(jet_iter->bDiscriminator("jetBProbabilityBJetTags"));
+    T_Jet_Tag_JetProb[idx]             -> push_back(jet_iter->bDiscriminator("jetProbabilityBJetTags"));
+    T_Jet_Tag_HighEffSimpSVtx[idx]     -> push_back(jet_iter->bDiscriminator("simpleSecondaryVertexHighEffBJetTags"));
+    T_Jet_Tag_HighPurSimpSVtx[idx]     -> push_back(jet_iter->bDiscriminator("simpleSecondaryVertexHighPurBJetTags"));
+    T_Jet_Tag_HighPurTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighPurBJetTags"));
   }
 
   delete JetCorrector;
@@ -2485,87 +2489,81 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
 void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool calojet)
 {
-  Tree->Branch(TString(namecol + "_Px") , "std::vector<float>", &T_Jet_Px[idx]);
-  Tree->Branch(TString(namecol + "_Py"), "std::vector<float>", &T_Jet_Py[idx]);
-  Tree->Branch(TString(namecol + "_Pz"), "std::vector<float>", &T_Jet_Pz[idx]);
-  Tree->Branch(TString(namecol + "_Et"), "std::vector<float>", &T_Jet_Et[idx]);
-  Tree->Branch(TString(namecol + "_Eta"), "std::vector<float>", &T_Jet_Eta[idx]);
-  Tree->Branch(TString(namecol + "_Energy"), "std::vector<float>", &T_Jet_Energy[idx]);
-  Tree->Branch(TString(namecol + "_Corr"), "std::vector<float>", &T_Jet_Corr[idx]);
-  Tree->Branch(TString(namecol + "_Tag_HighEffTC"), "std::vector<float>", &T_Jet_Tag_HighEffTC[idx]);
+  Tree->Branch(TString(namecol + "_Px") ,                     "std::vector<float>", &T_Jet_Px[idx]);
+  Tree->Branch(TString(namecol + "_Py"),                      "std::vector<float>", &T_Jet_Py[idx]);
+  Tree->Branch(TString(namecol + "_Pz"),                      "std::vector<float>", &T_Jet_Pz[idx]);
+  Tree->Branch(TString(namecol + "_Et"),                      "std::vector<float>", &T_Jet_Et[idx]);
+  Tree->Branch(TString(namecol + "_Eta"),                     "std::vector<float>", &T_Jet_Eta[idx]);
+  Tree->Branch(TString(namecol + "_Energy"),                  "std::vector<float>", &T_Jet_Energy[idx]);
+  Tree->Branch(TString(namecol + "_Corr"),                    "std::vector<float>", &T_Jet_Corr[idx]);
+  Tree->Branch(TString(namecol + "_Tag_HighEffTC"),           "std::vector<float>", &T_Jet_Tag_HighEffTC[idx]);
   Tree->Branch(TString(namecol + "_Tag_CombInclusiveSVtxV2"), "std::vector<float>", &T_Jet_Tag_CombInclusiveSVtxV2[idx]);
-  Tree->Branch(TString(namecol + "_Tag_CombMVA"), "std::vector<float>", &T_Jet_Tag_CombMVA[idx]);
-  Tree->Branch(TString(namecol + "_Tag_CombSVtx"), "std::vector<float>", &T_Jet_Tag_CombSVtx[idx]);
-  Tree->Branch(TString(namecol + "_Tag_pfCombinedSVtx"), "std::vector<float>", &T_Jet_Tag_pfCombinedSVtx[idx]);
-  Tree->Branch(TString(namecol + "_Tag_JetBProb"), "std::vector<float>", &T_Jet_Tag_JetBProb[idx]);
-  Tree->Branch(TString(namecol + "_Tag_JetProb"), "std::vector<float>", &T_Jet_Tag_JetProb[idx]);
-  Tree->Branch(TString(namecol + "_Tag_HighEffSimpSVtx"), "std::vector<float>", &T_Jet_Tag_HighEffSimpSVtx[idx]);
-  Tree->Branch(TString(namecol + "_Tag_HighPurSimpSVtx"), "std::vector<float>", &T_Jet_Tag_HighPurSimpSVtx[idx]);
-  Tree->Branch(TString(namecol + "_Tag_HighPurTC"), "std::vector<float>", &T_Jet_Tag_HighPurTC[idx]);
-  Tree->Branch(TString(namecol + "_Parton_Px"), "std::vector<float>", &T_Jet_Parton_Px[idx]);
-  Tree->Branch(TString(namecol + "_Parton_Py"), "std::vector<float>", &T_Jet_Parton_Py[idx]);
-  Tree->Branch(TString(namecol + "_Parton_Pz"), "std::vector<float>", &T_Jet_Parton_Pz[idx]);
-  Tree->Branch(TString(namecol + "_Parton_Energy"), "std::vector<float>", &T_Jet_Parton_Energy[idx]);
-  Tree->Branch(TString(namecol + "_Parton_Flavour"), "std::vector<int>", &T_Jet_Parton_Flavour[idx]);
+  Tree->Branch(TString(namecol + "_Tag_CombMVA"),             "std::vector<float>", &T_Jet_Tag_CombMVA[idx]);
+  Tree->Branch(TString(namecol + "_Tag_CombSVtx"),            "std::vector<float>", &T_Jet_Tag_CombSVtx[idx]);
+  Tree->Branch(TString(namecol + "_Tag_pfCombinedSVtx"),      "std::vector<float>", &T_Jet_Tag_pfCombinedSVtx[idx]);
+  Tree->Branch(TString(namecol + "_Tag_JetBProb"),            "std::vector<float>", &T_Jet_Tag_JetBProb[idx]);
+  Tree->Branch(TString(namecol + "_Tag_JetProb"),             "std::vector<float>", &T_Jet_Tag_JetProb[idx]);
+  Tree->Branch(TString(namecol + "_Tag_HighEffSimpSVtx"),     "std::vector<float>", &T_Jet_Tag_HighEffSimpSVtx[idx]);
+  Tree->Branch(TString(namecol + "_Tag_HighPurSimpSVtx"),     "std::vector<float>", &T_Jet_Tag_HighPurSimpSVtx[idx]);
+  Tree->Branch(TString(namecol + "_Tag_HighPurTC"),           "std::vector<float>", &T_Jet_Tag_HighPurTC[idx]);
+  Tree->Branch(TString(namecol + "_Parton_Px"),               "std::vector<float>", &T_Jet_Parton_Px[idx]);
+  Tree->Branch(TString(namecol + "_Parton_Py"),               "std::vector<float>", &T_Jet_Parton_Py[idx]);
+  Tree->Branch(TString(namecol + "_Parton_Pz"),               "std::vector<float>", &T_Jet_Parton_Pz[idx]);
+  Tree->Branch(TString(namecol + "_Parton_Energy"),           "std::vector<float>", &T_Jet_Parton_Energy[idx]);
+  Tree->Branch(TString(namecol + "_Parton_Flavour"),          "std::vector<int>",   &T_Jet_Parton_Flavour[idx]);
 
-  Tree->Branch(TString(namecol + "_CharHadEnergyFrac"), "std::vector<float>", &T_Jet_CharHadEnergyFrac[idx]);
-  Tree->Branch(TString(namecol + "_NeutHadEnergyFrac"), "std::vector<float>", &T_Jet_NeutHadEnergyFrac[idx]);
-  Tree->Branch(TString(namecol + "_CharEmEnergyFrac"), "std::vector<float>", &T_Jet_CharEmEnergyFrac[idx]);
-  Tree->Branch(TString(namecol + "_NeutEmEnergyFrac"), "std::vector<float>", &T_Jet_NeutEmEnergyFrac[idx]);
-  Tree->Branch(TString(namecol + "_CharHadEnergy"), "std::vector<float>", &T_Jet_CharHadEnergy[idx]);
-  Tree->Branch(TString(namecol + "_NeutHadEnergy"), "std::vector<float>", &T_Jet_NeutHadEnergy[idx]);
-  Tree->Branch(TString(namecol + "_CharEmEnergy"), "std::vector<float>", &T_Jet_CharEmEnergy[idx]);
-  Tree->Branch(TString(namecol + "_NeutEmEnergy"), "std::vector<float>", &T_Jet_NeutEmEnergy[idx]);
-  Tree->Branch(TString(namecol + "_MuonMultiplicity"), "std::vector<int>", &T_Jet_MuonMultiplicity[idx]);
-  Tree->Branch(TString(namecol + "_NeutralMultiplicity"), "std::vector<int>", &T_Jet_NeutralMultiplicity[idx]);
-  Tree->Branch(TString(namecol + "_ChargedMultiplicity"), "std::vector<int>", &T_Jet_ChargedMultiplicity[idx]);
-  Tree->Branch(TString(namecol + "_IDLoose"), "std::vector<bool>", &T_Jet_IDLoose[idx]);
-  Tree->Branch(TString(namecol + "_nDaughters"), "std::vector<int>", &T_Jet_nDaughters[idx]);
+  Tree->Branch(TString(namecol + "_CharHadEnergyFrac"),   "std::vector<float>", &T_Jet_CharHadEnergyFrac[idx]);
+  Tree->Branch(TString(namecol + "_NeutHadEnergyFrac"),   "std::vector<float>", &T_Jet_NeutHadEnergyFrac[idx]);
+  Tree->Branch(TString(namecol + "_CharEmEnergyFrac"),    "std::vector<float>", &T_Jet_CharEmEnergyFrac[idx]);
+  Tree->Branch(TString(namecol + "_NeutEmEnergyFrac"),    "std::vector<float>", &T_Jet_NeutEmEnergyFrac[idx]);
+  Tree->Branch(TString(namecol + "_CharHadEnergy"),       "std::vector<float>", &T_Jet_CharHadEnergy[idx]);
+  Tree->Branch(TString(namecol + "_NeutHadEnergy"),       "std::vector<float>", &T_Jet_NeutHadEnergy[idx]);
+  Tree->Branch(TString(namecol + "_CharEmEnergy"),        "std::vector<float>", &T_Jet_CharEmEnergy[idx]);
+  Tree->Branch(TString(namecol + "_NeutEmEnergy"),        "std::vector<float>", &T_Jet_NeutEmEnergy[idx]);
+  Tree->Branch(TString(namecol + "_MuonMultiplicity"),    "std::vector<int>",   &T_Jet_MuonMultiplicity[idx]);
+  Tree->Branch(TString(namecol + "_NeutralMultiplicity"), "std::vector<int>",   &T_Jet_NeutralMultiplicity[idx]);
+  Tree->Branch(TString(namecol + "_ChargedMultiplicity"), "std::vector<int>",   &T_Jet_ChargedMultiplicity[idx]);
+  Tree->Branch(TString(namecol + "_IDLoose"),             "std::vector<bool>",  &T_Jet_IDLoose[idx]);
+  Tree->Branch(TString(namecol + "_nDaughters"),          "std::vector<int>",   &T_Jet_nDaughters[idx]);
  
- 
-  //   if(!IsRealData){
-  Tree->Branch(TString(namecol + "_GenJet_InvisibleE"), "std::vector<float>", &T_Jet_GenJet_InvisibleE[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Px"), "std::vector<float>", &T_Jet_GenJet_Px[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Py"), "std::vector<float>", &T_Jet_GenJet_Py[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Pz"), "std::vector<float>", &T_Jet_GenJet_Pz[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Et"), "std::vector<float>", &T_Jet_GenJet_Et[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Eta"), "std::vector<float>", &T_Jet_GenJet_Eta[idx]);
-  Tree->Branch(TString(namecol + "_GenJet_Energy"), "std::vector<float>", &T_Jet_GenJet_Energy[idx]);
-  Tree->Branch(TString(namecol + "_IsGenJet"), "std::vector<bool>", &T_Jet_IsGenJet[idx]);
-  //  }
-  
-  
+  if (!IsRealData) {
+    Tree->Branch(TString(namecol + "_GenJet_InvisibleE"), "std::vector<float>", &T_Jet_GenJet_InvisibleE[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Px"),         "std::vector<float>", &T_Jet_GenJet_Px[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Py"),         "std::vector<float>", &T_Jet_GenJet_Py[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Pz"),         "std::vector<float>", &T_Jet_GenJet_Pz[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Et"),         "std::vector<float>", &T_Jet_GenJet_Et[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Eta"),        "std::vector<float>", &T_Jet_GenJet_Eta[idx]);
+    Tree->Branch(TString(namecol + "_GenJet_Energy"),     "std::vector<float>", &T_Jet_GenJet_Energy[idx]);
+    Tree->Branch(TString(namecol + "_IsGenJet"),          "std::vector<bool>",  &T_Jet_IsGenJet[idx]);
+  }
 }
 
 
-//-------
-
-//It checks if there is a muon or electron in the tau decay chain
-//if that is the case it stores the info of the first lepton found in the decay chain
+// It checks if there is a muon or electron in the tau decay chain
+// If that is the case it stores the info of the first lepton found in the decay chain
 void SUSYSkimToTreeTFS::LeptonicTauDecay(const reco::Candidate& tau, bool& elecdec, bool& muondec,
-				      int &pdgId, float &px, float &py, float &pz, float &energy)
+					 int &pdgId, float &px, float &py, float &pz, float &energy)
   
 {
-  
-  // loop on tau decays, check for an electron or muon
-  for(reco::Candidate::const_iterator daughter=tau.begin();daughter!=tau.end(); ++daughter){
-    // if the tau daughter is a tau, it means the particle has still to be propagated.
+  // Loop on tau decays, check for an electron or muon
+  for (reco::Candidate::const_iterator daughter=tau.begin(); daughter!=tau.end(); ++daughter) {
+    // If the tau daughter is a tau, it means the particle has still to be propagated.
     // In that case, return the result of the same method on that daughter.
-    if(daughter->pdgId()==tau.pdgId()) return LeptonicTauDecay(*daughter, elecdec, muondec, pdgId, px, py, pz, energy);
-    // check for leptons
+    if (daughter->pdgId() == tau.pdgId()) return LeptonicTauDecay(*daughter, elecdec, muondec, pdgId, px, py, pz, energy);
+    // Check for leptons
     elecdec |= abs(daughter->pdgId()) == 11;
     muondec |= abs(daughter->pdgId()) == 13;
     
     if (abs(daughter->pdgId()) == 11 || abs(daughter->pdgId()) == 13) {
-      px = daughter->px();
-      py = daughter->py();
-      pz = daughter->pz();
+      px     = daughter->px();
+      py     = daughter->py();
+      pz     = daughter->pz();
       energy = daughter->energy();
-      pdgId = daughter->pdgId();
+      pdgId  = daughter->pdgId();
+
       return;
     }
   }
-  
 }
 
 
@@ -2589,198 +2587,197 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Event_AveNTruePU",      &T_Event_AveNTruePU,      "T_Event_AveNTruePU/F"); 
 
   // MET filters
-  Tree->Branch("T_EventF_HBHENoiseFilter", &T_EventF_HBHENoiseFilter, "T_EventF_HBHENoiseFilter/O");
-  Tree->Branch("T_EventF_CSCTightHaloFilter", &T_EventF_CSCTightHaloFilter,"T_EventF_CSCTightHaloFilter/O");
-  Tree->Branch("T_EventF_hcalLaserEventFilter", &T_EventF_hcalLaserEventFilter,"T_EventF_hcalLaserEventFilter/O");
+  Tree->Branch("T_EventF_HBHENoiseFilter",                    &T_EventF_HBHENoiseFilter,                    "T_EventF_HBHENoiseFilter/O");
+  Tree->Branch("T_EventF_CSCTightHaloFilter",                 &T_EventF_CSCTightHaloFilter,                 "T_EventF_CSCTightHaloFilter/O");
+  Tree->Branch("T_EventF_hcalLaserEventFilter",               &T_EventF_hcalLaserEventFilter,               "T_EventF_hcalLaserEventFilter/O");
   Tree->Branch("T_EventF_EcalDeadCellTriggerPrimitiveFilter", &T_EventF_EcalDeadCellTriggerPrimitiveFilter, "T_EventF_EcalDeadCellTriggerPrimitiveFilter/O");
-  Tree->Branch("T_EventF_goodVertices", &T_EventF_goodVertices, "T_EventF_goodVertices/O");
-  Tree->Branch("T_EventF_trackingFailureFilter", &T_EventF_trackingFailureFilter, "T_EventF_trackingFailureFilter/O");
-  Tree->Branch("T_EventF_eeBadScFilter", &T_EventF_eeBadScFilter, "T_EventF_eeBadScFilter/O");
-  Tree->Branch("T_EventF_ecalLaserCorrFilter", &T_EventF_ecalLaserCorrFilter, "T_EventF_ecalLaserCorrFilter/O");
-  Tree->Branch("T_EventF_trkPOGFilters", &T_EventF_trkPOGFilters, "T_EventF_trkPOGFilters/O");
-  Tree->Branch("T_EventF_trkPOG_manystripclus53X", &T_EventF_trkPOG_manystripclus53X, "T_EventF_trkPOG_manystripclus53X/O");
-  Tree->Branch("T_EventF_trkPOG_toomanystripclus53X", &T_EventF_trkPOG_toomanystripclus53X, "T_EventF_trkPOG_toomanystripclus53X/O");
-  Tree->Branch("T_EventF_trkPOG_logErrorTooManyClusters", &T_EventF_trkPOG_logErrorTooManyClusters, "T_EventF_trkPOG_logErrorTooManyClusters/O");
-  Tree->Branch("T_EventF_METFilters", &T_EventF_METFilters, "T_EventF_METFilters/O");
+  Tree->Branch("T_EventF_goodVertices",                       &T_EventF_goodVertices,                       "T_EventF_goodVertices/O");
+  Tree->Branch("T_EventF_trackingFailureFilter",              &T_EventF_trackingFailureFilter,              "T_EventF_trackingFailureFilter/O");
+  Tree->Branch("T_EventF_eeBadScFilter",                      &T_EventF_eeBadScFilter,                      "T_EventF_eeBadScFilter/O");
+  Tree->Branch("T_EventF_ecalLaserCorrFilter",                &T_EventF_ecalLaserCorrFilter,                "T_EventF_ecalLaserCorrFilter/O");
+  Tree->Branch("T_EventF_trkPOGFilters",                      &T_EventF_trkPOGFilters,                      "T_EventF_trkPOGFilters/O");
+  Tree->Branch("T_EventF_trkPOG_manystripclus53X",            &T_EventF_trkPOG_manystripclus53X,            "T_EventF_trkPOG_manystripclus53X/O");
+  Tree->Branch("T_EventF_trkPOG_toomanystripclus53X",         &T_EventF_trkPOG_toomanystripclus53X,         "T_EventF_trkPOG_toomanystripclus53X/O");
+  Tree->Branch("T_EventF_trkPOG_logErrorTooManyClusters",     &T_EventF_trkPOG_logErrorTooManyClusters,     "T_EventF_trkPOG_logErrorTooManyClusters/O");
+  Tree->Branch("T_EventF_METFilters",                         &T_EventF_METFilters,                         "T_EventF_METFilters/O");
 
   // Gen 
-  if (!IsRealData){
-
+  if (!IsRealData) {
     Tree->Branch("T_Gen_StopMass",     "std::vector<float>", &T_Gen_StopMass);
     Tree->Branch("T_Gen_Chi0Mass",     "std::vector<float>", &T_Gen_Chi0Mass);
     Tree->Branch("T_Gen_CharginoMass", "std::vector<float>", &T_Gen_CharginoMass);
 
-    Tree->Branch("T_Gen_PromptMuon_pdgId", "std::vector<int>", &T_Gen_PromptMuon_pdgId);
-    Tree->Branch("T_Gen_PromptMuon_Px", "std::vector<float>", &T_Gen_PromptMuon_Px);
-    Tree->Branch("T_Gen_PromptMuon_Py", "std::vector<float>", &T_Gen_PromptMuon_Py);
-    Tree->Branch("T_Gen_PromptMuon_Pz", "std::vector<float>", &T_Gen_PromptMuon_Pz);
-    Tree->Branch("T_Gen_PromptMuon_Energy", "std::vector<float>", &T_Gen_PromptMuon_Energy);
-    Tree->Branch("T_Gen_PromptMuon_MpdgId", "std::vector<int>", &T_Gen_PromptMuon_MpdgId);
-    Tree->Branch("T_Gen_PromptMuon_MPx", "std::vector<float>", &T_Gen_PromptMuon_MPx);
-    Tree->Branch("T_Gen_PromptMuon_MPy", "std::vector<float>", &T_Gen_PromptMuon_MPy);
-    Tree->Branch("T_Gen_PromptMuon_MPz", "std::vector<float>", &T_Gen_PromptMuon_MPz);
+    Tree->Branch("T_Gen_PromptMuon_pdgId",   "std::vector<int>",   &T_Gen_PromptMuon_pdgId);
+    Tree->Branch("T_Gen_PromptMuon_Px",      "std::vector<float>", &T_Gen_PromptMuon_Px);
+    Tree->Branch("T_Gen_PromptMuon_Py",      "std::vector<float>", &T_Gen_PromptMuon_Py);
+    Tree->Branch("T_Gen_PromptMuon_Pz",      "std::vector<float>", &T_Gen_PromptMuon_Pz);
+    Tree->Branch("T_Gen_PromptMuon_Energy",  "std::vector<float>", &T_Gen_PromptMuon_Energy);
+    Tree->Branch("T_Gen_PromptMuon_MpdgId",  "std::vector<int>",   &T_Gen_PromptMuon_MpdgId);
+    Tree->Branch("T_Gen_PromptMuon_MPx",     "std::vector<float>", &T_Gen_PromptMuon_MPx);
+    Tree->Branch("T_Gen_PromptMuon_MPy",     "std::vector<float>", &T_Gen_PromptMuon_MPy);
+    Tree->Branch("T_Gen_PromptMuon_MPz",     "std::vector<float>", &T_Gen_PromptMuon_MPz);
     Tree->Branch("T_Gen_PromptMuon_MEnergy", "std::vector<float>", &T_Gen_PromptMuon_MEnergy);
-    Tree->Branch("T_Gen_PromptMuon_MSt", "std::vector<int>", &T_Gen_PromptMuon_MSt);
+    Tree->Branch("T_Gen_PromptMuon_MSt",     "std::vector<int>",   &T_Gen_PromptMuon_MSt);
     
-    Tree->Branch("T_Gen_PromptElec_pdgId", "std::vector<int>", &T_Gen_PromptElec_pdgId);
-    Tree->Branch("T_Gen_PromptElec_Px", "std::vector<float>", &T_Gen_PromptElec_Px);
-    Tree->Branch("T_Gen_PromptElec_Py", "std::vector<float>", &T_Gen_PromptElec_Py);
-    Tree->Branch("T_Gen_PromptElec_Pz", "std::vector<float>", &T_Gen_PromptElec_Pz);
-    Tree->Branch("T_Gen_PromptElec_Energy", "std::vector<float>", &T_Gen_PromptElec_Energy);
-    Tree->Branch("T_Gen_PromptElec_MpdgId", "std::vector<int>", &T_Gen_PromptElec_MpdgId);
-    Tree->Branch("T_Gen_PromptElec_MPx", "std::vector<float>", &T_Gen_PromptElec_MPx);
-    Tree->Branch("T_Gen_PromptElec_MPy", "std::vector<float>", &T_Gen_PromptElec_MPy);
-    Tree->Branch("T_Gen_PromptElec_MPz", "std::vector<float>", &T_Gen_PromptElec_MPz);
+    Tree->Branch("T_Gen_PromptElec_pdgId",   "std::vector<int>",   &T_Gen_PromptElec_pdgId);
+    Tree->Branch("T_Gen_PromptElec_Px",      "std::vector<float>", &T_Gen_PromptElec_Px);
+    Tree->Branch("T_Gen_PromptElec_Py",      "std::vector<float>", &T_Gen_PromptElec_Py);
+    Tree->Branch("T_Gen_PromptElec_Pz",      "std::vector<float>", &T_Gen_PromptElec_Pz);
+    Tree->Branch("T_Gen_PromptElec_Energy",  "std::vector<float>", &T_Gen_PromptElec_Energy);
+    Tree->Branch("T_Gen_PromptElec_MpdgId",  "std::vector<int>",   &T_Gen_PromptElec_MpdgId);
+    Tree->Branch("T_Gen_PromptElec_MPx",     "std::vector<float>", &T_Gen_PromptElec_MPx);
+    Tree->Branch("T_Gen_PromptElec_MPy",     "std::vector<float>", &T_Gen_PromptElec_MPy);
+    Tree->Branch("T_Gen_PromptElec_MPz",     "std::vector<float>", &T_Gen_PromptElec_MPz);
     Tree->Branch("T_Gen_PromptElec_MEnergy", "std::vector<float>", &T_Gen_PromptElec_MEnergy);
-    Tree->Branch("T_Gen_PromptElec_MSt", "std::vector<int>", &T_Gen_PromptElec_MSt);
+    Tree->Branch("T_Gen_PromptElec_MSt",     "std::vector<int>",   &T_Gen_PromptElec_MSt);
     
-    Tree->Branch("T_Gen_Promptb_pdgId", "std::vector<int>", &T_Gen_Promptb_pdgId);
-    Tree->Branch("T_Gen_Promptb_Px", "std::vector<float>", &T_Gen_Promptb_Px);
-    Tree->Branch("T_Gen_Promptb_Py", "std::vector<float>", &T_Gen_Promptb_Py);
-    Tree->Branch("T_Gen_Promptb_Pz", "std::vector<float>", &T_Gen_Promptb_Pz);
-    Tree->Branch("T_Gen_Promptb_Energy", "std::vector<float>", &T_Gen_Promptb_Energy);
-    Tree->Branch("T_Gen_Promptb_MpdgId", "std::vector<int>", &T_Gen_Promptb_MpdgId);
-    Tree->Branch("T_Gen_Promptb_MPx", "std::vector<float>", &T_Gen_Promptb_MPx);
-    Tree->Branch("T_Gen_Promptb_MPy", "std::vector<float>", &T_Gen_Promptb_MPy);
-    Tree->Branch("T_Gen_Promptb_MPz", "std::vector<float>", &T_Gen_Promptb_MPz);
+    Tree->Branch("T_Gen_Promptb_pdgId",   "std::vector<int>",   &T_Gen_Promptb_pdgId);
+    Tree->Branch("T_Gen_Promptb_Px",      "std::vector<float>", &T_Gen_Promptb_Px);
+    Tree->Branch("T_Gen_Promptb_Py",      "std::vector<float>", &T_Gen_Promptb_Py);
+    Tree->Branch("T_Gen_Promptb_Pz",      "std::vector<float>", &T_Gen_Promptb_Pz);
+    Tree->Branch("T_Gen_Promptb_Energy",  "std::vector<float>", &T_Gen_Promptb_Energy);
+    Tree->Branch("T_Gen_Promptb_MpdgId",  "std::vector<int>",   &T_Gen_Promptb_MpdgId);
+    Tree->Branch("T_Gen_Promptb_MPx",     "std::vector<float>", &T_Gen_Promptb_MPx);
+    Tree->Branch("T_Gen_Promptb_MPy",     "std::vector<float>", &T_Gen_Promptb_MPy);
+    Tree->Branch("T_Gen_Promptb_MPz",     "std::vector<float>", &T_Gen_Promptb_MPz);
     Tree->Branch("T_Gen_Promptb_MEnergy", "std::vector<float>", &T_Gen_Promptb_MEnergy);
-    Tree->Branch("T_Gen_Promptb_MSt", "std::vector<int>", &T_Gen_Promptb_MSt);
+    Tree->Branch("T_Gen_Promptb_MSt",     "std::vector<int>",   &T_Gen_Promptb_MSt);
     
-    Tree->Branch("T_Gen_Muon_pdgId", "std::vector<int>", &T_Gen_Muon_pdgId);
-    Tree->Branch("T_Gen_Muon_Px", "std::vector<float>", &T_Gen_Muon_Px);
-    Tree->Branch("T_Gen_Muon_Py", "std::vector<float>", &T_Gen_Muon_Py);
-    Tree->Branch("T_Gen_Muon_Pz", "std::vector<float>", &T_Gen_Muon_Pz);
-    Tree->Branch("T_Gen_Muon_Energy", "std::vector<float>", &T_Gen_Muon_Energy);
-    Tree->Branch("T_Gen_Muon_MpdgId", "std::vector<int>", &T_Gen_Muon_MpdgId);
-    Tree->Branch("T_Gen_Muon_MPx", "std::vector<float>", &T_Gen_Muon_MPx);
-    Tree->Branch("T_Gen_Muon_MPy", "std::vector<float>", &T_Gen_Muon_MPy);
-    Tree->Branch("T_Gen_Muon_MPz", "std::vector<float>", &T_Gen_Muon_MPz);
+    Tree->Branch("T_Gen_Muon_pdgId",   "std::vector<int>",   &T_Gen_Muon_pdgId);
+    Tree->Branch("T_Gen_Muon_Px",      "std::vector<float>", &T_Gen_Muon_Px);
+    Tree->Branch("T_Gen_Muon_Py",      "std::vector<float>", &T_Gen_Muon_Py);
+    Tree->Branch("T_Gen_Muon_Pz",      "std::vector<float>", &T_Gen_Muon_Pz);
+    Tree->Branch("T_Gen_Muon_Energy",  "std::vector<float>", &T_Gen_Muon_Energy);
+    Tree->Branch("T_Gen_Muon_MpdgId",  "std::vector<int>",   &T_Gen_Muon_MpdgId);
+    Tree->Branch("T_Gen_Muon_MPx",     "std::vector<float>", &T_Gen_Muon_MPx);
+    Tree->Branch("T_Gen_Muon_MPy",     "std::vector<float>", &T_Gen_Muon_MPy);
+    Tree->Branch("T_Gen_Muon_MPz",     "std::vector<float>", &T_Gen_Muon_MPz);
     Tree->Branch("T_Gen_Muon_MEnergy", "std::vector<float>", &T_Gen_Muon_MEnergy);
-    Tree->Branch("T_Gen_Muon_MSt", "std::vector<int>", &T_Gen_Muon_MSt);
+    Tree->Branch("T_Gen_Muon_MSt",     "std::vector<int>",   &T_Gen_Muon_MSt);
 
-    Tree->Branch("T_Gen_FinalMuon_pdgId", "std::vector<int>", &T_Gen_FinalMuon_pdgId);
-    Tree->Branch("T_Gen_FinalMuon_Px", "std::vector<float>", &T_Gen_FinalMuon_Px);
-    Tree->Branch("T_Gen_FinalMuon_Py", "std::vector<float>", &T_Gen_FinalMuon_Py);
-    Tree->Branch("T_Gen_FinalMuon_Pz", "std::vector<float>", &T_Gen_FinalMuon_Pz);
+    Tree->Branch("T_Gen_FinalMuon_pdgId",  "std::vector<int>",   &T_Gen_FinalMuon_pdgId);
+    Tree->Branch("T_Gen_FinalMuon_Px",     "std::vector<float>", &T_Gen_FinalMuon_Px);
+    Tree->Branch("T_Gen_FinalMuon_Py",     "std::vector<float>", &T_Gen_FinalMuon_Py);
+    Tree->Branch("T_Gen_FinalMuon_Pz",     "std::vector<float>", &T_Gen_FinalMuon_Pz);
     Tree->Branch("T_Gen_FinalMuon_Energy", "std::vector<float>", &T_Gen_FinalMuon_Energy);
 
-    Tree->Branch("T_Gen_Elec_pdgId", "std::vector<int>", &T_Gen_Elec_pdgId);
-    Tree->Branch("T_Gen_Elec_Px", "std::vector<float>", &T_Gen_Elec_Px);
-    Tree->Branch("T_Gen_Elec_Py", "std::vector<float>", &T_Gen_Elec_Py);
-    Tree->Branch("T_Gen_Elec_Pz", "std::vector<float>", &T_Gen_Elec_Pz);
-    Tree->Branch("T_Gen_Elec_Energy", "std::vector<float>", &T_Gen_Elec_Energy);
-    Tree->Branch("T_Gen_Elec_MpdgId", "std::vector<int>", &T_Gen_Elec_MpdgId);
-    Tree->Branch("T_Gen_Elec_MPx", "std::vector<float>", &T_Gen_Elec_MPx);
-    Tree->Branch("T_Gen_Elec_MPy", "std::vector<float>", &T_Gen_Elec_MPy);
-    Tree->Branch("T_Gen_Elec_MPz", "std::vector<float>", &T_Gen_Elec_MPz);
+    Tree->Branch("T_Gen_Elec_pdgId",   "std::vector<int>",   &T_Gen_Elec_pdgId);
+    Tree->Branch("T_Gen_Elec_Px",      "std::vector<float>", &T_Gen_Elec_Px);
+    Tree->Branch("T_Gen_Elec_Py",      "std::vector<float>", &T_Gen_Elec_Py);
+    Tree->Branch("T_Gen_Elec_Pz",      "std::vector<float>", &T_Gen_Elec_Pz);
+    Tree->Branch("T_Gen_Elec_Energy",  "std::vector<float>", &T_Gen_Elec_Energy);
+    Tree->Branch("T_Gen_Elec_MpdgId",  "std::vector<int>",   &T_Gen_Elec_MpdgId);
+    Tree->Branch("T_Gen_Elec_MPx",     "std::vector<float>", &T_Gen_Elec_MPx);
+    Tree->Branch("T_Gen_Elec_MPy",     "std::vector<float>", &T_Gen_Elec_MPy);
+    Tree->Branch("T_Gen_Elec_MPz",     "std::vector<float>", &T_Gen_Elec_MPz);
     Tree->Branch("T_Gen_Elec_MEnergy", "std::vector<float>", &T_Gen_Elec_MEnergy);
-    Tree->Branch("T_Gen_Elec_MSt", "std::vector<int>", &T_Gen_Elec_MSt);
+    Tree->Branch("T_Gen_Elec_MSt",     "std::vector<int>",   &T_Gen_Elec_MSt);
 
-    Tree->Branch("T_Gen_FinalElec_pdgId", "std::vector<int>", &T_Gen_FinalElec_pdgId);
-    Tree->Branch("T_Gen_FinalElec_Px", "std::vector<float>", &T_Gen_FinalElec_Px);
-    Tree->Branch("T_Gen_FinalElec_Py", "std::vector<float>", &T_Gen_FinalElec_Py);
-    Tree->Branch("T_Gen_FinalElec_Pz", "std::vector<float>", &T_Gen_FinalElec_Pz);
+    Tree->Branch("T_Gen_FinalElec_pdgId",  "std::vector<int>",   &T_Gen_FinalElec_pdgId);
+    Tree->Branch("T_Gen_FinalElec_Px",     "std::vector<float>", &T_Gen_FinalElec_Px);
+    Tree->Branch("T_Gen_FinalElec_Py",     "std::vector<float>", &T_Gen_FinalElec_Py);
+    Tree->Branch("T_Gen_FinalElec_Pz",     "std::vector<float>", &T_Gen_FinalElec_Pz);
     Tree->Branch("T_Gen_FinalElec_Energy", "std::vector<float>", &T_Gen_FinalElec_Energy);
 
-    Tree->Branch("T_Gen_b_pdgId", "std::vector<int>", &T_Gen_b_pdgId);
-    Tree->Branch("T_Gen_b_Px", "std::vector<float>", &T_Gen_b_Px);
-    Tree->Branch("T_Gen_b_Py", "std::vector<float>", &T_Gen_b_Py);
-    Tree->Branch("T_Gen_b_Pz", "std::vector<float>", &T_Gen_b_Pz);
-    Tree->Branch("T_Gen_b_Energy", "std::vector<float>", &T_Gen_b_Energy);
-    Tree->Branch("T_Gen_b_MpdgId", "std::vector<int>", &T_Gen_b_MpdgId);
-    Tree->Branch("T_Gen_b_MPx", "std::vector<float>", &T_Gen_b_MPx);
-    Tree->Branch("T_Gen_b_MPy", "std::vector<float>", &T_Gen_b_MPy);
-    Tree->Branch("T_Gen_b_MPz", "std::vector<float>", &T_Gen_b_MPz);
+    Tree->Branch("T_Gen_b_pdgId",   "std::vector<int>",   &T_Gen_b_pdgId);
+    Tree->Branch("T_Gen_b_Px",      "std::vector<float>", &T_Gen_b_Px);
+    Tree->Branch("T_Gen_b_Py",      "std::vector<float>", &T_Gen_b_Py);
+    Tree->Branch("T_Gen_b_Pz",      "std::vector<float>", &T_Gen_b_Pz);
+    Tree->Branch("T_Gen_b_Energy",  "std::vector<float>", &T_Gen_b_Energy);
+    Tree->Branch("T_Gen_b_MpdgId",  "std::vector<int>",   &T_Gen_b_MpdgId);
+    Tree->Branch("T_Gen_b_MPx",     "std::vector<float>", &T_Gen_b_MPx);
+    Tree->Branch("T_Gen_b_MPy",     "std::vector<float>", &T_Gen_b_MPy);
+    Tree->Branch("T_Gen_b_MPz",     "std::vector<float>", &T_Gen_b_MPz);
     Tree->Branch("T_Gen_b_MEnergy", "std::vector<float>", &T_Gen_b_MEnergy);
-    Tree->Branch("T_Gen_b_MSt", "std::vector<int>", &T_Gen_b_MSt);
+    Tree->Branch("T_Gen_b_MSt",     "std::vector<int>",   &T_Gen_b_MSt);
 
-    Tree->Branch("T_Gen_Stop_pdgId", "std::vector<int>",         &T_Gen_Stop_pdgId       );
-    Tree->Branch("T_Gen_Stop_MpdgId", "std::vector<int>",   &T_Gen_Stop_MpdgId );
-    Tree->Branch("T_Gen_Stop_energy", "std::vector<float>",      &T_Gen_Stop_energy      );
-    Tree->Branch("T_Gen_Stop_pt", "std::vector<float>",          &T_Gen_Stop_pt          );
-    Tree->Branch("T_Gen_Stop_eta", "std::vector<float>",         &T_Gen_Stop_eta         );
-    Tree->Branch("T_Gen_Stop_phi", "std::vector<float>",         &T_Gen_Stop_phi         );
+    Tree->Branch("T_Gen_Stop_pdgId",  "std::vector<int>",   &T_Gen_Stop_pdgId);
+    Tree->Branch("T_Gen_Stop_MpdgId", "std::vector<int>",   &T_Gen_Stop_MpdgId);
+    Tree->Branch("T_Gen_Stop_energy", "std::vector<float>", &T_Gen_Stop_energy);
+    Tree->Branch("T_Gen_Stop_pt",     "std::vector<float>", &T_Gen_Stop_pt);
+    Tree->Branch("T_Gen_Stop_eta",    "std::vector<float>", &T_Gen_Stop_eta);
+    Tree->Branch("T_Gen_Stop_phi",    "std::vector<float>", &T_Gen_Stop_phi);
     
-    Tree->Branch("T_Gen_Chi0_pdgId", "std::vector<int>",         &T_Gen_Chi0_pdgId       );
-    Tree->Branch("T_Gen_Chi0_MpdgId", "std::vector<int>",   &T_Gen_Chi0_MpdgId );
-    Tree->Branch("T_Gen_Chi0_energy", "std::vector<float>",      &T_Gen_Chi0_energy      );
-    Tree->Branch("T_Gen_Chi0_pt", "std::vector<float>",          &T_Gen_Chi0_pt          );
-    Tree->Branch("T_Gen_Chi0_eta", "std::vector<float>",         &T_Gen_Chi0_eta         );
-    Tree->Branch("T_Gen_Chi0_phi", "std::vector<float>",         &T_Gen_Chi0_phi         );
+    Tree->Branch("T_Gen_Chi0_pdgId",  "std::vector<int>",   &T_Gen_Chi0_pdgId);
+    Tree->Branch("T_Gen_Chi0_MpdgId", "std::vector<int>",   &T_Gen_Chi0_MpdgId);
+    Tree->Branch("T_Gen_Chi0_energy", "std::vector<float>", &T_Gen_Chi0_energy);
+    Tree->Branch("T_Gen_Chi0_pt",     "std::vector<float>", &T_Gen_Chi0_pt);
+    Tree->Branch("T_Gen_Chi0_eta",    "std::vector<float>", &T_Gen_Chi0_eta);
+    Tree->Branch("T_Gen_Chi0_phi",    "std::vector<float>", &T_Gen_Chi0_phi);
     
-    Tree->Branch("T_Gen_ChiPM_pdgId", "std::vector<int>",         &T_Gen_ChiPM_pdgId       );
-    Tree->Branch("T_Gen_ChiPM_MpdgId", "std::vector<int>",   &T_Gen_ChiPM_MpdgId );
-    Tree->Branch("T_Gen_ChiPM_energy", "std::vector<float>",      &T_Gen_ChiPM_energy      );
-    Tree->Branch("T_Gen_ChiPM_pt", "std::vector<float>",          &T_Gen_ChiPM_pt          );
-    Tree->Branch("T_Gen_ChiPM_eta", "std::vector<float>",         &T_Gen_ChiPM_eta         );
-    Tree->Branch("T_Gen_ChiPM_phi", "std::vector<float>",         &T_Gen_ChiPM_phi         );
+    Tree->Branch("T_Gen_ChiPM_pdgId",  "std::vector<int>",   &T_Gen_ChiPM_pdgId);
+    Tree->Branch("T_Gen_ChiPM_MpdgId", "std::vector<int>",   &T_Gen_ChiPM_MpdgId);
+    Tree->Branch("T_Gen_ChiPM_energy", "std::vector<float>", &T_Gen_ChiPM_energy);
+    Tree->Branch("T_Gen_ChiPM_pt",     "std::vector<float>", &T_Gen_ChiPM_pt);
+    Tree->Branch("T_Gen_ChiPM_eta",    "std::vector<float>", &T_Gen_ChiPM_eta);
+    Tree->Branch("T_Gen_ChiPM_phi",    "std::vector<float>", &T_Gen_ChiPM_phi);
 
-    Tree->Branch("T_Gen_t_pdgId", "std::vector<int>",         &T_Gen_t_pdgId       );
-    Tree->Branch("T_Gen_t_MpdgId", "std::vector<int>",   &T_Gen_t_MpdgId );
-    Tree->Branch("T_Gen_t_energy", "std::vector<float>",      &T_Gen_t_energy      );
-    Tree->Branch("T_Gen_t_pt", "std::vector<float>",          &T_Gen_t_pt          );
-    Tree->Branch("T_Gen_t_eta", "std::vector<float>",         &T_Gen_t_eta         );
-    Tree->Branch("T_Gen_t_phi", "std::vector<float>",         &T_Gen_t_phi         );
+    Tree->Branch("T_Gen_t_pdgId",  "std::vector<int>",   &T_Gen_t_pdgId);
+    Tree->Branch("T_Gen_t_MpdgId", "std::vector<int>",   &T_Gen_t_MpdgId);
+    Tree->Branch("T_Gen_t_energy", "std::vector<float>", &T_Gen_t_energy);
+    Tree->Branch("T_Gen_t_pt",     "std::vector<float>", &T_Gen_t_pt);
+    Tree->Branch("T_Gen_t_eta",    "std::vector<float>", &T_Gen_t_eta);
+    Tree->Branch("T_Gen_t_phi",    "std::vector<float>", &T_Gen_t_phi);
     
-    Tree->Branch("T_Gen_Nu_pdgId", "std::vector<int>",         &T_Gen_Nu_pdgId       );
-    Tree->Branch("T_Gen_Nu_MpdgId", "std::vector<int>",   &T_Gen_Nu_MpdgId );
-    Tree->Branch("T_Gen_Nu_energy", "std::vector<float>",      &T_Gen_Nu_energy      );
-    Tree->Branch("T_Gen_Nu_pt", "std::vector<float>",          &T_Gen_Nu_pt          );
-    Tree->Branch("T_Gen_Nu_eta", "std::vector<float>",         &T_Gen_Nu_eta         );
-    Tree->Branch("T_Gen_Nu_phi", "std::vector<float>",         &T_Gen_Nu_phi         );
+    Tree->Branch("T_Gen_Nu_pdgId",  "std::vector<int>",   &T_Gen_Nu_pdgId);
+    Tree->Branch("T_Gen_Nu_MpdgId", "std::vector<int>",   &T_Gen_Nu_MpdgId);
+    Tree->Branch("T_Gen_Nu_energy", "std::vector<float>", &T_Gen_Nu_energy);
+    Tree->Branch("T_Gen_Nu_pt",     "std::vector<float>", &T_Gen_Nu_pt);
+    Tree->Branch("T_Gen_Nu_eta",    "std::vector<float>", &T_Gen_Nu_eta);
+    Tree->Branch("T_Gen_Nu_phi",    "std::vector<float>", &T_Gen_Nu_phi);
     
-    Tree->Branch("T_Gen_Z_pdgId", "std::vector<int>",         &T_Gen_Z_pdgId       );
-    Tree->Branch("T_Gen_Z_MpdgId", "std::vector<int>",   &T_Gen_Z_MpdgId );
-    Tree->Branch("T_Gen_Z_energy", "std::vector<float>",      &T_Gen_Z_energy      );
-    Tree->Branch("T_Gen_Z_pt", "std::vector<float>",          &T_Gen_Z_pt          );
-    Tree->Branch("T_Gen_Z_eta", "std::vector<float>",         &T_Gen_Z_eta         );
-    Tree->Branch("T_Gen_Z_phi", "std::vector<float>",         &T_Gen_Z_phi         );
+    Tree->Branch("T_Gen_Z_pdgId",  "std::vector<int>",   &T_Gen_Z_pdgId);
+    Tree->Branch("T_Gen_Z_MpdgId", "std::vector<int>",   &T_Gen_Z_MpdgId);
+    Tree->Branch("T_Gen_Z_energy", "std::vector<float>", &T_Gen_Z_energy);
+    Tree->Branch("T_Gen_Z_pt",     "std::vector<float>", &T_Gen_Z_pt);
+    Tree->Branch("T_Gen_Z_eta",    "std::vector<float>", &T_Gen_Z_eta);
+    Tree->Branch("T_Gen_Z_phi",    "std::vector<float>", &T_Gen_Z_phi);
 
-    Tree->Branch("T_Gen_W_pdgId", "std::vector<int>",         &T_Gen_W_pdgId       );
-    Tree->Branch("T_Gen_W_MpdgId", "std::vector<int>",   &T_Gen_W_MpdgId );
-    Tree->Branch("T_Gen_W_energy", "std::vector<float>",      &T_Gen_W_energy      );
-    Tree->Branch("T_Gen_W_pt", "std::vector<float>",          &T_Gen_W_pt          );
-    Tree->Branch("T_Gen_W_eta", "std::vector<float>",         &T_Gen_W_eta         );
-    Tree->Branch("T_Gen_W_phi", "std::vector<float>",         &T_Gen_W_phi         );
+    Tree->Branch("T_Gen_W_pdgId",  "std::vector<int>",   &T_Gen_W_pdgId);
+    Tree->Branch("T_Gen_W_MpdgId", "std::vector<int>",   &T_Gen_W_MpdgId);
+    Tree->Branch("T_Gen_W_energy", "std::vector<float>", &T_Gen_W_energy);
+    Tree->Branch("T_Gen_W_pt",     "std::vector<float>", &T_Gen_W_pt);
+    Tree->Branch("T_Gen_W_eta",    "std::vector<float>", &T_Gen_W_eta);
+    Tree->Branch("T_Gen_W_phi",    "std::vector<float>", &T_Gen_W_phi);
     
-    Tree->Branch("T_Gen_PromptTau_pdgId", "std::vector<int>",          &T_Gen_PromptTau_pdgId       );
-    Tree->Branch("T_Gen_PromptTau_Energy", "std::vector<float>",       &T_Gen_PromptTau_Energy      );
-    Tree->Branch("T_Gen_PromptTau_Px", "std::vector<float>",           &T_Gen_PromptTau_Px          );
-    Tree->Branch("T_Gen_PromptTau_Py", "std::vector<float>",          &T_Gen_PromptTau_Py         );
-    Tree->Branch("T_Gen_PromptTau_Pz", "std::vector<float>",          &T_Gen_PromptTau_Pz         );
+    Tree->Branch("T_Gen_PromptTau_pdgId",  "std::vector<int>",   &T_Gen_PromptTau_pdgId);
+    Tree->Branch("T_Gen_PromptTau_Energy", "std::vector<float>", &T_Gen_PromptTau_Energy);
+    Tree->Branch("T_Gen_PromptTau_Px",     "std::vector<float>", &T_Gen_PromptTau_Px);
+    Tree->Branch("T_Gen_PromptTau_Py",     "std::vector<float>", &T_Gen_PromptTau_Py);
+    Tree->Branch("T_Gen_PromptTau_Pz",     "std::vector<float>", &T_Gen_PromptTau_Pz);
     
-    Tree->Branch("T_Gen_PromptTau_MpdgId", "std::vector<int>",    &T_Gen_PromptTau_MpdgId );
-    Tree->Branch("T_Gen_PromptTau_MEnergy", "std::vector<float>",       &T_Gen_PromptTau_MEnergy      );
-    Tree->Branch("T_Gen_PromptTau_MPx", "std::vector<float>",           &T_Gen_PromptTau_MPx          );
-    Tree->Branch("T_Gen_PromptTau_MPy", "std::vector<float>",          &T_Gen_PromptTau_MPy         );
-    Tree->Branch("T_Gen_PromptTau_MPz", "std::vector<float>",          &T_Gen_PromptTau_MPz         );
-    Tree->Branch("T_Gen_PromptTau_MSt", "std::vector<int>",    &T_Gen_PromptTau_MSt );
+    Tree->Branch("T_Gen_PromptTau_MpdgId",  "std::vector<int>",   &T_Gen_PromptTau_MpdgId);
+    Tree->Branch("T_Gen_PromptTau_MEnergy", "std::vector<float>", &T_Gen_PromptTau_MEnergy);
+    Tree->Branch("T_Gen_PromptTau_MPx",     "std::vector<float>", &T_Gen_PromptTau_MPx);
+    Tree->Branch("T_Gen_PromptTau_MPy",     "std::vector<float>", &T_Gen_PromptTau_MPy);
+    Tree->Branch("T_Gen_PromptTau_MPz",     "std::vector<float>", &T_Gen_PromptTau_MPz);
+    Tree->Branch("T_Gen_PromptTau_MSt",     "std::vector<int>",   &T_Gen_PromptTau_MSt);
     
-    Tree->Branch("T_Gen_PromptTau_IsLepDec", "std::vector<bool>", &T_Gen_PromptTau_IsLepDec);
-    Tree->Branch("T_Gen_PromptTau_LepDec_pdgId", "std::vector<int>", &T_Gen_PromptTau_LepDec_pdgId);
-    Tree->Branch("T_Gen_PromptTau_LepDec_Px", "std::vector<float>", &T_Gen_PromptTau_LepDec_Px);
-    Tree->Branch("T_Gen_PromptTau_LepDec_Py", "std::vector<float>", &T_Gen_PromptTau_LepDec_Py);
-    Tree->Branch("T_Gen_PromptTau_LepDec_Pz", "std::vector<float>", &T_Gen_PromptTau_LepDec_Pz);
+    Tree->Branch("T_Gen_PromptTau_IsLepDec",      "std::vector<bool>",  &T_Gen_PromptTau_IsLepDec);
+    Tree->Branch("T_Gen_PromptTau_LepDec_pdgId",  "std::vector<int>",   &T_Gen_PromptTau_LepDec_pdgId);
+    Tree->Branch("T_Gen_PromptTau_LepDec_Px",     "std::vector<float>", &T_Gen_PromptTau_LepDec_Px);
+    Tree->Branch("T_Gen_PromptTau_LepDec_Py",     "std::vector<float>", &T_Gen_PromptTau_LepDec_Py);
+    Tree->Branch("T_Gen_PromptTau_LepDec_Pz",     "std::vector<float>", &T_Gen_PromptTau_LepDec_Pz);
     Tree->Branch("T_Gen_PromptTau_LepDec_Energy", "std::vector<float>", &T_Gen_PromptTau_LepDec_Energy);
     
-    Tree->Branch("T_Gen_Tau_pdgId", "std::vector<int>",          &T_Gen_Tau_pdgId       );
-    Tree->Branch("T_Gen_Tau_Energy", "std::vector<float>",       &T_Gen_Tau_Energy      );
-    Tree->Branch("T_Gen_Tau_Px", "std::vector<float>",           &T_Gen_Tau_Px          );
-    Tree->Branch("T_Gen_Tau_Py", "std::vector<float>",          &T_Gen_Tau_Py         );
-    Tree->Branch("T_Gen_Tau_Pz", "std::vector<float>",          &T_Gen_Tau_Pz         );
+    Tree->Branch("T_Gen_Tau_pdgId",  "std::vector<int>",   &T_Gen_Tau_pdgId);
+    Tree->Branch("T_Gen_Tau_Energy", "std::vector<float>", &T_Gen_Tau_Energy);
+    Tree->Branch("T_Gen_Tau_Px",     "std::vector<float>", &T_Gen_Tau_Px);
+    Tree->Branch("T_Gen_Tau_Py",     "std::vector<float>", &T_Gen_Tau_Py);
+    Tree->Branch("T_Gen_Tau_Pz",     "std::vector<float>", &T_Gen_Tau_Pz);
 
-    Tree->Branch("T_Gen_Tau_MpdgId", "std::vector<int>",    &T_Gen_Tau_MpdgId );
-    Tree->Branch("T_Gen_Tau_MEnergy", "std::vector<float>",       &T_Gen_Tau_MEnergy      );
-    Tree->Branch("T_Gen_Tau_MPx", "std::vector<float>",           &T_Gen_Tau_MPx          );
-    Tree->Branch("T_Gen_Tau_MPy", "std::vector<float>",          &T_Gen_Tau_MPy         );
-    Tree->Branch("T_Gen_Tau_MPz", "std::vector<float>",          &T_Gen_Tau_MPz         );
-    Tree->Branch("T_Gen_Tau_MSt", "std::vector<int>",    &T_Gen_Tau_MSt );
+    Tree->Branch("T_Gen_Tau_MpdgId",  "std::vector<int>",   &T_Gen_Tau_MpdgId);
+    Tree->Branch("T_Gen_Tau_MEnergy", "std::vector<float>", &T_Gen_Tau_MEnergy);
+    Tree->Branch("T_Gen_Tau_MPx",     "std::vector<float>", &T_Gen_Tau_MPx);
+    Tree->Branch("T_Gen_Tau_MPy",     "std::vector<float>", &T_Gen_Tau_MPy);
+    Tree->Branch("T_Gen_Tau_MPz",     "std::vector<float>", &T_Gen_Tau_MPz);
+    Tree->Branch("T_Gen_Tau_MSt",     "std::vector<int>",   &T_Gen_Tau_MSt);
 
-    Tree->Branch("T_Gen_Tau_IsLepDec", "std::vector<bool>", &T_Gen_Tau_IsLepDec);
-    Tree->Branch("T_Gen_Tau_LepDec_pdgId", "std::vector<int>", &T_Gen_Tau_LepDec_pdgId);
-    Tree->Branch("T_Gen_Tau_LepDec_Px", "std::vector<float>", &T_Gen_Tau_LepDec_Px);
-    Tree->Branch("T_Gen_Tau_LepDec_Py", "std::vector<float>", &T_Gen_Tau_LepDec_Py);
-    Tree->Branch("T_Gen_Tau_LepDec_Pz", "std::vector<float>", &T_Gen_Tau_LepDec_Pz);
+    Tree->Branch("T_Gen_Tau_IsLepDec",      "std::vector<bool>",  &T_Gen_Tau_IsLepDec);
+    Tree->Branch("T_Gen_Tau_LepDec_pdgId",  "std::vector<int>",   &T_Gen_Tau_LepDec_pdgId);
+    Tree->Branch("T_Gen_Tau_LepDec_Px",     "std::vector<float>", &T_Gen_Tau_LepDec_Px);
+    Tree->Branch("T_Gen_Tau_LepDec_Py",     "std::vector<float>", &T_Gen_Tau_LepDec_Py);
+    Tree->Branch("T_Gen_Tau_LepDec_Pz",     "std::vector<float>", &T_Gen_Tau_LepDec_Pz);
     Tree->Branch("T_Gen_Tau_LepDec_Energy", "std::vector<float>", &T_Gen_Tau_LepDec_Energy);
   }
 
@@ -2813,54 +2810,55 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Muon_Py",  "std::vector<float>", &T_Muon_Py);
   Tree->Branch("T_Muon_Pz",  "std::vector<float>", &T_Muon_Pz);
   Tree->Branch("T_Muon_Pt",  "std::vector<float>", &T_Muon_Pt);
+
   Tree->Branch("T_Muon_BestTrack_Px",  "std::vector<float>", &T_Muon_BestTrack_Px);
   Tree->Branch("T_Muon_BestTrack_Py",  "std::vector<float>", &T_Muon_BestTrack_Py);
   Tree->Branch("T_Muon_BestTrack_Pz",  "std::vector<float>", &T_Muon_BestTrack_Pz);
   Tree->Branch("T_Muon_BestTrack_Pt",  "std::vector<float>", &T_Muon_BestTrack_Pt);
   Tree->Branch("T_Muon_BestTrack_Phi", "std::vector<float>", &T_Muon_BestTrack_Phi);
-  Tree->Branch("T_Muon_deltaPt", "std::vector<float>", &T_Muon_deltaPt);
-  Tree->Branch("T_Muon_Energy", "std::vector<float>", &T_Muon_Energy);
-  Tree->Branch("T_Muon_Charge", "std::vector<int>", &T_Muon_Charge);
-
-  Tree->Branch("T_Muon_vz", "std::vector<float>", &T_Muon_vz);
-  Tree->Branch("T_Muon_vy", "std::vector<float>", &T_Muon_vy);
-  Tree->Branch("T_Muon_vx", "std::vector<float>", &T_Muon_vx);
   Tree->Branch("T_Muon_BestTrack_vx",  "std::vector<float>", &T_Muon_BestTrack_vx);
   Tree->Branch("T_Muon_BestTrack_vy",  "std::vector<float>", &T_Muon_BestTrack_vy);
   Tree->Branch("T_Muon_BestTrack_vz",  "std::vector<float>", &T_Muon_BestTrack_vz);
-  Tree->Branch("T_Muon_NormChi2GTrk", "std::vector<float>", &T_Muon_NormChi2GTrk);
-  Tree->Branch("T_Muon_Chi2InTrk", "std::vector<float>", &T_Muon_Chi2InTrk);
-  Tree->Branch("T_Muon_StaTrkMatchChi2","std::vector<float>", &T_Muon_StaTrkMatchChi2);
-  Tree->Branch("T_Muon_dofInTrk", "std::vector<float>", &T_Muon_dofInTrk);
-  Tree->Branch("T_Muon_NValidHitsInTrk", "std::vector<int>", &T_Muon_NValidHitsInTrk);
-  Tree->Branch("T_Muon_NValidPixelHitsInTrk", "std::vector<int>", &T_Muon_NValidPixelHitsInTrk);
-  Tree->Branch("T_Muon_NValidHitsSATrk", "std::vector<int>", &T_Muon_NValidHitsSATrk);
-  Tree->Branch("T_Muon_NValidHitsGTrk", "std::vector<int>", &T_Muon_NValidHitsGTrk);
-  Tree->Branch("T_Muon_NLayers","std::vector<int>", &T_Muon_NLayers);
-  Tree->Branch("T_Muon_InnerTrackFound", "std::vector<int>", &T_Muon_InnerTrackFound);
-  Tree->Branch("T_Muon_NumOfMatchedStations", "std::vector<int>", &T_Muon_NumOfMatchedStations);
-  Tree->Branch("T_Muon_SegmentCompatibility","std::vector<float>", &T_Muon_SegmentCompatibility);
-  Tree->Branch("T_Muon_trkKink","std::vector<float>", &T_Muon_trkKink);
-  Tree->Branch("T_Muon_dxyGTrack", "std::vector<float>", &T_Muon_dxyGTrack);
-  Tree->Branch("T_Muon_dxyInTrack", "std::vector<float>", &T_Muon_dxyInTrack);
-  Tree->Branch("T_Muon_BestTrack_dxy", "std::vector<float>", &T_Muon_BestTrack_dxy);
-  Tree->Branch("T_Muon_IPwrtAveBSInTrack", "std::vector<float>", &T_Muon_IPwrtAveBSInTrack);
-  Tree->Branch("T_Muon_dzGTrack", "std::vector<float>", &T_Muon_dzGTrack);
-  Tree->Branch("T_Muon_dzInTrack", "std::vector<float>", &T_Muon_dzInTrack);
-  Tree->Branch("T_Muon_BestTrack_dz",  "std::vector<float>", &T_Muon_BestTrack_dz);
-  Tree->Branch("T_Muon_fromPV", "std::vector<int>", &T_Muon_fromPV);
 
-  Tree->Branch("T_Muon_chargedHadronIsoR04", "std::vector<float>", &T_Muon_chargedHadronIsoR04);
-  Tree->Branch("T_Muon_neutralHadronIsoR04", "std::vector<float>", &T_Muon_neutralHadronIsoR04);
+  Tree->Branch("T_Muon_deltaPt",              "std::vector<float>", &T_Muon_deltaPt);
+  Tree->Branch("T_Muon_Energy",               "std::vector<float>", &T_Muon_Energy);
+  Tree->Branch("T_Muon_Charge",               "std::vector<int>",   &T_Muon_Charge);
+  Tree->Branch("T_Muon_vz",                   "std::vector<float>", &T_Muon_vz);
+  Tree->Branch("T_Muon_vy",                   "std::vector<float>", &T_Muon_vy);
+  Tree->Branch("T_Muon_vx",                   "std::vector<float>", &T_Muon_vx);
+  Tree->Branch("T_Muon_NormChi2GTrk",         "std::vector<float>", &T_Muon_NormChi2GTrk);
+  Tree->Branch("T_Muon_Chi2InTrk",            "std::vector<float>", &T_Muon_Chi2InTrk);
+  Tree->Branch("T_Muon_StaTrkMatchChi2",      "std::vector<float>", &T_Muon_StaTrkMatchChi2);
+  Tree->Branch("T_Muon_dofInTrk",             "std::vector<float>", &T_Muon_dofInTrk);
+  Tree->Branch("T_Muon_NValidHitsInTrk",      "std::vector<int>",   &T_Muon_NValidHitsInTrk);
+  Tree->Branch("T_Muon_NValidPixelHitsInTrk", "std::vector<int>",   &T_Muon_NValidPixelHitsInTrk);
+  Tree->Branch("T_Muon_NValidHitsSATrk",      "std::vector<int>",   &T_Muon_NValidHitsSATrk);
+  Tree->Branch("T_Muon_NValidHitsGTrk",       "std::vector<int>",   &T_Muon_NValidHitsGTrk);
+  Tree->Branch("T_Muon_NLayers",              "std::vector<int>",   &T_Muon_NLayers);
+  Tree->Branch("T_Muon_InnerTrackFound",      "std::vector<int>",   &T_Muon_InnerTrackFound);
+  Tree->Branch("T_Muon_NumOfMatchedStations", "std::vector<int>",   &T_Muon_NumOfMatchedStations);
+  Tree->Branch("T_Muon_SegmentCompatibility", "std::vector<float>", &T_Muon_SegmentCompatibility);
+  Tree->Branch("T_Muon_trkKink",              "std::vector<float>", &T_Muon_trkKink);
+  Tree->Branch("T_Muon_dxyGTrack",            "std::vector<float>", &T_Muon_dxyGTrack);
+  Tree->Branch("T_Muon_dxyInTrack",           "std::vector<float>", &T_Muon_dxyInTrack);
+  Tree->Branch("T_Muon_BestTrack_dxy",        "std::vector<float>", &T_Muon_BestTrack_dxy);
+  Tree->Branch("T_Muon_IPwrtAveBSInTrack",    "std::vector<float>", &T_Muon_IPwrtAveBSInTrack);
+  Tree->Branch("T_Muon_dzGTrack",             "std::vector<float>", &T_Muon_dzGTrack);
+  Tree->Branch("T_Muon_dzInTrack",            "std::vector<float>", &T_Muon_dzInTrack);
+  Tree->Branch("T_Muon_BestTrack_dz",         "std::vector<float>", &T_Muon_BestTrack_dz);
+  Tree->Branch("T_Muon_fromPV",               "std::vector<int>",   &T_Muon_fromPV);
+
+  Tree->Branch("T_Muon_chargedHadronIsoR04",   "std::vector<float>", &T_Muon_chargedHadronIsoR04);
+  Tree->Branch("T_Muon_neutralHadronIsoR04",   "std::vector<float>", &T_Muon_neutralHadronIsoR04);
   Tree->Branch("T_Muon_neutralIsoPFweightR04", "std::vector<float>", &T_Muon_neutralIsoPFweightR04);
-  Tree->Branch("T_Muon_photonIsoR04", "std::vector<float>", &T_Muon_photonIsoR04);
-  Tree->Branch("T_Muon_sumPUPtR04", "std::vector<float>", &T_Muon_sumPUPtR04);
+  Tree->Branch("T_Muon_photonIsoR04",          "std::vector<float>", &T_Muon_photonIsoR04);
+  Tree->Branch("T_Muon_sumPUPtR04",            "std::vector<float>", &T_Muon_sumPUPtR04);
   Tree->Branch("T_Muon_chargedParticleIsoR03", "std::vector<float>", &T_Muon_chargedParticleIsoR03);
-  Tree->Branch("T_Muon_chargedHadronIsoR03", "std::vector<float>", &T_Muon_chargedHadronIsoR03);
-  Tree->Branch("T_Muon_neutralHadronIsoR03", "std::vector<float>", &T_Muon_neutralHadronIsoR03);
+  Tree->Branch("T_Muon_chargedHadronIsoR03",   "std::vector<float>", &T_Muon_chargedHadronIsoR03);
+  Tree->Branch("T_Muon_neutralHadronIsoR03",   "std::vector<float>", &T_Muon_neutralHadronIsoR03);
   Tree->Branch("T_Muon_neutralIsoPFweightR03", "std::vector<float>", &T_Muon_neutralIsoPFweightR03);
-  Tree->Branch("T_Muon_photonIsoR03", "std::vector<float>", &T_Muon_photonIsoR03);
-  Tree->Branch("T_Muon_sumPUPtR03", "std::vector<float>", &T_Muon_sumPUPtR03);
+  Tree->Branch("T_Muon_photonIsoR03",          "std::vector<float>", &T_Muon_photonIsoR03);
+  Tree->Branch("T_Muon_sumPUPtR03",            "std::vector<float>", &T_Muon_sumPUPtR03);
 
   // Taus
   Tree->Branch("T_Tau_Px",     "std::vector<float>", &T_Tau_Px);
@@ -2870,54 +2868,55 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Tau_Charge", "std::vector<int>",   &T_Tau_Charge);
 
   // Electrons  
-  Tree->Branch("T_Elec_Eta", "std::vector<float>", &T_Elec_Eta);
+  Tree->Branch("T_Elec_Eta",        "std::vector<float>", &T_Elec_Eta);
   Tree->Branch("T_Elec_IPwrtAveBS", "std::vector<float>", &T_Elec_IPwrtAveBS);
-  Tree->Branch("T_Elec_IPwrtPV", "std::vector<float>", &T_Elec_IPwrtPV);
-  Tree->Branch("T_Elec_dzwrtPV", "std::vector<float>", &T_Elec_dzwrtPV);
-  Tree->Branch("T_Elec_Px", "std::vector<float>", &T_Elec_Px);
-  Tree->Branch("T_Elec_Py", "std::vector<float>", &T_Elec_Py);
-  Tree->Branch("T_Elec_Pz", "std::vector<float>", &T_Elec_Pz);
-  Tree->Branch("T_Elec_Pt", "std::vector<float>", &T_Elec_Pt);
-  Tree->Branch("T_Elec_Energy", "std::vector<float>", &T_Elec_Energy);
-  Tree->Branch("T_Elec_Charge", "std::vector<int>", &T_Elec_Charge);
+  Tree->Branch("T_Elec_IPwrtPV",    "std::vector<float>", &T_Elec_IPwrtPV);
+  Tree->Branch("T_Elec_dzwrtPV",    "std::vector<float>", &T_Elec_dzwrtPV);
+  Tree->Branch("T_Elec_Px",         "std::vector<float>", &T_Elec_Px);
+  Tree->Branch("T_Elec_Py",         "std::vector<float>", &T_Elec_Py);
+  Tree->Branch("T_Elec_Pz",         "std::vector<float>", &T_Elec_Pz);
+  Tree->Branch("T_Elec_Pt",         "std::vector<float>", &T_Elec_Pt);
+  Tree->Branch("T_Elec_Energy",     "std::vector<float>", &T_Elec_Energy);
+  Tree->Branch("T_Elec_Charge",     "std::vector<int>",   &T_Elec_Charge);
 
-  Tree->Branch("T_Elec_nBrems", "std::vector<int>", &T_Elec_nBrems); 
-  Tree->Branch("T_Elec_fBrem", "std::vector<float>", &T_Elec_fBrem);
+  Tree->Branch("T_Elec_nBrems",             "std::vector<int>",   &T_Elec_nBrems); 
+  Tree->Branch("T_Elec_fBrem",              "std::vector<float>", &T_Elec_fBrem);
   Tree->Branch("T_Elec_eSuperClusterOverP", "std::vector<float>", &T_Elec_eSuperClusterOverP);
-  Tree->Branch("T_Elec_ecalEnergy", "std::vector<float>", &T_Elec_ecalEnergy);
-  Tree->Branch("T_Elec_dr03TkSumPt", "std::vector<float>", &T_Elec_dr03TkSumPt);
-  Tree->Branch("T_Elec_dr03EcalSumEt", "std::vector<float>", &T_Elec_dr03EcalSumEt);
-  Tree->Branch("T_Elec_dr03HcalSumEt", "std::vector<float>", &T_Elec_dr03HcalSumEt);
-  Tree->Branch("T_Elec_isEB", "std::vector<bool>", &T_Elec_isEB);
-  Tree->Branch("T_Elec_isEE", "std::vector<bool>", &T_Elec_isEE);
-  Tree->Branch("T_Elec_chargedHadronIso", "std::vector<float>", &T_Elec_chargedHadronIso);
-  Tree->Branch("T_Elec_neutralHadronIso", "std::vector<float>", &T_Elec_neutralHadronIso);
+  Tree->Branch("T_Elec_ecalEnergy",         "std::vector<float>", &T_Elec_ecalEnergy);
+  Tree->Branch("T_Elec_dr03TkSumPt",        "std::vector<float>", &T_Elec_dr03TkSumPt);
+  Tree->Branch("T_Elec_dr03EcalSumEt",      "std::vector<float>", &T_Elec_dr03EcalSumEt);
+  Tree->Branch("T_Elec_dr03HcalSumEt",      "std::vector<float>", &T_Elec_dr03HcalSumEt);
+  Tree->Branch("T_Elec_isEB",               "std::vector<bool>",  &T_Elec_isEB);
+  Tree->Branch("T_Elec_isEE",               "std::vector<bool>",  &T_Elec_isEE);
+  Tree->Branch("T_Elec_chargedHadronIso",   "std::vector<float>", &T_Elec_chargedHadronIso);
+  Tree->Branch("T_Elec_neutralHadronIso",   "std::vector<float>", &T_Elec_neutralHadronIso);
   Tree->Branch("T_Elec_neutralIsoPFweight", "std::vector<float>", &T_Elec_neutralIsoPFweight);
-  Tree->Branch("T_Elec_photonIso", "std::vector<float>", &T_Elec_photonIso);
+  Tree->Branch("T_Elec_photonIso",          "std::vector<float>", &T_Elec_photonIso);
   Tree->Branch("T_Elec_puChargedHadronIso", "std::vector<float>", &T_Elec_puChargedHadronIso);
-  Tree->Branch("T_Elec_passConversionVeto","std::vector<bool>",&T_Elec_passConversionVeto);
+  Tree->Branch("T_Elec_passConversionVeto", "std::vector<bool>",  &T_Elec_passConversionVeto);
     
-  Tree->Branch("T_Elec_sigmaIetaIeta", "std::vector<float>", &T_Elec_sigmaIetaIeta);
-  Tree->Branch("T_Elec_deltaPhiIn", "std::vector<float>", &T_Elec_deltaPhiIn);
-  Tree->Branch("T_Elec_deltaEtaIn", "std::vector<float>", &T_Elec_deltaEtaIn);
-  Tree->Branch("T_Elec_isEcalDriven", "std::vector<bool>", &T_Elec_isEcalDriven);
-  Tree->Branch("T_Elec_HtoE", "std::vector<float>", &T_Elec_HtoE);
+  Tree->Branch("T_Elec_sigmaIetaIeta",         "std::vector<float>", &T_Elec_sigmaIetaIeta);
+  Tree->Branch("T_Elec_sigmaIetaIetaFull5by5", "std::vector<float>", &T_Elec_sigmaIetaIetaFull5by5);
+  Tree->Branch("T_Elec_deltaPhiIn",            "std::vector<float>", &T_Elec_deltaPhiIn);
+  Tree->Branch("T_Elec_deltaEtaIn",            "std::vector<float>", &T_Elec_deltaEtaIn);
+  Tree->Branch("T_Elec_isEcalDriven",          "std::vector<bool>",  &T_Elec_isEcalDriven);
+  Tree->Branch("T_Elec_HtoE",                  "std::vector<float>", &T_Elec_HtoE);
  
-  Tree->Branch("T_Elec_vz", "std::vector<float>", &T_Elec_vz);
-  Tree->Branch("T_Elec_vy", "std::vector<float>", &T_Elec_vy);
-  Tree->Branch("T_Elec_vx", "std::vector<float>", &T_Elec_vx);
-  Tree->Branch("T_Elec_nLost", "std::vector<int>", &T_Elec_nLost);
-  Tree->Branch("T_Elec_nHits", "std::vector<int>", &T_Elec_nHits);
-  Tree->Branch("T_Elec_SC_Et","std::vector<float>", &T_Elec_SC_Et);
-  Tree->Branch("T_Elec_SC_Eta","std::vector<float>", &T_Elec_SC_Eta); 
+  Tree->Branch("T_Elec_vz",     "std::vector<float>", &T_Elec_vz);
+  Tree->Branch("T_Elec_vy",     "std::vector<float>", &T_Elec_vy);
+  Tree->Branch("T_Elec_vx",     "std::vector<float>", &T_Elec_vx);
+  Tree->Branch("T_Elec_nLost",  "std::vector<int>",   &T_Elec_nLost);
+  Tree->Branch("T_Elec_nHits",  "std::vector<int>",   &T_Elec_nHits);
+  Tree->Branch("T_Elec_SC_Et",  "std::vector<float>", &T_Elec_SC_Et);
+  Tree->Branch("T_Elec_SC_Eta", "std::vector<float>", &T_Elec_SC_Eta); 
 
-  Tree->Branch("T_Elec_PFElecPt","std::vector<float>", &T_Elec_PFElecPt);
-  Tree->Branch("T_Elec_PFElecPx","std::vector<float>", &T_Elec_PFElecPx);
-  Tree->Branch("T_Elec_PFElecPy","std::vector<float>", &T_Elec_PFElecPy);
-  Tree->Branch("T_Elec_PFElecPz","std::vector<float>", &T_Elec_PFElecPx);
-  Tree->Branch("T_Elec_PFElecE","std::vector<float>", &T_Elec_PFElecE);
-  Tree->Branch("T_Elec_isPF","std::vector<bool>", &T_Elec_isPF);
-  Tree->Branch("T_Elec_MVAoutput","std::vector<float>", &T_Elec_MVAoutput);
+  Tree->Branch("T_Elec_PFElecPt",  "std::vector<float>", &T_Elec_PFElecPt);
+  Tree->Branch("T_Elec_PFElecPx",  "std::vector<float>", &T_Elec_PFElecPx);
+  Tree->Branch("T_Elec_PFElecPy",  "std::vector<float>", &T_Elec_PFElecPy);
+  Tree->Branch("T_Elec_PFElecPz",  "std::vector<float>", &T_Elec_PFElecPx);
+  Tree->Branch("T_Elec_PFElecE",   "std::vector<float>", &T_Elec_PFElecE);
+  Tree->Branch("T_Elec_isPF",      "std::vector<bool>",  &T_Elec_isPF);
+  Tree->Branch("T_Elec_MVAoutput", "std::vector<float>", &T_Elec_MVAoutput);
   
 
   // Jets
@@ -2929,7 +2928,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_METPF_Phi", &T_METPF_Phi, "T_METPF_Phi/F");	
 
   if (!IsRealData) {
-    Tree->Branch("T_METgen_ET",  &T_METgen_ET, "T_METgen_ET/F");
+    Tree->Branch("T_METgen_ET",  &T_METgen_ET,  "T_METgen_ET/F");
     Tree->Branch("T_METgen_Phi", &T_METgen_Phi, "T_METgen_Phi/F");             
   }
 }
