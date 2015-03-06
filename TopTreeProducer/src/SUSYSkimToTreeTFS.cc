@@ -89,7 +89,7 @@ private:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
  
-  bool IsRealData;  
+  bool isRealData;  
  
   TTree* Tree = new TTree();
   
@@ -101,17 +101,15 @@ private:
 			int& pdgId, float& px, float& py, float& pz, float& energy);
   
   // Input tags
-  edm::InputTag muoLabel_;
-  edm::InputTag jetPFLabel_;
+  edm::InputTag muonLabel_;
+  edm::InputTag jetLabel_;
   edm::InputTag metLabel_;
-  edm::InputTag PVLabel_;
+  edm::InputTag pvLabel_;
   edm::InputTag trigLabel_;
   edm::InputTag elecLabel_;     
   edm::InputTag tauLabel_;
   edm::InputTag pfLabel_;
  
-  edm::ParameterSet jetIdLoose_; 
-  
   EGammaMvaEleEstimatorCSA14* myMVATrig;
 
   // MET filters
@@ -535,14 +533,14 @@ private:
 
 
 SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
-  muoLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
-  jetPFLabel_(iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
-  metLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
-  PVLabel_   (iConfig.getUntrackedParameter<edm::InputTag>("PVTag")),
-  trigLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("trigTag")),
-  elecLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("electronTag")),
-  tauLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
-  pfLabel_   (iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
+  muonLabel_(iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
+  jetLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
+  metLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
+  pvLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("PVTag")),
+  trigLabel_(iConfig.getUntrackedParameter<edm::InputTag>("trigTag")),
+  elecLabel_(iConfig.getUntrackedParameter<edm::InputTag>("electronTag")),
+  tauLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
+  pfLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
 {
   // CSA14 EleMVAID
   std::vector<std::string> myManualCatWeigths;
@@ -572,7 +570,7 @@ void
 SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // Decide that it is real data if the genParticles collection is not found
-  IsRealData = false;
+  isRealData = false;
   edm::Handle <reco::GenParticleCollection> genParticles;
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
@@ -581,10 +579,10 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     // To avoid warnings I add the line aux = 0
     aux = 0 + aux;
   }
-  catch(...) {IsRealData = true;} 
+  catch(...) {isRealData = true;} 
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
-  iEvent.getByLabel(muoLabel_,muonHandle);
+  iEvent.getByLabel(muonLabel_, muonHandle);
 
   edm::Handle<edm::View<pat::Electron> > electronHandle;
   iEvent.getByLabel(elecLabel_, electronHandle);
@@ -596,14 +594,14 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   iEvent.getByLabel(pfLabel_, pfHandle);
 
   edm::Handle<edm::View<pat::Jet> > jetPFHandle;
-  iEvent.getByLabel(jetPFLabel_, jetPFHandle);
+  iEvent.getByLabel(jetLabel_, jetPFHandle);
   edm::View<pat::Jet> jetsPF = *jetPFHandle;
 
   edm::Handle<pat::METCollection> patMET;
   iEvent.getByLabel(metLabel_, patMET);
 
   edm::Handle<VertexCollection> vertex;
-  iEvent.getByLabel(PVLabel_, vertex);
+  iEvent.getByLabel(pvLabel_, vertex);
   const reco::VertexCollection& vtxs = *(vertex.product());
 
 
@@ -617,7 +615,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Event_nPUm       = -1;
   T_Event_AveNTruePU = -1.;
 
-  if (!IsRealData) {
+  if (!isRealData) {
 
     float truePu = 0.;
 
@@ -880,7 +878,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Gen_Tau_LepDec_Pz     = new std::vector<float>;
   T_Gen_Tau_LepDec_Energy = new std::vector<float>;  
   
-  if (!IsRealData) {
+  if (!isRealData) {
 
     edm::Handle<GenEventInfoProduct> genEvtInfo;
     iEvent.getByLabel("generator", genEvtInfo);
@@ -1281,7 +1279,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	T_Gen_Nu_phi    ->push_back(p.phi());	   
       }    
     }  // for..genParticles    
-  }  // !IsRealData
+  }  // !isRealData
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1298,7 +1296,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_Vertex_nTracks    = new std::vector<int>;
   T_Vertex_isGood     = new std::vector<bool>;
 
-  int FirstGoodVertex = -999;
+  int firstGoodVertex = -999;
   
   // Loop over vertices
   if (vtxs.size() != 0) {
@@ -1313,7 +1311,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 
 	isGoodVertex = true;
 
-	if (FirstGoodVertex < 0) FirstGoodVertex = i;
+	if (firstGoodVertex < 0) firstGoodVertex = i;
       }
 
       T_Vertex_x          -> push_back(vtxs[i].x());
@@ -1426,9 +1424,9 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     
       normchi2 = selected_muons[k].globalTrack()->normalizedChi2();
 
-      if (FirstGoodVertex > -1) {
-	IP = selected_muons[k].globalTrack()->dxy(vtxs[FirstGoodVertex].position());
-	dZ = selected_muons[k].globalTrack()->dz(vtxs[FirstGoodVertex].position());
+      if (firstGoodVertex > -1) {
+	IP = selected_muons[k].globalTrack()->dxy(vtxs[firstGoodVertex].position());
+	dZ = selected_muons[k].globalTrack()->dz(vtxs[firstGoodVertex].position());
       }
     }
 
@@ -1453,9 +1451,9 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       dofinnertracker   = selected_muons[k].innerTrack()->ndof();
       deltaPt           = selected_muons[k].innerTrack()->ptError();
 
-      if (FirstGoodVertex > -1) {
-	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[FirstGoodVertex].position());
-	dZIn = selected_muons[k].innerTrack()->dz(vtxs[FirstGoodVertex].position());
+      if (firstGoodVertex > -1) {
+	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[firstGoodVertex].position());
+	dZIn = selected_muons[k].innerTrack()->dz(vtxs[firstGoodVertex].position());
       }
     }
 
@@ -1482,9 +1480,9 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       besttrack_Pt  = selected_muons[k].muonBestTrack()->pt();
       besttrack_Phi = selected_muons[k].muonBestTrack()->phi();
 
-      if (FirstGoodVertex > -1) {
-	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[FirstGoodVertex].position());
-	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[FirstGoodVertex].position());
+      if (firstGoodVertex > -1) {
+	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[firstGoodVertex].position());
+	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[firstGoodVertex].position());
       }
     }
 
@@ -1502,8 +1500,8 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     }
 
     bool isTightMuon = false;
-    if (FirstGoodVertex > -1) {
-      isTightMuon = selected_muons[k].isTightMuon(vtxs[FirstGoodVertex]);
+    if (firstGoodVertex > -1) {
+      isTightMuon = selected_muons[k].isTightMuon(vtxs[firstGoodVertex]);
     }
 
 
@@ -1513,19 +1511,19 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     double muon_neutralIsoPFweightR03 = 0;
     double muon_neutralIsoPFweightR04 = 0;
 
-    // Get a list of the PF candidates used to build the muon, to exclude them
+    // Fill a vector with the PF candidates used to build the muon
     std::vector<reco::CandidatePtr> footprint;
 
     for (unsigned int i=0, n=selected_muons[k].numberOfSourceCandidatePtrs(); i<n; ++i) {
       footprint.push_back(selected_muons[k].sourceCandidatePtr(i));
     }
 
-    // Loop on PF candidates
+    // Loop on all the PF candidates
     for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
 
       const pat::PackedCandidate &pf = (*pfHandle)[i];
       
-      // PF candidate-based footprint removal
+      // Remove the PF candidates used to build the muon
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
 
 	muon_fromPV          = pf.fromPV();  // 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
@@ -1534,63 +1532,62 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 	continue;
       }
 
-      if (pf.charge() == 0) {
-	
-	if (deltaR(pf,selected_muons[k]) < 0.4) {	  
+      // deltaR = 0.4
+      if (pf.charge() == 0 && deltaR(pf,selected_muons[k]) < 0.4) {	  
 	  
-	  double sumPU = 1.0;
-	  double sumPV = 1.0;
+	double sumPU = 1.0;
+	double sumPV = 1.0;
 
-	  for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+	for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
 
-	    const pat::PackedCandidate &pfj = (*pfHandle)[j];
+	  const pat::PackedCandidate &pfj = (*pfHandle)[j];
 
-	    if (pfj.charge() == 0) continue;
+	  if (pfj.charge() == 0) continue;
 
-	    double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
+	  double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
 
-	    if (pfj.fromPV() >= 2) {
-	      if (sum > 1.0) sumPV *= sum;
-	    } else {
-	      if (sum > 1.0) sumPU *= sum;
-	    }
+	  if (pfj.fromPV() >= 2) {
+	    if (sum > 1.0) sumPV *= sum;
+	  } else {
+	    if (sum > 1.0) sumPU *= sum;
 	  }
+	}
 
-	  sumPU = 0.5 * log(sumPU);
-	  sumPV = 0.5 * log(sumPV);
+	sumPU = 0.5 * log(sumPU);
+	sumPV = 0.5 * log(sumPV);
 
-	  double pfw = sumPV / (sumPV + sumPU);
+	double pfw = sumPV / (sumPV + sumPU);
+	
+	muon_neutralIsoPFweightR04 += (pfw * pf.pt());
+      }
+	
+      // deltaR = 0.3
+      if (pf.charge() == 0 && deltaR(pf,selected_muons[k]) < 0.3) {
+	  
+	double sumPU = 1.0;
+	double sumPV = 1.0;
 
-	  muon_neutralIsoPFweightR04 += (pfw * pf.pt());
+	for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+
+	  const pat::PackedCandidate &pfj = (*pfHandle)[j];
+
+	  if (pfj.charge() == 0) continue;
+
+	  double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
+
+	  if (pfj.fromPV() >= 2) {
+	    if (sum > 1.0) sumPV *= sum;
+	  } else {
+	    if (sum > 1.0) sumPU *= sum;
+	  }
 	}
 	
-	if (deltaR(pf,selected_muons[k]) < 0.3) {
+	sumPU = 0.5 * log(sumPU);
+	sumPV = 0.5 * log(sumPV);
+	
+	double pfw = sumPV / (sumPV + sumPU);
 	  
-	  double sumPU = 1.0;
-	  double sumPV = 1.0;
-
-	  for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
-
-	    const pat::PackedCandidate &pfj = (*pfHandle)[j];
-
-	    if (pfj.charge() == 0) continue;
-
-	    double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
-
-	    if (pfj.fromPV() >= 2) {
-	      if (sum > 1.0) sumPV *= sum;
-	    } else {
-	      if (sum > 1.0) sumPU *= sum;
-	    }
-	  }
-
-	  sumPU = 0.5 * log(sumPU);
-	  sumPV = 0.5 * log(sumPV);
-
-	  double pfw = sumPV / (sumPV + sumPU);
-
-	  muon_neutralIsoPFweightR03 += (pfw * pf.pt());
-	}
+	muon_neutralIsoPFweightR03 += (pfw * pf.pt());
       }
     }
 
@@ -1781,54 +1778,51 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double electron_neutralIsoPFweightR04 = 0;
 
-    // Get a list of the PF candidates used to build the muon, to exclude them
+    // Fill a vector with the PF candidates used to build the electron
     std::vector<reco::CandidatePtr> footprint;
 
     for (unsigned int i=0, n=selected_electrons[k].numberOfSourceCandidatePtrs(); i<n; ++i) {
       footprint.push_back(selected_electrons[k].sourceCandidatePtr(i));
     }
 
-    // Loop on PF candidates
+    // Loop on all the PF candidates
     for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
       
       const pat::PackedCandidate &pf = (*pfHandle)[i];
       
-      if (deltaR(pf,selected_electrons[k]) < 0.4) {
-
-	// PF candidate-based footprint removal
-	if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
-	  continue;
-	}
+      // Remove the PF candidates used to build the electron
+      if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) continue;
 	
-	if (pf.charge() == 0) {
+      // deltaR = 0.4
+      if (pf.charge() == 0 && deltaR(pf,selected_electrons[k]) < 0.4) {
 	  
-	  double sumPU = 1.0;
-	  double sumPV = 1.0;
+	double sumPU = 1.0;
+	double sumPV = 1.0;
 	  
-	  for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+	for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+	  
+	  const pat::PackedCandidate &pfj = (*pfHandle)[j];
+	  
+	  if (pfj.charge() == 0) continue;
 	    
-	    const pat::PackedCandidate &pfj = (*pfHandle)[j];
+	  double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
 	    
-	    if (pfj.charge() == 0) continue;
-	    
-	    double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
-	    
-	    if (pfj.fromPV() >= 2) {
-	      if (sum > 1.0) sumPV *= sum;
-	    } else {
-	      if (sum > 1.0) sumPU *= sum;
-	    }
+	  if (pfj.fromPV() >= 2) {
+	    if (sum > 1.0) sumPV *= sum;
+	  } else {
+	    if (sum > 1.0) sumPU *= sum;
 	  }
-	  
-	  sumPU = 0.5 * log(sumPU);
-	  sumPV = 0.5 * log(sumPV);
-	  
-	  double pfw = sumPV / (sumPV + sumPU);
-	  
-	  electron_neutralIsoPFweightR04 += (pfw * pf.pt());
 	}
+	  
+	sumPU = 0.5 * log(sumPU);
+	sumPV = 0.5 * log(sumPV);
+	
+	double pfw = sumPV / (sumPV + sumPU);
+	
+	electron_neutralIsoPFweightR04 += (pfw * pf.pt());
       }
     }
+
 
     T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
     T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
@@ -1910,7 +1904,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   T_METPF_ET  = theMET.pt();
   T_METPF_Phi = theMET.phi();
   
-  if (!IsRealData) {
+  if (!isRealData) {
     T_METgen_ET  = theMET.genMET()->pt();
     T_METgen_Phi = theMET.genMET()->phi();
   }
@@ -2341,30 +2335,30 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 				       PFJetIDSelectionFunctor::LOOSE);
 
   // Create the JetCorrectorParameter objects. The order does not matter
-  JetCorrectorParameters *L3JetPar;
-  JetCorrectorParameters *L2JetPar;
-  JetCorrectorParameters *L1JetPar;
-  //  JetCorrectorParameters *ResJetPar;
+  JetCorrectorParameters *L3JetPar  = NULL;
+  JetCorrectorParameters *L2JetPar  = NULL;
+  JetCorrectorParameters *L1JetPar  = NULL;
+  JetCorrectorParameters *ResJetPar = NULL;
 
   std::vector<JetCorrectorParameters> vPar;
 
-  //  if (IsRealData) {
-  //    ResJetPar = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2L3Residual_AK5PFchs.txt"); 
-  //    L3JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L3Absolute_AK5PFchs.txt");
-  //    L2JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2Relative_AK5PFchs.txt");
-  //    L1JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L1FastJet_AK5PFchs.txt");
-  //  }
-  //  else {
-  L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
-  L2JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
-  L1JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
-  //  }
+  if (isRealData) {
+    ResJetPar = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2L3Residual_AK5PFchs.txt"); 
+    L3JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L3Absolute_AK5PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2Relative_AK5PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L1FastJet_AK5PFchs.txt");
+  }
+  else {
+    L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
+    L2JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
+    L1JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
+  }
 
   //  Load the JetCorrectorParameter objects into a vector. The order matters
   vPar.push_back(*L1JetPar);
   vPar.push_back(*L2JetPar);
   vPar.push_back(*L3JetPar);
-  //  vPar.push_back(*ResJetPar);
+  if (isRealData) vPar.push_back(*ResJetPar);
 
   FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
 
@@ -2452,7 +2446,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       T_Jet_Parton_Energy[idx] -> push_back(0);
     }
    
-    if (!IsRealData) {
+    if (!isRealData) {
 
       try {
 
@@ -2483,7 +2477,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     
     T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
     T_Jet_Tag_CombInclusiveSVtxV2[idx] -> push_back(jet_iter->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
-    T_Jet_Tag_CombSVtx[idx]            -> push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));  // CSA14 only
+    T_Jet_Tag_CombSVtx[idx]            -> push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));
     T_Jet_Tag_CombMVA[idx]             -> push_back(jet_iter->bDiscriminator("combinedMVABJetTags"));
     T_Jet_Tag_pfCombinedSVtx[idx]      -> push_back(jet_iter->bDiscriminator("pfCombinedSecondaryVertexBJetTags"));
     T_Jet_Tag_JetBProb[idx]            -> push_back(jet_iter->bDiscriminator("jetBProbabilityBJetTags"));
@@ -2497,7 +2491,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   delete L3JetPar;
   delete L2JetPar;
   delete L1JetPar;
-  //  if(IsRealData) delete ResJetPar;
+  if (isRealData) delete ResJetPar;
 }
 
 
@@ -2540,7 +2534,7 @@ void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool caloj
   Tree->Branch(TString(namecol + "_IDLoose"),             "std::vector<bool>",  &T_Jet_IDLoose[idx]);
   Tree->Branch(TString(namecol + "_nDaughters"),          "std::vector<int>",   &T_Jet_nDaughters[idx]);
  
-  if (!IsRealData) {
+  if (!isRealData) {
     Tree->Branch(TString(namecol + "_GenJet_InvisibleE"), "std::vector<float>", &T_Jet_GenJet_InvisibleE[idx]);
     Tree->Branch(TString(namecol + "_GenJet_Px"),         "std::vector<float>", &T_Jet_GenJet_Px[idx]);
     Tree->Branch(TString(namecol + "_GenJet_Py"),         "std::vector<float>", &T_Jet_GenJet_Py[idx]);
@@ -2616,7 +2610,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_EventF_METFilters",                         &T_EventF_METFilters,                         "T_EventF_METFilters/O");
 
   // Gen 
-  if (!IsRealData) {
+  if (!isRealData) {
     Tree->Branch("T_Gen_StopMass",     "std::vector<float>", &T_Gen_StopMass);
     Tree->Branch("T_Gen_Chi0Mass",     "std::vector<float>", &T_Gen_Chi0Mass);
     Tree->Branch("T_Gen_CharginoMass", "std::vector<float>", &T_Gen_CharginoMass);
@@ -2945,7 +2939,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_METPF_ET",  &T_METPF_ET,  "T_METPF_ET/F");
   Tree->Branch("T_METPF_Phi", &T_METPF_Phi, "T_METPF_Phi/F");	
 
-  if (!IsRealData) {
+  if (!isRealData) {
     Tree->Branch("T_METgen_ET",  &T_METgen_ET,  "T_METgen_ET/F");
     Tree->Branch("T_METgen_Phi", &T_METgen_Phi, "T_METgen_Phi/F");             
   }
