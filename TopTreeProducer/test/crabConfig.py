@@ -2,7 +2,8 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 
 config.section_("General")
-config.General.requestName = 'DYJetsToLL_PU20bx25_PHYS14'
+config.General.transferLogs = True
+config.General.requestName  = 'DYJetsToLL_PU20bx25_PHYS14'
 
 config.section_("JobType")
 config.JobType.pluginName  = 'Analysis'
