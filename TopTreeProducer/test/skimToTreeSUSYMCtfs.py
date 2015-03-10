@@ -74,3 +74,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 # GlobalTag stuff
 process.GlobalTag.globaltag = 'GR_R_52_V7::All'
+
+# Debug
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1))
+

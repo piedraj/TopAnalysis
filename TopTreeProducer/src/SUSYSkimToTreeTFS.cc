@@ -139,29 +139,13 @@ private:
   float T_Event_AveNTruePU;
   float T_Event_Rho;
 
-  // Gen variables
-  std::vector<float> *T_Gen_StopMass;
-  std::vector<float> *T_Gen_Chi0Mass;
-  std::vector<float> *T_Gen_CharginoMass;
-
+  // Gen muon
   std::vector<int>   *T_Gen_PromptMuon_pdgId;
   std::vector<float> *T_Gen_PromptMuon_Px;
   std::vector<float> *T_Gen_PromptMuon_Py;
   std::vector<float> *T_Gen_PromptMuon_Pz;
   std::vector<float> *T_Gen_PromptMuon_Energy;
   
-  std::vector<int>   *T_Gen_PromptElec_pdgId;
-  std::vector<float> *T_Gen_PromptElec_Px;
-  std::vector<float> *T_Gen_PromptElec_Py;
-  std::vector<float> *T_Gen_PromptElec_Pz;
-  std::vector<float> *T_Gen_PromptElec_Energy;
-  
-  std::vector<int>   *T_Gen_Promptb_pdgId;
-  std::vector<float> *T_Gen_Promptb_Px;
-  std::vector<float> *T_Gen_Promptb_Py;
-  std::vector<float> *T_Gen_Promptb_Pz;
-  std::vector<float> *T_Gen_Promptb_Energy;
-
   std::vector<int>   *T_Gen_PromptMuon_MpdgId;
   std::vector<float> *T_Gen_PromptMuon_MPx;
   std::vector<float> *T_Gen_PromptMuon_MPy;
@@ -169,49 +153,11 @@ private:
   std::vector<float> *T_Gen_PromptMuon_MEnergy;
   std::vector<int>   *T_Gen_PromptMuon_MSt;
 
-  std::vector<int>   *T_Gen_PromptElec_MpdgId;
-  std::vector<float> *T_Gen_PromptElec_MPx;
-  std::vector<float> *T_Gen_PromptElec_MPy;
-  std::vector<float> *T_Gen_PromptElec_MPz;
-  std::vector<float> *T_Gen_PromptElec_MEnergy;
-  std::vector<int>   *T_Gen_PromptElec_MSt;
-
-  std::vector<int>   *T_Gen_Promptb_MpdgId;
-  std::vector<float> *T_Gen_Promptb_MPx;
-  std::vector<float> *T_Gen_Promptb_MPy;
-  std::vector<float> *T_Gen_Promptb_MPz;
-  std::vector<float> *T_Gen_Promptb_MEnergy;
-  std::vector<int>   *T_Gen_Promptb_MSt;
-  
   std::vector<int>   *T_Gen_Muon_pdgId;
   std::vector<float> *T_Gen_Muon_Px;
   std::vector<float> *T_Gen_Muon_Py;
   std::vector<float> *T_Gen_Muon_Pz;
   std::vector<float> *T_Gen_Muon_Energy;
-  
-  std::vector<int>   *T_Gen_Elec_pdgId;
-  std::vector<float> *T_Gen_Elec_Px;
-  std::vector<float> *T_Gen_Elec_Py;
-  std::vector<float> *T_Gen_Elec_Pz;
-  std::vector<float> *T_Gen_Elec_Energy;
- 
-  std::vector<int>   *T_Gen_FinalMuon_pdgId;
-  std::vector<float> *T_Gen_FinalMuon_Px;
-  std::vector<float> *T_Gen_FinalMuon_Py;
-  std::vector<float> *T_Gen_FinalMuon_Pz;
-  std::vector<float> *T_Gen_FinalMuon_Energy;
-
-  std::vector<int>   *T_Gen_FinalElec_pdgId;
-  std::vector<float> *T_Gen_FinalElec_Px;
-  std::vector<float> *T_Gen_FinalElec_Py;
-  std::vector<float> *T_Gen_FinalElec_Pz;
-  std::vector<float> *T_Gen_FinalElec_Energy;
- 
-  std::vector<int>   *T_Gen_b_pdgId;
-  std::vector<float> *T_Gen_b_Px;
-  std::vector<float> *T_Gen_b_Py;
-  std::vector<float> *T_Gen_b_Pz;
-  std::vector<float> *T_Gen_b_Energy;
 
   std::vector<int>   *T_Gen_Muon_MpdgId;
   std::vector<float> *T_Gen_Muon_MPx;
@@ -220,6 +166,32 @@ private:
   std::vector<float> *T_Gen_Muon_MEnergy;
   std::vector<int>   *T_Gen_Muon_MSt;
 
+  std::vector<int>   *T_Gen_FinalMuon_pdgId;
+  std::vector<float> *T_Gen_FinalMuon_Px;
+  std::vector<float> *T_Gen_FinalMuon_Py;
+  std::vector<float> *T_Gen_FinalMuon_Pz;
+  std::vector<float> *T_Gen_FinalMuon_Energy;
+
+  // Gen electron
+  std::vector<int>   *T_Gen_PromptElec_pdgId;
+  std::vector<float> *T_Gen_PromptElec_Px;
+  std::vector<float> *T_Gen_PromptElec_Py;
+  std::vector<float> *T_Gen_PromptElec_Pz;
+  std::vector<float> *T_Gen_PromptElec_Energy;
+  
+  std::vector<int>   *T_Gen_PromptElec_MpdgId;
+  std::vector<float> *T_Gen_PromptElec_MPx;
+  std::vector<float> *T_Gen_PromptElec_MPy;
+  std::vector<float> *T_Gen_PromptElec_MPz;
+  std::vector<float> *T_Gen_PromptElec_MEnergy;
+  std::vector<int>   *T_Gen_PromptElec_MSt;
+
+  std::vector<int>   *T_Gen_Elec_pdgId;
+  std::vector<float> *T_Gen_Elec_Px;
+  std::vector<float> *T_Gen_Elec_Py;
+  std::vector<float> *T_Gen_Elec_Pz;
+  std::vector<float> *T_Gen_Elec_Energy;
+
   std::vector<int>   *T_Gen_Elec_MpdgId;
   std::vector<float> *T_Gen_Elec_MPx;
   std::vector<float> *T_Gen_Elec_MPy;
@@ -227,67 +199,19 @@ private:
   std::vector<float> *T_Gen_Elec_MEnergy;
   std::vector<int>   *T_Gen_Elec_MSt;
 
-  std::vector<int>   *T_Gen_b_MpdgId;
-  std::vector<float> *T_Gen_b_MPx;
-  std::vector<float> *T_Gen_b_MPy;
-  std::vector<float> *T_Gen_b_MPz;
-  std::vector<float> *T_Gen_b_MEnergy;
-  std::vector<int>   *T_Gen_b_MSt;
+  std::vector<int>   *T_Gen_FinalElec_pdgId;
+  std::vector<float> *T_Gen_FinalElec_Px;
+  std::vector<float> *T_Gen_FinalElec_Py;
+  std::vector<float> *T_Gen_FinalElec_Pz;
+  std::vector<float> *T_Gen_FinalElec_Energy;
 
-  std::vector<int>   *T_Gen_Stop_pdgId;	
-  std::vector<int>   *T_Gen_Stop_MpdgId;
-  std::vector<float> *T_Gen_Stop_energy;	
-  std::vector<float> *T_Gen_Stop_pt;		
-  std::vector<float> *T_Gen_Stop_eta;	
-  std::vector<float> *T_Gen_Stop_phi;        
-  
-  std::vector<int>   *T_Gen_Chi0_pdgId;
-  std::vector<int>   *T_Gen_Chi0_MpdgId;
-  std::vector<float> *T_Gen_Chi0_energy;
-  std::vector<float> *T_Gen_Chi0_pt;
-  std::vector<float> *T_Gen_Chi0_eta;
-  std::vector<float> *T_Gen_Chi0_phi;
-  
-  std::vector<int>   *T_Gen_t_pdgId;
-  std::vector<int>   *T_Gen_t_MpdgId;
-  std::vector<float> *T_Gen_t_energy;
-  std::vector<float> *T_Gen_t_pt;
-  std::vector<float> *T_Gen_t_eta;
-  std::vector<float> *T_Gen_t_phi;
-
-  std::vector<int>   *T_Gen_ChiPM_pdgId;
-  std::vector<int>   *T_Gen_ChiPM_MpdgId;
-  std::vector<float> *T_Gen_ChiPM_energy;
-  std::vector<float> *T_Gen_ChiPM_pt;
-  std::vector<float> *T_Gen_ChiPM_eta;
-  std::vector<float> *T_Gen_ChiPM_phi;
-
-  std::vector<int>   *T_Gen_Nu_pdgId;
-  std::vector<int>   *T_Gen_Nu_MpdgId;
-  std::vector<float> *T_Gen_Nu_energy;
-  std::vector<float> *T_Gen_Nu_pt;
-  std::vector<float> *T_Gen_Nu_eta;
-  std::vector<float> *T_Gen_Nu_phi;
-
-  std::vector<int>   *T_Gen_Z_pdgId;
-  std::vector<int>   *T_Gen_Z_MpdgId;
-  std::vector<float> *T_Gen_Z_energy;
-  std::vector<float> *T_Gen_Z_pt;
-  std::vector<float> *T_Gen_Z_eta;
-  std::vector<float> *T_Gen_Z_phi;
-
-  std::vector<int>   *T_Gen_W_pdgId;
-  std::vector<int>   *T_Gen_W_MpdgId;
-  std::vector<float> *T_Gen_W_energy;
-  std::vector<float> *T_Gen_W_pt;
-  std::vector<float> *T_Gen_W_eta;
-  std::vector<float> *T_Gen_W_phi;
-
+  // Gen tau
   std::vector<int>   *T_Gen_PromptTau_pdgId;
   std::vector<float> *T_Gen_PromptTau_Energy;
   std::vector<float> *T_Gen_PromptTau_Px;
   std::vector<float> *T_Gen_PromptTau_Py;
   std::vector<float> *T_Gen_PromptTau_Pz;
+
   std::vector<int>   *T_Gen_PromptTau_MpdgId;
   std::vector<float> *T_Gen_PromptTau_MEnergy;
   std::vector<float> *T_Gen_PromptTau_MPx;
@@ -307,6 +231,7 @@ private:
   std::vector<float> *T_Gen_Tau_Px;
   std::vector<float> *T_Gen_Tau_Py;
   std::vector<float> *T_Gen_Tau_Pz;
+
   std::vector<int>   *T_Gen_Tau_MpdgId;
   std::vector<float> *T_Gen_Tau_MEnergy;
   std::vector<float> *T_Gen_Tau_MPx;
@@ -320,7 +245,92 @@ private:
   std::vector<float> *T_Gen_Tau_LepDec_Py;
   std::vector<float> *T_Gen_Tau_LepDec_Pz;
   std::vector<float> *T_Gen_Tau_LepDec_Energy;
- 
+
+  // Gen b
+  std::vector<int>   *T_Gen_Promptb_pdgId;
+  std::vector<float> *T_Gen_Promptb_Px;
+  std::vector<float> *T_Gen_Promptb_Py;
+  std::vector<float> *T_Gen_Promptb_Pz;
+  std::vector<float> *T_Gen_Promptb_Energy;
+
+  std::vector<int>   *T_Gen_Promptb_MpdgId;
+  std::vector<float> *T_Gen_Promptb_MPx;
+  std::vector<float> *T_Gen_Promptb_MPy;
+  std::vector<float> *T_Gen_Promptb_MPz;
+  std::vector<float> *T_Gen_Promptb_MEnergy;
+  std::vector<int>   *T_Gen_Promptb_MSt;
+  
+  std::vector<int>   *T_Gen_b_pdgId;
+  std::vector<float> *T_Gen_b_Px;
+  std::vector<float> *T_Gen_b_Py;
+  std::vector<float> *T_Gen_b_Pz;
+  std::vector<float> *T_Gen_b_Energy;
+
+  std::vector<int>   *T_Gen_b_MpdgId;
+  std::vector<float> *T_Gen_b_MPx;
+  std::vector<float> *T_Gen_b_MPy;
+  std::vector<float> *T_Gen_b_MPz;
+  std::vector<float> *T_Gen_b_MEnergy;
+  std::vector<int>   *T_Gen_b_MSt;
+
+  // Gen t
+  std::vector<int>   *T_Gen_t_pdgId;
+  std::vector<int>   *T_Gen_t_MpdgId;
+  std::vector<float> *T_Gen_t_energy;
+  std::vector<float> *T_Gen_t_pt;
+  std::vector<float> *T_Gen_t_eta;
+  std::vector<float> *T_Gen_t_phi;
+
+  // Gen neutrino
+  std::vector<int>   *T_Gen_Nu_pdgId;
+  std::vector<int>   *T_Gen_Nu_MpdgId;
+  std::vector<float> *T_Gen_Nu_energy;
+  std::vector<float> *T_Gen_Nu_pt;
+  std::vector<float> *T_Gen_Nu_eta;
+  std::vector<float> *T_Gen_Nu_phi;
+
+  // Gen W
+  std::vector<int>   *T_Gen_W_pdgId;
+  std::vector<int>   *T_Gen_W_MpdgId;
+  std::vector<float> *T_Gen_W_energy;
+  std::vector<float> *T_Gen_W_pt;
+  std::vector<float> *T_Gen_W_eta;
+  std::vector<float> *T_Gen_W_phi;
+
+  // Gen Z
+  std::vector<int>   *T_Gen_Z_pdgId;
+  std::vector<int>   *T_Gen_Z_MpdgId;
+  std::vector<float> *T_Gen_Z_energy;
+  std::vector<float> *T_Gen_Z_pt;
+  std::vector<float> *T_Gen_Z_eta;
+  std::vector<float> *T_Gen_Z_phi;
+
+  // Gen Stop
+  std::vector<float> *T_Gen_StopMass;
+  std::vector<float> *T_Gen_Chi0Mass;
+  std::vector<float> *T_Gen_CharginoMass;
+
+  std::vector<int>   *T_Gen_Stop_pdgId;	
+  std::vector<int>   *T_Gen_Stop_MpdgId;
+  std::vector<float> *T_Gen_Stop_energy;	
+  std::vector<float> *T_Gen_Stop_pt;		
+  std::vector<float> *T_Gen_Stop_eta;	
+  std::vector<float> *T_Gen_Stop_phi;        
+  
+  std::vector<int>   *T_Gen_Chi0_pdgId;
+  std::vector<int>   *T_Gen_Chi0_MpdgId;
+  std::vector<float> *T_Gen_Chi0_energy;
+  std::vector<float> *T_Gen_Chi0_pt;
+  std::vector<float> *T_Gen_Chi0_eta;
+  std::vector<float> *T_Gen_Chi0_phi;
+  
+  std::vector<int>   *T_Gen_ChiPM_pdgId;
+  std::vector<int>   *T_Gen_ChiPM_MpdgId;
+  std::vector<float> *T_Gen_ChiPM_energy;
+  std::vector<float> *T_Gen_ChiPM_pt;
+  std::vector<float> *T_Gen_ChiPM_eta;
+  std::vector<float> *T_Gen_ChiPM_phi;
+
   // Vertex variables
   std::vector<float> *T_Vertex_x;
   std::vector<float> *T_Vertex_y;
@@ -422,6 +432,7 @@ private:
   std::vector<float> *T_Elec_Pt;
   std::vector<float> *T_Elec_Energy;
   std::vector<int>   *T_Elec_Charge;
+
   std::vector<float> *T_Elec_chargedHadronIso;
   std::vector<float> *T_Elec_neutralHadronIso;
   std::vector<float> *T_Elec_neutralIsoPFweight;
@@ -431,12 +442,11 @@ private:
   std::vector<float> *T_Elec_sumNeutralHadronEt;
   std::vector<float> *T_Elec_sumPhotonEt;
   std::vector<float> *T_Elec_sumPUPt;
-  std::vector<float> *T_Elec_pfIsoEA03;
 
   std::vector<bool>  *T_Elec_passConversionVeto;
-  std::vector<float> *T_Elec_vz;
-  std::vector<float> *T_Elec_vy;
   std::vector<float> *T_Elec_vx;
+  std::vector<float> *T_Elec_vy;
+  std::vector<float> *T_Elec_vz;
   std::vector<int>   *T_Elec_nLost; 
   std::vector<int>   *T_Elec_nHits;
   std::vector<float> *T_Elec_SC_Et;
@@ -451,18 +461,19 @@ private:
   std::vector<bool>  *T_Elec_isEB;
   std::vector<bool>  *T_Elec_isEE;
   std::vector<bool>  *T_Elec_isPF;
+  std::vector<bool>  *T_Elec_isEcalDriven; 
+
+  std::vector<float> *T_Elec_deltaPhiIn;
+  std::vector<float> *T_Elec_deltaEtaIn;
+  std::vector<float> *T_Elec_sigmaIetaIeta;
+  std::vector<float> *T_Elec_sigmaIetaIetaFull5by5;
+  std::vector<float> *T_Elec_HtoE;
+  std::vector<float> *T_Elec_MVAoutput;
   std::vector<float> *T_Elec_PFElecPt;
   std::vector<float> *T_Elec_PFElecPx;
   std::vector<float> *T_Elec_PFElecPy;
   std::vector<float> *T_Elec_PFElecPz;
   std::vector<float> *T_Elec_PFElecE;
-  std::vector<float> *T_Elec_deltaPhiIn;
-  std::vector<float> *T_Elec_deltaEtaIn;
-  std::vector<float> *T_Elec_sigmaIetaIeta;
-  std::vector<float> *T_Elec_sigmaIetaIetaFull5by5;
-  std::vector<bool>  *T_Elec_isEcalDriven; 
-  std::vector<float> *T_Elec_HtoE;
-  std::vector<float> *T_Elec_MVAoutput;
 
   // Jet variables
   std::vector<float> *T_Jet_Px[NumberOfJetCollections];
@@ -479,16 +490,17 @@ private:
   std::vector<float> *T_Jet_Tag_pfCombinedSVtx[NumberOfJetCollections];
   std::vector<float> *T_Jet_Tag_JetBProb[NumberOfJetCollections];
   std::vector<float> *T_Jet_Tag_JetProb[NumberOfJetCollections];
-  std::vector<float> *T_Jet_Tag_HighPurSimpSVtx[NumberOfJetCollections];
   std::vector<float> *T_Jet_Tag_HighEffSimpSVtx[NumberOfJetCollections];
+  std::vector<float> *T_Jet_Tag_HighPurSimpSVtx[NumberOfJetCollections];
   std::vector<float> *T_Jet_Tag_HighPurTC[NumberOfJetCollections];
+
   std::vector<float> *T_Jet_Parton_Px[NumberOfJetCollections];
   std::vector<float> *T_Jet_Parton_Py[NumberOfJetCollections];
   std::vector<float> *T_Jet_Parton_Pz[NumberOfJetCollections];
   std::vector<float> *T_Jet_Parton_Energy[NumberOfJetCollections];
   std::vector<int>   *T_Jet_Parton_Flavour[NumberOfJetCollections];  
+
   std::vector<float> *T_Jet_Uncertainty[NumberOfJetCollections];
-    
   std::vector<float> *T_Jet_CharHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_NeutHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharEmEnergyFrac[NumberOfJetCollections]; 
@@ -555,6 +567,7 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
   }
 
   myMVATrig = new EGammaMvaEleEstimatorCSA14();
+
   myMVATrig->initialize("BDT",
 			EGammaMvaEleEstimatorCSA14::kTrig,
 			true,
@@ -563,11 +576,12 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
 
 
 SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
-{}
+{
+  delete myMVATrig;
+}
 
 
-void
-SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // Decide that it is real data if the genParticles collection is not found
   isRealData = false;
@@ -1510,7 +1524,7 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     bool   muon_trackHighPurity       = false;
     double muon_neutralIsoPFweightR03 = 0;
     double muon_neutralIsoPFweightR04 = 0;
-
+   
     // Fill a vector with the PF candidates used to build the muon
     std::vector<reco::CandidatePtr> footprint;
 
@@ -1775,9 +1789,27 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       nLost = trRef_elec->numberOfLostHits(); 
     }
 
+
+    float pfElecPx = -99999;
+    float pfElecPy = -99999;
+    float pfElecPz = -99999;
+    float pfElecPt = -99999;
+    float pfElecE  = -99999;
+
+    reco::GsfElectron::P4Kind pf = reco::GsfElectron::P4_PFLOW_COMBINATION;
+
+    if (selected_electrons[k].isPF()) {
+      pfElecPx = selected_electrons[k].p4(pf).px();
+      pfElecPy = selected_electrons[k].p4(pf).py();
+      pfElecPz = selected_electrons[k].p4(pf).pz();
+      pfElecPt = selected_electrons[k].p4(pf).pt();
+      pfElecE  = selected_electrons[k].p4(pf).E();
+    }
+
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double electron_neutralIsoPFweightR04 = 0;
-
+    
     // Fill a vector with the PF candidates used to build the electron
     std::vector<reco::CandidatePtr> footprint;
 
@@ -1823,7 +1855,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
       }
     }
 
-
     T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
     T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
     T_Elec_IPwrtPV               -> push_back(IP); 
@@ -1868,23 +1899,11 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
     T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
     T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
-
-    reco::GsfElectron::P4Kind pf = reco::GsfElectron::P4_PFLOW_COMBINATION;
-
-    if (selected_electrons[k].isPF()) {
-      T_Elec_PFElecPt -> push_back(selected_electrons[k].p4(pf).pt());
-      T_Elec_PFElecPx -> push_back(selected_electrons[k].p4(pf).px());
-      T_Elec_PFElecPy -> push_back(selected_electrons[k].p4(pf).py());
-      T_Elec_PFElecPz -> push_back(selected_electrons[k].p4(pf).pz());
-      T_Elec_PFElecE  -> push_back(selected_electrons[k].p4(pf).E());
-    }
-    else {
-      T_Elec_PFElecPt -> push_back(-99999.);
-      T_Elec_PFElecPx -> push_back(-99999.);
-      T_Elec_PFElecPy -> push_back(-99999.);
-      T_Elec_PFElecPz -> push_back(-99999.);
-      T_Elec_PFElecE  -> push_back(-99999.);
-    }
+    T_Elec_PFElecPt              -> push_back(pfElecPx);
+    T_Elec_PFElecPx              -> push_back(pfElecPy);
+    T_Elec_PFElecPy              -> push_back(pfElecPz);
+    T_Elec_PFElecPz              -> push_back(pfElecPt);
+    T_Elec_PFElecE               -> push_back(pfElecE);
   }
 
 
@@ -1920,7 +1939,173 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   // Delete
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Gen variables
+  // Gen muon
+  delete T_Gen_PromptMuon_pdgId;
+  delete T_Gen_PromptMuon_Px;
+  delete T_Gen_PromptMuon_Py;
+  delete T_Gen_PromptMuon_Pz;
+  delete T_Gen_PromptMuon_Energy;
+
+  delete T_Gen_PromptMuon_MpdgId;
+  delete T_Gen_PromptMuon_MPx;
+  delete T_Gen_PromptMuon_MPy;
+  delete T_Gen_PromptMuon_MPz;
+  delete T_Gen_PromptMuon_MEnergy;
+  delete T_Gen_PromptMuon_MSt;
+
+  delete T_Gen_Muon_pdgId;
+  delete T_Gen_Muon_Px;
+  delete T_Gen_Muon_Py;
+  delete T_Gen_Muon_Pz;
+  delete T_Gen_Muon_Energy;
+
+  delete T_Gen_Muon_MpdgId;
+  delete T_Gen_Muon_MPx;
+  delete T_Gen_Muon_MPy;
+  delete T_Gen_Muon_MPz;
+  delete T_Gen_Muon_MEnergy;
+  delete T_Gen_Muon_MSt;
+
+  delete T_Gen_FinalMuon_pdgId;
+  delete T_Gen_FinalMuon_Px;
+  delete T_Gen_FinalMuon_Py;
+  delete T_Gen_FinalMuon_Pz;
+  delete T_Gen_FinalMuon_Energy;
+
+  // Gen electron
+  delete T_Gen_PromptElec_pdgId;
+  delete T_Gen_PromptElec_Px;
+  delete T_Gen_PromptElec_Py;
+  delete T_Gen_PromptElec_Pz;
+  delete T_Gen_PromptElec_Energy;
+
+  delete T_Gen_PromptElec_MpdgId;
+  delete T_Gen_PromptElec_MPx;
+  delete T_Gen_PromptElec_MPy;
+  delete T_Gen_PromptElec_MPz;
+  delete T_Gen_PromptElec_MEnergy;
+  delete T_Gen_PromptElec_MSt;
+
+  delete T_Gen_Elec_pdgId;
+  delete T_Gen_Elec_Px;
+  delete T_Gen_Elec_Py;
+  delete T_Gen_Elec_Pz;
+  delete T_Gen_Elec_Energy;
+
+  delete T_Gen_Elec_MpdgId;
+  delete T_Gen_Elec_MPx;
+  delete T_Gen_Elec_MPy;
+  delete T_Gen_Elec_MPz;
+  delete T_Gen_Elec_MEnergy;
+  delete T_Gen_Elec_MSt;
+
+  delete T_Gen_FinalElec_pdgId;
+  delete T_Gen_FinalElec_Px;
+  delete T_Gen_FinalElec_Py;
+  delete T_Gen_FinalElec_Pz;
+  delete T_Gen_FinalElec_Energy;
+
+  // Gen tau
+  delete T_Gen_PromptTau_pdgId;	  
+  delete T_Gen_PromptTau_Energy;	  
+  delete T_Gen_PromptTau_Px;	  
+  delete T_Gen_PromptTau_Py;	  
+  delete T_Gen_PromptTau_Pz;        
+
+  delete T_Gen_PromptTau_MpdgId;
+  delete T_Gen_PromptTau_MEnergy;	  
+  delete T_Gen_PromptTau_MPx;	  
+  delete T_Gen_PromptTau_MPy;	  
+  delete T_Gen_PromptTau_MPz;        
+  delete T_Gen_PromptTau_MSt;
+
+  delete T_Gen_PromptTau_IsLepDec;
+  delete T_Gen_PromptTau_LepDec_pdgId;
+  delete T_Gen_PromptTau_LepDec_Px;
+  delete T_Gen_PromptTau_LepDec_Py;
+  delete T_Gen_PromptTau_LepDec_Pz;
+  delete T_Gen_PromptTau_LepDec_Energy;
+
+  delete T_Gen_Tau_pdgId;	  
+  delete T_Gen_Tau_Energy;	  
+  delete T_Gen_Tau_Px;	  
+  delete T_Gen_Tau_Py;	  
+  delete T_Gen_Tau_Pz;        
+
+  delete T_Gen_Tau_MpdgId;
+  delete T_Gen_Tau_MEnergy;	  
+  delete T_Gen_Tau_MPx;
+  delete T_Gen_Tau_MPy;	  
+  delete T_Gen_Tau_MPz;        
+  delete T_Gen_Tau_MSt;
+
+  delete T_Gen_Tau_IsLepDec;
+  delete T_Gen_Tau_LepDec_pdgId;
+  delete T_Gen_Tau_LepDec_Px;
+  delete T_Gen_Tau_LepDec_Py;
+  delete T_Gen_Tau_LepDec_Pz;
+  delete T_Gen_Tau_LepDec_Energy;
+
+  // Gen b
+  delete T_Gen_Promptb_pdgId;
+  delete T_Gen_Promptb_Px;
+  delete T_Gen_Promptb_Py;
+  delete T_Gen_Promptb_Pz;
+  delete T_Gen_Promptb_Energy;
+
+  delete T_Gen_Promptb_MpdgId;
+  delete T_Gen_Promptb_MPx;
+  delete T_Gen_Promptb_MPy;
+  delete T_Gen_Promptb_MPz;
+  delete T_Gen_Promptb_MEnergy;
+  delete T_Gen_Promptb_MSt;
+
+  delete T_Gen_b_pdgId;
+  delete T_Gen_b_Px;
+  delete T_Gen_b_Py;
+  delete T_Gen_b_Pz;
+  delete T_Gen_b_Energy;
+
+  delete T_Gen_b_MpdgId;
+  delete T_Gen_b_MPx;
+  delete T_Gen_b_MPy;
+  delete T_Gen_b_MPz;
+  delete T_Gen_b_MEnergy;
+  delete T_Gen_b_MSt;
+
+  // Gen t
+  delete T_Gen_t_pdgId;	   
+  delete T_Gen_t_MpdgId;
+  delete T_Gen_t_energy;	   
+  delete T_Gen_t_pt;	   	
+  delete T_Gen_t_eta;	   
+  delete T_Gen_t_phi;        
+
+  // Gen neutrino
+  delete T_Gen_Nu_pdgId;
+  delete T_Gen_Nu_MpdgId;
+  delete T_Gen_Nu_energy;
+  delete T_Gen_Nu_pt;
+  delete T_Gen_Nu_eta;
+  delete T_Gen_Nu_phi;
+
+  // Gen W
+  delete T_Gen_W_pdgId;	
+  delete T_Gen_W_MpdgId;
+  delete T_Gen_W_energy;	
+  delete T_Gen_W_pt;   	
+  delete T_Gen_W_eta;	
+  delete T_Gen_W_phi;  
+        
+  // Gen Z
+  delete T_Gen_Z_pdgId;	
+  delete T_Gen_Z_MpdgId;
+  delete T_Gen_Z_energy;	
+  delete T_Gen_Z_pt;   	
+  delete T_Gen_Z_eta;	
+  delete T_Gen_Z_phi;    
+
+  // Gen Stop
   delete T_Gen_StopMass;
   delete T_Gen_Chi0Mass;
   delete T_Gen_CharginoMass;
@@ -1939,158 +2124,12 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Gen_Chi0_eta;	   
   delete T_Gen_Chi0_phi;        
   
-  delete T_Gen_t_pdgId;	   
-  delete T_Gen_t_MpdgId;
-  delete T_Gen_t_energy;	   
-  delete T_Gen_t_pt;	   	
-  delete T_Gen_t_eta;	   
-  delete T_Gen_t_phi;        
-
   delete T_Gen_ChiPM_pdgId;	   
   delete T_Gen_ChiPM_MpdgId;
   delete T_Gen_ChiPM_energy;	   
   delete T_Gen_ChiPM_pt;	   
   delete T_Gen_ChiPM_eta;	   
   delete T_Gen_ChiPM_phi;        
-
-  delete T_Gen_Nu_pdgId;	
-  delete T_Gen_Nu_MpdgId;
-  delete T_Gen_Nu_energy;	
-  delete T_Gen_Nu_pt;   	
-  delete T_Gen_Nu_eta;	
-  delete T_Gen_Nu_phi;        
-
-  delete T_Gen_W_pdgId;	
-  delete T_Gen_W_MpdgId;
-  delete T_Gen_W_energy;	
-  delete T_Gen_W_pt;   	
-  delete T_Gen_W_eta;	
-  delete T_Gen_W_phi;  
-        
-  delete T_Gen_Z_pdgId;	
-  delete T_Gen_Z_MpdgId;
-  delete T_Gen_Z_energy;	
-  delete T_Gen_Z_pt;   	
-  delete T_Gen_Z_eta;	
-  delete T_Gen_Z_phi;    
-      
-  delete T_Gen_Muon_pdgId;
-  delete T_Gen_Muon_Px;
-  delete T_Gen_Muon_Py;
-  delete T_Gen_Muon_Pz;
-  delete T_Gen_Muon_Energy;
-
-  delete T_Gen_Elec_pdgId;
-  delete T_Gen_Elec_Px;
-  delete T_Gen_Elec_Py;
-  delete T_Gen_Elec_Pz;
-  delete T_Gen_Elec_Energy;
-
-  delete T_Gen_FinalMuon_pdgId;
-  delete T_Gen_FinalMuon_Px;
-  delete T_Gen_FinalMuon_Py;
-  delete T_Gen_FinalMuon_Pz;
-  delete T_Gen_FinalMuon_Energy;
-
-  delete T_Gen_FinalElec_pdgId;
-  delete T_Gen_FinalElec_Px;
-  delete T_Gen_FinalElec_Py;
-  delete T_Gen_FinalElec_Pz;
-  delete T_Gen_FinalElec_Energy;
-
-  delete T_Gen_b_pdgId;
-  delete T_Gen_b_Px;
-  delete T_Gen_b_Py;
-  delete T_Gen_b_Pz;
-  delete T_Gen_b_Energy;
-
-  delete T_Gen_Muon_MpdgId;
-  delete T_Gen_Muon_MPx;
-  delete T_Gen_Muon_MPy;
-  delete T_Gen_Muon_MPz;
-  delete T_Gen_Muon_MEnergy;
-  delete T_Gen_Muon_MSt;
-
-  delete T_Gen_Elec_MpdgId;
-  delete T_Gen_Elec_MPx;
-  delete T_Gen_Elec_MPy;
-  delete T_Gen_Elec_MPz;
-  delete T_Gen_Elec_MEnergy;
-  delete T_Gen_Elec_MSt;
-
-  delete T_Gen_b_MpdgId;
-  delete T_Gen_b_MPx;
-  delete T_Gen_b_MPy;
-  delete T_Gen_b_MPz;
-  delete T_Gen_b_MEnergy;
-  delete T_Gen_b_MSt;
-
-  delete T_Gen_Tau_pdgId;	  
-  delete T_Gen_Tau_MpdgId;
-  delete T_Gen_Tau_Energy;	  
-  delete T_Gen_Tau_Px;	  
-  delete T_Gen_Tau_Py;	  
-  delete T_Gen_Tau_Pz;        
-
-  delete T_Gen_Tau_IsLepDec;
-  delete T_Gen_Tau_LepDec_pdgId;
-  delete T_Gen_Tau_LepDec_Px;
-  delete T_Gen_Tau_LepDec_Py;
-  delete T_Gen_Tau_LepDec_Pz;
-  delete T_Gen_Tau_LepDec_Energy;
-
-  delete T_Gen_PromptMuon_pdgId;
-  delete T_Gen_PromptMuon_Px;
-  delete T_Gen_PromptMuon_Py;
-  delete T_Gen_PromptMuon_Pz;
-  delete T_Gen_PromptMuon_Energy;
-
-  delete T_Gen_PromptElec_pdgId;
-  delete T_Gen_PromptElec_Px;
-  delete T_Gen_PromptElec_Py;
-  delete T_Gen_PromptElec_Pz;
-  delete T_Gen_PromptElec_Energy;
-
-  delete T_Gen_Promptb_pdgId;
-  delete T_Gen_Promptb_Px;
-  delete T_Gen_Promptb_Py;
-  delete T_Gen_Promptb_Pz;
-  delete T_Gen_Promptb_Energy;
-
-  delete T_Gen_PromptMuon_MpdgId;
-  delete T_Gen_PromptMuon_MPx;
-  delete T_Gen_PromptMuon_MPy;
-  delete T_Gen_PromptMuon_MPz;
-  delete T_Gen_PromptMuon_MEnergy;
-  delete T_Gen_PromptMuon_MSt;
-
-  delete T_Gen_PromptElec_MpdgId;
-  delete T_Gen_PromptElec_MPx;
-  delete T_Gen_PromptElec_MPy;
-  delete T_Gen_PromptElec_MPz;
-  delete T_Gen_PromptElec_MEnergy;
-  delete T_Gen_PromptElec_MSt;
-
-  delete T_Gen_Promptb_MpdgId;
-  delete T_Gen_Promptb_MPx;
-  delete T_Gen_Promptb_MPy;
-  delete T_Gen_Promptb_MPz;
-  delete T_Gen_Promptb_MEnergy;
-  delete T_Gen_Promptb_MSt;
-
-  delete T_Gen_PromptTau_pdgId;	  
-  delete T_Gen_PromptTau_MpdgId;
-  delete T_Gen_PromptTau_Energy;	  
-  delete T_Gen_PromptTau_Px;	  
-  delete T_Gen_PromptTau_Py;	  
-  delete T_Gen_PromptTau_Pz;        
-
-  delete T_Gen_PromptTau_IsLepDec;
-  delete T_Gen_PromptTau_LepDec_pdgId;
-  delete T_Gen_PromptTau_LepDec_Px;
-  delete T_Gen_PromptTau_LepDec_Py;
-  delete T_Gen_PromptTau_LepDec_Pz;
-  delete T_Gen_PromptTau_LepDec_Energy;
 
   // Vertex variables
   delete T_Vertex_x;
@@ -2105,14 +2144,20 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Vertex_isGood;
 
   // Muon variables
-  delete T_Muon_Eta;
+  // ID
+  delete T_Muon_IsTightMuon;
+  delete T_Muon_IsPFMuon;
   delete T_Muon_IsGlobalMuon;
-  delete T_Muon_IsGMPTMuons;
   delete T_Muon_IsTrackerMuon;
+  delete T_Muon_IsStandAloneMuon;
+  delete T_Muon_IsGMPTMuons;
+  delete T_Muon_IsTMLastStationTight;
   delete T_Muon_IsTrackerMuonArbitrated;
   delete T_Muon_IsAllArbitrated;
-  delete T_Muon_IsStandAloneMuon;
-  delete T_Muon_IsTMLastStationTight;
+  delete T_Muon_IsTrackHighPurity;
+
+  // Kinematics
+  delete T_Muon_Eta;
   delete T_Muon_Px;
   delete T_Muon_Py;
   delete T_Muon_Pz;
@@ -2120,52 +2165,61 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Muon_deltaPt;
   delete T_Muon_Energy;
   delete T_Muon_Charge;
-  delete T_Muon_NormChi2GTrk;
-  delete T_Muon_NValidHitsInTrk;
-  delete T_Muon_NValidHitsSATrk;
-  delete T_Muon_NValidHitsGTrk;
-  delete T_Muon_NValidPixelHitsInTrk;
-  delete T_Muon_Chi2InTrk;
-  delete T_Muon_dofInTrk;
-  delete T_Muon_dxyGTrack;
-  delete T_Muon_dxyInTrack;
-  delete T_Muon_dzGTrack;
-  delete T_Muon_dzInTrack;
-  delete T_Muon_IPwrtAveBSInTrack;
-  delete T_Muon_NumOfMatchedStations;
-  delete T_Muon_InnerTrackFound;
-  delete T_Muon_vz;
-  delete T_Muon_vy;
-  delete T_Muon_vx;
-  delete T_Muon_trkKink;
-  delete T_Muon_StaTrkMatchChi2;
-  delete T_Muon_SegmentCompatibility;
-  delete T_Muon_chargedParticleIsoR03;
-  delete T_Muon_chargedHadronIsoR03;
-  delete T_Muon_neutralHadronIsoR03;
-  delete T_Muon_neutralIsoPFweightR03;
-  delete T_Muon_photonIsoR03;
-  delete T_Muon_chargedHadronIsoR04;
-  delete T_Muon_neutralHadronIsoR04;
-  delete T_Muon_neutralIsoPFweightR04;
-  delete T_Muon_photonIsoR04;
-  delete T_Muon_sumPUPtR04;
-  delete T_Muon_sumPUPtR03;
-  delete T_Muon_IsPFMuon;
-  delete T_Muon_IsTightMuon;
-  delete T_Muon_NLayers;
-  delete T_Muon_BestTrack_dxy;
-  delete T_Muon_BestTrack_dz;
+
+  // Track info
   delete T_Muon_BestTrack_vx;
   delete T_Muon_BestTrack_vy;
   delete T_Muon_BestTrack_vz;
+  delete T_Muon_BestTrack_dxy;
+  delete T_Muon_BestTrack_dz;
   delete T_Muon_BestTrack_Px;
   delete T_Muon_BestTrack_Py;
   delete T_Muon_BestTrack_Pz;
   delete T_Muon_BestTrack_Pt;
   delete T_Muon_BestTrack_Phi;
+  delete T_Muon_vx;
+  delete T_Muon_vy;
+  delete T_Muon_vz;
+
+  delete T_Muon_NormChi2GTrk;
+  delete T_Muon_Chi2InTrk;
+  delete T_Muon_StaTrkMatchChi2;
+  delete T_Muon_dofInTrk;
+  delete T_Muon_NValidHitsInTrk;
+  delete T_Muon_NValidPixelHitsInTrk;
+  delete T_Muon_NValidHitsSATrk;
+  delete T_Muon_NValidHitsGTrk;
+  delete T_Muon_NLayers;
+  delete T_Muon_InnerTrackFound;
+  delete T_Muon_NumOfMatchedStations;
+  delete T_Muon_SegmentCompatibility;
+  delete T_Muon_trkKink;
+  delete T_Muon_dxyGTrack;
+  delete T_Muon_dxyInTrack;
+  delete T_Muon_dzGTrack;
+  delete T_Muon_dzInTrack;
+  delete T_Muon_IPwrtAveBSInTrack;
   delete T_Muon_fromPV;
-  delete T_Muon_IsTrackHighPurity;
+
+  // Isolation
+  delete T_Muon_chargedHadronIsoR04;
+  delete T_Muon_neutralHadronIsoR04;
+  delete T_Muon_neutralIsoPFweightR04;
+  delete T_Muon_photonIsoR04;
+  delete T_Muon_sumPUPtR04;
+  delete T_Muon_chargedParticleIsoR03;
+  delete T_Muon_chargedHadronIsoR03;
+  delete T_Muon_neutralHadronIsoR03;
+  delete T_Muon_neutralIsoPFweightR03;
+  delete T_Muon_photonIsoR03;
+  delete T_Muon_sumPUPtR03;
+
+  // Tau variables
+  delete T_Tau_Px;
+  delete T_Tau_Py;
+  delete T_Tau_Pz;
+  delete T_Tau_Energy;
+  delete T_Tau_Charge;
 
   // Electron variables
   delete T_Elec_Eta;
@@ -2178,9 +2232,21 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Elec_Pt;
   delete T_Elec_Energy;
   delete T_Elec_Charge;
-  delete T_Elec_vz;
-  delete T_Elec_vy;
+
+  delete T_Elec_chargedHadronIso;
+  delete T_Elec_neutralHadronIso;
+  delete T_Elec_neutralIsoPFweight;
+  delete T_Elec_photonIso;
+  delete T_Elec_puChargedHadronIso;
+  delete T_Elec_sumChargedHadronPt;
+  delete T_Elec_sumNeutralHadronEt;
+  delete T_Elec_sumPhotonEt;
+  delete T_Elec_sumPUPt;
+
+  delete T_Elec_passConversionVeto;
   delete T_Elec_vx;
+  delete T_Elec_vy;
+  delete T_Elec_vz;
   delete T_Elec_nLost;
   delete T_Elec_nHits;
   delete T_Elec_SC_Et;
@@ -2194,36 +2260,20 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
   delete T_Elec_dr03HcalSumEt;
   delete T_Elec_isEB;
   delete T_Elec_isEE;
-  delete T_Elec_sigmaIetaIeta;
-  delete T_Elec_sigmaIetaIetaFull5by5;
+  delete T_Elec_isPF;
+  delete T_Elec_isEcalDriven;
+
   delete T_Elec_deltaPhiIn;
   delete T_Elec_deltaEtaIn;
-  delete T_Elec_isEcalDriven;
+  delete T_Elec_sigmaIetaIeta;
+  delete T_Elec_sigmaIetaIetaFull5by5;
   delete T_Elec_HtoE;
-  delete T_Elec_chargedHadronIso;
-  delete T_Elec_neutralHadronIso;
-  delete T_Elec_neutralIsoPFweight;
-  delete T_Elec_photonIso;
-  delete T_Elec_puChargedHadronIso;
-  delete T_Elec_sumChargedHadronPt;
-  delete T_Elec_sumNeutralHadronEt;
-  delete T_Elec_sumPhotonEt;
-  delete T_Elec_sumPUPt;
-  delete T_Elec_passConversionVeto;
+  delete T_Elec_MVAoutput;
   delete T_Elec_PFElecPt;
   delete T_Elec_PFElecPx;
   delete T_Elec_PFElecPy;
   delete T_Elec_PFElecPz;
   delete T_Elec_PFElecE;
-  delete T_Elec_isPF;
-  delete T_Elec_MVAoutput;
-
-  // Tau variables
-  delete T_Tau_Px;
-  delete T_Tau_Py;
-  delete T_Tau_Pz;
-  delete T_Tau_Energy;
-  delete T_Tau_Charge;
 
   // Jet variables
   for (int i=0; i<NumberOfJetCollections; i++) {
@@ -2244,11 +2294,14 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     delete T_Jet_Tag_HighEffSimpSVtx[i];
     delete T_Jet_Tag_HighPurSimpSVtx[i];
     delete T_Jet_Tag_HighPurTC[i];
+
     delete T_Jet_Parton_Px[i];
     delete T_Jet_Parton_Py[i];
     delete T_Jet_Parton_Pz[i];
     delete T_Jet_Parton_Energy[i];
     delete T_Jet_Parton_Flavour[i];
+
+    delete T_Jet_Uncertainty[i];
     delete T_Jet_CharHadEnergyFrac[i];
     delete T_Jet_NeutHadEnergyFrac[i];
     delete T_Jet_CharEmEnergyFrac[i];
@@ -2262,7 +2315,6 @@ SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     delete T_Jet_ChargedMultiplicity[i];
     delete T_Jet_IDLoose[i];
     delete T_Jet_nDaughters[i];
-    delete T_Jet_Uncertainty[i];
 
     delete T_Jet_GenJet_InvisibleE[i];
     delete T_Jet_GenJet_Px[i];
@@ -2360,11 +2412,9 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   vPar.push_back(*L3JetPar);
   if (isRealData) vPar.push_back(*ResJetPar);
 
-  FactorizedJetCorrector *JetCorrector = new FactorizedJetCorrector(vPar);
-
-  JetCorrectorParameters *Total = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "Total");
-
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(*Total);
+  FactorizedJetCorrector*   JetCorrector = new FactorizedJetCorrector(vPar);
+  JetCorrectorParameters*   TotalJetPar  = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "Total");
+  JetCorrectionUncertainty* jecUnc       = new JetCorrectionUncertainty(*TotalJetPar);
 
   for (edm::View<pat::Jet>::const_iterator jet_iter=JET.begin(); jet_iter!= JET.end(); jet_iter++) { 
 
@@ -2487,11 +2537,13 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     T_Jet_Tag_HighPurTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighPurBJetTags"));
   }
 
-  delete JetCorrector;
   delete L3JetPar;
   delete L2JetPar;
   delete L1JetPar;
-  if (isRealData) delete ResJetPar;
+  delete ResJetPar;
+  delete JetCorrector;
+  delete TotalJetPar;
+  delete jecUnc;
 }
 
 
