@@ -383,10 +383,11 @@ private:
 
   std::vector<float> *T_Muon_NormChi2GTrk;
   std::vector<float> *T_Muon_Chi2InTrk;
-  std::vector<float> *T_Muon_StaTrkMatchChi2;
+  std::vector<float> *T_Muon_StaTrkChi2LocalPos;
   std::vector<float> *T_Muon_dofInTrk;
   std::vector<int>   *T_Muon_NValidHitsInTrk;
   std::vector<int>   *T_Muon_NValidPixelHitsInTrk;
+  std::vector<float> *T_Muon_ValidFractionInTrk;
   std::vector<int>   *T_Muon_NValidHitsSATrk;
   std::vector<int>   *T_Muon_NValidHitsGTrk;
   std::vector<int>   *T_Muon_NLayers;
@@ -1383,10 +1384,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Muon_vz                   = new std::vector<float>;
   T_Muon_NormChi2GTrk         = new std::vector<float>;
   T_Muon_Chi2InTrk            = new std::vector<float>;
-  T_Muon_StaTrkMatchChi2      = new std::vector<float>;
+  T_Muon_StaTrkChi2LocalPos      = new std::vector<float>;
   T_Muon_dofInTrk             = new std::vector<float>;
   T_Muon_NValidHitsInTrk      = new std::vector<int>;
   T_Muon_NValidPixelHitsInTrk = new std::vector<int>;
+  T_Muon_ValidFractionInTrk   = new std::vector<float>;
   T_Muon_NValidHitsSATrk      = new std::vector<int>;
   T_Muon_NValidHitsGTrk       = new std::vector<int>;
   T_Muon_NLayers              = new std::vector<int>;
@@ -1451,6 +1453,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     int   found             = -1;
     float chi2innertracker  = 9999;
     float dofinnertracker   = 9999;
+    float validFraction     = -1;
     float deltaPt           = 9999;
     float IPIn              = 9999;
     float dZIn              = 9999;
@@ -1463,6 +1466,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       found             = selected_muons[k].innerTrack()->found();
       chi2innertracker  = selected_muons[k].innerTrack()->chi2();
       dofinnertracker   = selected_muons[k].innerTrack()->ndof();
+      validFraction     = selected_muons[k].innerTrack()->validFraction();
       deltaPt           = selected_muons[k].innerTrack()->ptError();
 
       if (firstGoodVertex > -1) {
@@ -1644,10 +1648,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     T_Muon_vz                   -> push_back(selected_muons[k].vz());
     T_Muon_NormChi2GTrk         -> push_back(normchi2);
     T_Muon_Chi2InTrk            -> push_back(chi2innertracker);
-    T_Muon_StaTrkMatchChi2      -> push_back(selected_muons[k].combinedQuality().staRelChi2);  // Chi2 of matching STA-TK tracks
+    T_Muon_StaTrkChi2LocalPos   -> push_back(selected_muons[k].combinedQuality().chi2LocalPosition);  // Chi2 local position of matching STA-TK tracks
     T_Muon_dofInTrk             -> push_back(dofinnertracker);
     T_Muon_NValidHitsInTrk      -> push_back(nhitsinnertracker);
     T_Muon_NValidPixelHitsInTrk -> push_back(pixelHits);
+    T_Muon_ValidFractionInTrk   -> push_back(validFraction);
     T_Muon_NValidHitsSATrk      -> push_back(nhitsouttrack);
     T_Muon_NValidHitsGTrk       -> push_back(numOfValidHitsGTrk);
     T_Muon_NLayers              -> push_back(nLayers);
@@ -2183,10 +2188,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   delete T_Muon_NormChi2GTrk;
   delete T_Muon_Chi2InTrk;
-  delete T_Muon_StaTrkMatchChi2;
+  delete T_Muon_StaTrkChi2LocalPos;
   delete T_Muon_dofInTrk;
   delete T_Muon_NValidHitsInTrk;
   delete T_Muon_NValidPixelHitsInTrk;
+  delete T_Muon_ValidFractionInTrk;
   delete T_Muon_NValidHitsSATrk;
   delete T_Muon_NValidHitsGTrk;
   delete T_Muon_NLayers;
@@ -2888,10 +2894,11 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Muon_vx",                   "std::vector<float>", &T_Muon_vx);
   Tree->Branch("T_Muon_NormChi2GTrk",         "std::vector<float>", &T_Muon_NormChi2GTrk);
   Tree->Branch("T_Muon_Chi2InTrk",            "std::vector<float>", &T_Muon_Chi2InTrk);
-  Tree->Branch("T_Muon_StaTrkMatchChi2",      "std::vector<float>", &T_Muon_StaTrkMatchChi2);
+  Tree->Branch("T_Muon_StaTrkChi2LocalPos",   "std::vector<float>", &T_Muon_StaTrkChi2LocalPos);
   Tree->Branch("T_Muon_dofInTrk",             "std::vector<float>", &T_Muon_dofInTrk);
   Tree->Branch("T_Muon_NValidHitsInTrk",      "std::vector<int>",   &T_Muon_NValidHitsInTrk);
   Tree->Branch("T_Muon_NValidPixelHitsInTrk", "std::vector<int>",   &T_Muon_NValidPixelHitsInTrk);
+  Tree->Branch("T_Muon_ValidFractionInTrk",   "std::vector<float>", &T_Muon_ValidFractionInTrk);
   Tree->Branch("T_Muon_NValidHitsSATrk",      "std::vector<int>",   &T_Muon_NValidHitsSATrk);
   Tree->Branch("T_Muon_NValidHitsGTrk",       "std::vector<int>",   &T_Muon_NValidHitsGTrk);
   Tree->Branch("T_Muon_NLayers",              "std::vector<int>",   &T_Muon_NLayers);
