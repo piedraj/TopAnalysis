@@ -1384,7 +1384,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Muon_vz                   = new std::vector<float>;
   T_Muon_NormChi2GTrk         = new std::vector<float>;
   T_Muon_Chi2InTrk            = new std::vector<float>;
-  T_Muon_StaTrkChi2LocalPos      = new std::vector<float>;
+  T_Muon_StaTrkChi2LocalPos   = new std::vector<float>;
   T_Muon_dofInTrk             = new std::vector<float>;
   T_Muon_NValidHitsInTrk      = new std::vector<int>;
   T_Muon_NValidPixelHitsInTrk = new std::vector<int>;
