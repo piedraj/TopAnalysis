@@ -88,7 +88,7 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
- 
+
   bool isRealData;  
  
   TTree* Tree = new TTree();
@@ -101,6 +101,7 @@ private:
 			int& pdgId, float& px, float& py, float& pz, float& energy);
   
   // Input tags
+  bool readGen_;
   edm::InputTag muonLabel_;
   edm::InputTag jetLabel_;
   edm::InputTag metLabel_;
@@ -109,7 +110,7 @@ private:
   edm::InputTag elecLabel_;     
   edm::InputTag tauLabel_;
   edm::InputTag pfLabel_;
- 
+
   EGammaMvaEleEstimatorCSA14* myMVATrig;
 
   // MET filters
@@ -545,7 +546,8 @@ private:
 //
 
 
-SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
+SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
+  readGen_  (iConfig.getUntrackedParameter<bool>("readGen", false)),
   muonLabel_(iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
   jetLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
   metLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
@@ -557,11 +559,14 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig):
 {
   // CSA14 EleMVAID
   std::vector<std::string> myManualCatWeigths;
+
   myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
   myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EE_BDT.weights.xml");
  
   vector<string> myManualCatWeigthsTrig;
+
   string the_path;
+
   for (unsigned i=0; i<myManualCatWeigths.size(); i++) {
     the_path = edm::FileInPath(myManualCatWeigths[i]).fullPath();
     myManualCatWeigthsTrig.push_back(the_path);
@@ -584,14 +589,16 @@ SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
 
 void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  // Decide that it is real data if the genParticles collection is not found
+  // Check if the genParticles collection is found
   isRealData = false;
+
   edm::Handle <reco::GenParticleCollection> genParticles;
+
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
-    // I need to call genParticles size to forze the exception
+    // Call genParticles size to forze the exception
     int aux = genParticles->size();
-    // To avoid warnings I add the line aux = 0
+    // Add this line to avoid warnings
     aux = 0 + aux;
   }
   catch(...) {isRealData = true;} 
@@ -2592,7 +2599,7 @@ void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool caloj
   Tree->Branch(TString(namecol + "_IDLoose"),             "std::vector<bool>",  &T_Jet_IDLoose[idx]);
   Tree->Branch(TString(namecol + "_nDaughters"),          "std::vector<int>",   &T_Jet_nDaughters[idx]);
  
-  if (!isRealData) {
+  if (readGen_) {
     Tree->Branch(TString(namecol + "_GenJet_InvisibleE"), "std::vector<float>", &T_Jet_GenJet_InvisibleE[idx]);
     Tree->Branch(TString(namecol + "_GenJet_Px"),         "std::vector<float>", &T_Jet_GenJet_Px[idx]);
     Tree->Branch(TString(namecol + "_GenJet_Py"),         "std::vector<float>", &T_Jet_GenJet_Py[idx]);
@@ -2668,7 +2675,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_EventF_METFilters",                         &T_EventF_METFilters,                         "T_EventF_METFilters/O");
 
   // Gen 
-  if (!isRealData) {
+  if (readGen_) {
     Tree->Branch("T_Gen_StopMass",     "std::vector<float>", &T_Gen_StopMass);
     Tree->Branch("T_Gen_Chi0Mass",     "std::vector<float>", &T_Gen_Chi0Mass);
     Tree->Branch("T_Gen_CharginoMass", "std::vector<float>", &T_Gen_CharginoMass);
@@ -2989,16 +2996,14 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Elec_isPF",      "std::vector<bool>",  &T_Elec_isPF);
   Tree->Branch("T_Elec_MVAoutput", "std::vector<float>", &T_Elec_MVAoutput);
   
-
   // Jets
   SetJetBranchAddress(0, "T_JetAKCHS", true);
-
 
   // MET
   Tree->Branch("T_METPF_ET",  &T_METPF_ET,  "T_METPF_ET/F");
   Tree->Branch("T_METPF_Phi", &T_METPF_Phi, "T_METPF_Phi/F");	
 
-  if (!isRealData) {
+  if (readGen_) {
     Tree->Branch("T_METgen_ET",  &T_METgen_ET,  "T_METgen_ET/F");
     Tree->Branch("T_METgen_Phi", &T_METgen_Phi, "T_METgen_Phi/F");             
   }

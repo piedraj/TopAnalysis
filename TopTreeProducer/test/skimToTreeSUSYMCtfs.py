@@ -38,7 +38,7 @@ process.countDiLeps = cms.EDFilter("CandViewCountFilter",
 process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.allDiLep+process.countDiLeps)
 
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
-                              histosFileName = cms.untracked.string("TreeSUSY.root"),
+                              readGen        = cms.untracked.bool(True),
                               trigTag        = cms.untracked.InputTag('TriggerResults'),
                               muonTag        = cms.untracked.InputTag('slimmedMuons'),
                               jetPFTag       = cms.untracked.InputTag('slimmedJets'),
@@ -49,7 +49,7 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               pfTag          = cms.untracked.InputTag('packedPFCandidates'))
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("TreeSUSYtfs.root"),
+                                   fileName = cms.string("Tree_13TeV.root"),
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
@@ -60,7 +60,7 @@ process.p = cms.Path(process.preYieldFilter*process.demo)
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/CMSSW_projects/CMSSW_7_2_0/src/0CBDD8C3-B67F-E411-9AFA-0025901D4764.root')
+#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/CMSSW_projects/CMSSW_7_2_0/src/1CA97476-1A68-E411-9A27-001E67397756.root')
 process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v3/10000/325BE5B9-AAA6-E411-8371-001E673972E2.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
