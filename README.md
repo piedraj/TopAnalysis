@@ -44,7 +44,7 @@ Do a test run
 CRAB3
 ====
 
-    cd CMSSW_7_2_0/src/TopTreeProducer/test
+    cd CMSSW_7_2_0/src
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
     voms-proxy-init -voms cms
