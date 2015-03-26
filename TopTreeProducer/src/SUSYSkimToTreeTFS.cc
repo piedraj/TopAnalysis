@@ -527,8 +527,34 @@ private:
   std::vector<bool>  *T_Jet_IsGenJet[NumberOfJetCollections];      
 
   // MET variables
-  float T_METPF_ET;
-  float T_METPF_Phi;
+  float T_MET_ET;
+  float T_MET_ET_JetEnUp;
+  float T_MET_ET_JetEnDown;
+  float T_MET_ET_JetResUp;
+  float T_MET_ET_JetResDown;
+  float T_MET_ET_MuonEnUp;
+  float T_MET_ET_MuonEnDown;
+  float T_MET_ET_ElectronEnUp;
+  float T_MET_ET_ElectronEnDown;
+  float T_MET_ET_TauEnUp;
+  float T_MET_ET_TauEnDown;
+  float T_MET_ET_UnclusteredEnUp;
+  float T_MET_ET_UnclusteredEnDown;
+
+  float T_MET_Phi;
+  float T_MET_Phi_JetEnUp;
+  float T_MET_Phi_JetEnDown;
+  float T_MET_Phi_JetResUp;
+  float T_MET_Phi_JetResDown;
+  float T_MET_Phi_MuonEnUp;
+  float T_MET_Phi_MuonEnDown;
+  float T_MET_Phi_ElectronEnUp;
+  float T_MET_Phi_ElectronEnDown;
+  float T_MET_Phi_TauEnUp;
+  float T_MET_Phi_TauEnDown;
+  float T_MET_Phi_UnclusteredEnUp;
+  float T_MET_Phi_UnclusteredEnDown;
+
   float T_METgen_ET;
   float T_METgen_Phi;
 };
@@ -619,8 +645,8 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByLabel(jetLabel_, jetPFHandle);
   edm::View<pat::Jet> jetsPF = *jetPFHandle;
 
-  edm::Handle<pat::METCollection> patMET;
-  iEvent.getByLabel(metLabel_, patMET);
+  edm::Handle<pat::METCollection> mets;
+  iEvent.getByLabel(metLabel_, mets);
 
   edm::Handle<VertexCollection> vertex;
   iEvent.getByLabel(pvLabel_, vertex);
@@ -1928,19 +1954,42 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // MET variables
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  const pat::METCollection *pMet = patMET.product();
-  const pat::METCollection::const_iterator met = pMet->begin();
-  const pat::MET theMET = *met;
+  const pat::MET &met = mets->front();
   
-  T_METPF_ET  = theMET.pt();
-  T_METPF_Phi = theMET.phi();
-  
+  T_MET_ET                   = met.shiftedPt(pat::MET::NoShift);  // Should be equivalent to met.pt()
+  T_MET_ET_JetEnUp           = met.shiftedPt(pat::MET::JetEnUp);
+  T_MET_ET_JetEnDown         = met.shiftedPt(pat::MET::JetEnDown);
+  T_MET_ET_JetResUp          = met.shiftedPt(pat::MET::JetResUp);
+  T_MET_ET_JetResDown        = met.shiftedPt(pat::MET::JetResDown);
+  T_MET_ET_MuonEnUp          = met.shiftedPt(pat::MET::MuonEnUp);
+  T_MET_ET_MuonEnDown        = met.shiftedPt(pat::MET::MuonEnDown);
+  T_MET_ET_ElectronEnUp      = met.shiftedPt(pat::MET::ElectronEnUp);
+  T_MET_ET_ElectronEnDown    = met.shiftedPt(pat::MET::ElectronEnDown);
+  T_MET_ET_TauEnUp           = met.shiftedPt(pat::MET::TauEnUp);
+  T_MET_ET_TauEnDown         = met.shiftedPt(pat::MET::TauEnDown);
+  T_MET_ET_UnclusteredEnUp   = met.shiftedPt(pat::MET::UnclusteredEnUp);
+  T_MET_ET_UnclusteredEnDown = met.shiftedPt(pat::MET::UnclusteredEnDown);
+
+  T_MET_Phi                   = met.shiftedPhi(pat::MET::NoShift);  // Should be equivalent to met.phi()
+  T_MET_Phi_JetEnUp           = met.shiftedPhi(pat::MET::JetEnUp);
+  T_MET_Phi_JetEnDown         = met.shiftedPhi(pat::MET::JetEnDown);
+  T_MET_Phi_JetResUp          = met.shiftedPhi(pat::MET::JetResUp);
+  T_MET_Phi_JetResDown        = met.shiftedPhi(pat::MET::JetResDown);
+  T_MET_Phi_MuonEnUp          = met.shiftedPhi(pat::MET::MuonEnUp);
+  T_MET_Phi_MuonEnDown        = met.shiftedPhi(pat::MET::MuonEnDown);
+  T_MET_Phi_ElectronEnUp      = met.shiftedPhi(pat::MET::ElectronEnUp);
+  T_MET_Phi_ElectronEnDown    = met.shiftedPhi(pat::MET::ElectronEnDown);
+  T_MET_Phi_TauEnUp           = met.shiftedPhi(pat::MET::TauEnUp);
+  T_MET_Phi_TauEnDown         = met.shiftedPhi(pat::MET::TauEnDown);
+  T_MET_Phi_UnclusteredEnUp   = met.shiftedPhi(pat::MET::UnclusteredEnUp);
+  T_MET_Phi_UnclusteredEnDown = met.shiftedPhi(pat::MET::UnclusteredEnDown);
+
   if (!isRealData) {
-    T_METgen_ET  = theMET.genMET()->pt();
-    T_METgen_Phi = theMET.genMET()->phi();
+    T_METgen_ET  = met.genMET()->pt();
+    T_METgen_Phi = met.genMET()->phi();
   }
 
-  
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Fil the tree
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3000,8 +3049,33 @@ void SUSYSkimToTreeTFS::beginJob()
   SetJetBranchAddress(0, "T_JetAKCHS", true);
 
   // MET
-  Tree->Branch("T_METPF_ET",  &T_METPF_ET,  "T_METPF_ET/F");
-  Tree->Branch("T_METPF_Phi", &T_METPF_Phi, "T_METPF_Phi/F");	
+  Tree->Branch("T_MET_ET",                   &T_MET_ET,                   "T_MET_ET/F");
+  Tree->Branch("T_MET_ET_JetEnUp",           &T_MET_ET_JetEnUp,           "T_MET_ET_JetEnUp/F");
+  Tree->Branch("T_MET_ET_JetEnDown",         &T_MET_ET_JetEnDown,         "T_MET_ET_JetEnDown/F");
+  Tree->Branch("T_MET_ET_JetResUp",          &T_MET_ET_JetResUp,          "T_MET_ET_JetResUp/F");
+  Tree->Branch("T_MET_ET_JetResDown",        &T_MET_ET_JetResDown,        "T_MET_ET_JetResDown/F");
+  Tree->Branch("T_MET_ET_MuonEnUp",          &T_MET_ET_MuonEnUp,          "T_MET_ET_MuonEnUp/F");
+  Tree->Branch("T_MET_ET_MuonEnDown",        &T_MET_ET_MuonEnDown,        "T_MET_ET_MuonEnDown/F");
+  Tree->Branch("T_MET_ET_ElectronEnUp",      &T_MET_ET_ElectronEnUp,      "T_MET_ET_ElectronEnUp/F");
+  Tree->Branch("T_MET_ET_ElectronEnDown",    &T_MET_ET_ElectronEnDown,    "T_MET_ET_ElectronEnDown/F");
+  Tree->Branch("T_MET_ET_TauEnUp",           &T_MET_ET_TauEnUp,           "T_MET_ET_TauEnUp/F");
+  Tree->Branch("T_MET_ET_TauEnDown",         &T_MET_ET_TauEnDown,         "T_MET_ET_TauEnDown/F");
+  Tree->Branch("T_MET_ET_UnclusteredEnUp",   &T_MET_ET_UnclusteredEnUp,   "T_MET_ET_UnclusteredEnUp/F");
+  Tree->Branch("T_MET_ET_UnclusteredEnDown", &T_MET_ET_UnclusteredEnDown, "T_MET_ET_UnclusteredEnDown/F");
+
+  Tree->Branch("T_MET_Phi",                   &T_MET_Phi,                   "T_MET_Phi/F");
+  Tree->Branch("T_MET_Phi_JetEnUp",           &T_MET_Phi_JetEnUp,           "T_MET_Phi_JetEnUp/F");
+  Tree->Branch("T_MET_Phi_JetEnDown",         &T_MET_Phi_JetEnDown,         "T_MET_Phi_JetEnDown/F");
+  Tree->Branch("T_MET_Phi_JetResUp",          &T_MET_Phi_JetResUp,          "T_MET_Phi_JetResUp/F");
+  Tree->Branch("T_MET_Phi_JetResDown",        &T_MET_Phi_JetResDown,        "T_MET_Phi_JetResDown/F");
+  Tree->Branch("T_MET_Phi_MuonEnUp",          &T_MET_Phi_MuonEnUp,          "T_MET_Phi_MuonEnUp/F");
+  Tree->Branch("T_MET_Phi_MuonEnDown",        &T_MET_Phi_MuonEnDown,        "T_MET_Phi_MuonEnDown/F");
+  Tree->Branch("T_MET_Phi_ElectronEnUp",      &T_MET_Phi_ElectronEnUp,      "T_MET_Phi_ElectronEnUp/F");
+  Tree->Branch("T_MET_Phi_ElectronEnDown",    &T_MET_Phi_ElectronEnDown,    "T_MET_Phi_ElectronEnDown/F");
+  Tree->Branch("T_MET_Phi_TauEnUp",           &T_MET_Phi_TauEnUp,           "T_MET_Phi_TauEnUp/F");
+  Tree->Branch("T_MET_Phi_TauEnDown",         &T_MET_Phi_TauEnDown,         "T_MET_Phi_TauEnDown/F");
+  Tree->Branch("T_MET_Phi_UnclusteredEnUp",   &T_MET_Phi_UnclusteredEnUp,   "T_MET_Phi_UnclusteredEnUp/F");
+  Tree->Branch("T_MET_Phi_UnclusteredEnDown", &T_MET_Phi_UnclusteredEnDown, "T_MET_Phi_UnclusteredEnDown/F");
 
   if (readGen_) {
     Tree->Branch("T_METgen_ET",  &T_METgen_ET,  "T_METgen_ET/F");
