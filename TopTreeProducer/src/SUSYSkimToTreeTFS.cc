@@ -46,7 +46,7 @@ Implementation:
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimatorCSA14.h"
+#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -111,7 +111,7 @@ private:
   edm::InputTag tauLabel_;
   edm::InputTag pfLabel_;
 
-  EGammaMvaEleEstimatorCSA14* myMVATrig;
+  //  EGammaMvaEleEstimator* myMVATrig;
 
   // MET filters
   bool T_EventF_HBHENoiseFilter;
@@ -583,33 +583,23 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
   tauLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("tauTag")),
   pfLabel_  (iConfig.getUntrackedParameter<edm::InputTag>("pfTag"))
 {
-  // CSA14 EleMVAID
-  std::vector<std::string> myManualCatWeigths;
-
-  myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
-  myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EE_BDT.weights.xml");
- 
-  vector<string> myManualCatWeigthsTrig;
-
-  string the_path;
-
-  for (unsigned i=0; i<myManualCatWeigths.size(); i++) {
-    the_path = edm::FileInPath(myManualCatWeigths[i]).fullPath();
-    myManualCatWeigthsTrig.push_back(the_path);
-  }
-
-  myMVATrig = new EGammaMvaEleEstimatorCSA14();
-
-  myMVATrig->initialize("BDT",
-			EGammaMvaEleEstimatorCSA14::kTrig,
-			true,
-			myManualCatWeigthsTrig);
+  //  std::vector<std::string> myManualCatWeigths;
+  //  
+  //  myManualCatWeigths.push_back("../test/TrigIDMVA_25ns_EB_BDT.weights.xml");
+  //  myManualCatWeigths.push_back("../test/TrigIDMVA_25ns_EE_BDT.weights.xml");
+  //
+  //  myMVATrig = new EGammaMvaEleEstimator();
+  //
+  //  myMVATrig->initialize("BDT",
+  //			EGammaMvaEleEstimator::kTrig,
+  //			true,
+  //			myManualCatWeigths);
 }
 
 
 SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
 {
-  delete myMVATrig;
+  //  delete myMVATrig;
 }
 
 
@@ -1936,7 +1926,8 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     T_Elec_isEB                  -> push_back(selected_electrons[k].isEB());
     T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
     T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
-    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
+    //    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
+    T_Elec_MVAoutput             -> push_back(-999.);
     T_Elec_PFElecPt              -> push_back(pfElecPx);
     T_Elec_PFElecPx              -> push_back(pfElecPy);
     T_Elec_PFElecPy              -> push_back(pfElecPz);
