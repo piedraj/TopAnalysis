@@ -26,7 +26,7 @@ It is time to get the material
 Go to the master repository (https://github.com/piedraj/TopAnalysis) and click **Fork** in the top-right corner of the page. Now get the code in your working area.
 
     git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
-    git clone https://github.com/YOUR-USERNAME/TopAnalysis.git TopAnalysis
+    git clone https://github.com/piedraj/TopAnalysis.git TopAnalysis
     mkdir TopAnalysis/TopTreeProducer/interface
 
 
