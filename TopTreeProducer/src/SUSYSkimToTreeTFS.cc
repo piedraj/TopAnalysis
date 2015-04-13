@@ -925,10 +925,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     for (size_t i=0; i<genParticles->size(); ++i) {
 
-      const Candidate & p = (*genParticles)[i];
+      const Candidate &p = (*genParticles)[i];
 
       int id = p.pdgId();
-      int st = p.status();
 
       if (!(
 	    abs(id) == 11 ||       // e
@@ -948,11 +947,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    )
 	  ) continue;
 
-      if (abs(id) == 1000006) T_Gen_StopMass->push_back(p.mass());      
-      if (abs(id) == 1000022) T_Gen_Chi0Mass->push_back(p.mass());
-      if (abs(id) == 1000024) T_Gen_CharginoMass->push_back(p.mass());
+      if (abs(id) == 1000006) T_Gen_StopMass     -> push_back(p.mass());      
+      if (abs(id) == 1000022) T_Gen_Chi0Mass     -> push_back(p.mass());
+      if (abs(id) == 1000024) T_Gen_CharginoMass -> push_back(p.mass());
       
-      // Get the mother 
+      // Get the mother id
       const GenParticle* gen_mom = static_cast<const GenParticle*> (p.mother());
 
       int m_id = (gen_mom != 0) ? gen_mom->pdgId() : 0;
@@ -961,7 +960,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       if (abs(id) == 11 || abs(id) == 13 || abs(id) == 5) {
 
 	// Non-prompt. We do NOT want those coming from top/gamma/Z/W
-	if (!(abs(m_id) == 6 || abs(m_id) == 22 || abs(m_id) == 23 || abs(m_id) == 24 || m_id == id)) {
+	if (abs(m_id) != 6 && abs(m_id) != 22 && abs(m_id) != 23 && abs(m_id) != 24 && m_id != id) {
       
 	  // Non-prompt gen electron
 	  if (abs(id) == 11) {
@@ -1061,24 +1060,13 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptElec_Py     -> push_back(p.py());
 	    T_Gen_PromptElec_Pz     -> push_back(p.pz());
 	    T_Gen_PromptElec_Energy -> push_back(p.energy());
-	    T_Gen_PromptElec_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0){
-
-	      T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
-	      T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
-	      T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_PromptElec_MPx     -> push_back(0);
-	      T_Gen_PromptElec_MPy     -> push_back(0);
-	      T_Gen_PromptElec_MPz     -> push_back(0);
-	      T_Gen_PromptElec_MEnergy -> push_back(0);
-	      T_Gen_PromptElec_MSt     -> push_back(0);
-	    }
+	    T_Gen_PromptElec_MpdgId  -> push_back(m_id);
+	    T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
+	    T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
+	    T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
 	  }
       
 	  // Prompt gen muon
@@ -1089,24 +1077,13 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptMuon_Py     -> push_back(p.py());
 	    T_Gen_PromptMuon_Pz     -> push_back(p.pz());
 	    T_Gen_PromptMuon_Energy -> push_back(p.energy());
-	    T_Gen_PromptMuon_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0) {
-
-	      T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
-	      T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
-	      T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_PromptMuon_MPx     -> push_back(0);
-	      T_Gen_PromptMuon_MPy     -> push_back(0);
-	      T_Gen_PromptMuon_MPz     -> push_back(0);
-	      T_Gen_PromptMuon_MEnergy -> push_back(0);
-	      T_Gen_PromptMuon_MSt     -> push_back(0);
-	    }
+	    T_Gen_PromptMuon_MpdgId  -> push_back(m_id);
+	    T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
+	    T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
+	    T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
 	  }
 
 	  // Prompt gen b
@@ -1117,31 +1094,20 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_Promptb_Py     -> push_back(p.py());
 	    T_Gen_Promptb_Pz     -> push_back(p.pz());
 	    T_Gen_Promptb_Energy -> push_back(p.energy());
-	    T_Gen_Promptb_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0) {
-
-	      T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
-	      T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
-	      T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_Promptb_MPx     -> push_back(0);
-	      T_Gen_Promptb_MPy     -> push_back(0);
-	      T_Gen_Promptb_MPz     -> push_back(0);
-	      T_Gen_Promptb_MEnergy -> push_back(0);
-	      T_Gen_Promptb_MSt     -> push_back(0);
-	    }
+	    T_Gen_Promptb_MpdgId  -> push_back(m_id);
+	    T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
+	    T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
+	    T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
 	  }
       	}
 
-	// After radiation, if any... m_id==id
-	else if (st == 1 && m_id == id) {
+	// After radiation, if any... m_id == id
+	else if (p.status() == 1 && m_id == id) {
 
-	  if(abs(id) == 11) {
+	  if (abs(id) == 11) {
 
 	    T_Gen_FinalElec_pdgId  -> push_back(id);
 	    T_Gen_FinalElec_Px     -> push_back(p.px());
