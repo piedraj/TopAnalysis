@@ -609,15 +609,16 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   isRealData = false;
 
   edm::Handle <reco::GenParticleCollection> genParticles;
-
+  
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
+
     // Call genParticles size to forze the exception
     int aux = genParticles->size();
     // Add this line to avoid warnings
     aux = 0 + aux;
   }
-  catch(...) {isRealData = true;} 
+  catch (...) {isRealData = true;} 
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
   iEvent.getByLabel(muonLabel_, muonHandle);
@@ -1282,8 +1283,8 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	T_Gen_Nu_eta    ->push_back(p.eta());	   
 	T_Gen_Nu_phi    ->push_back(p.phi());	   
       }    
-    }  // for..genParticles    
-  }  // !isRealData
+    }
+  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2413,18 +2414,19 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
   std::vector<JetCorrectorParameters> vPar;
 
+  // Downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
   if (isRealData) {
-    ResJetPar = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2L3Residual_AK5PFchs.txt"); 
-    L3JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L3Absolute_AK5PFchs.txt");
-    L2JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L2Relative_AK5PFchs.txt");
-    L1JetPar  = new JetCorrectorParameters("/gpfs/csic_users/jfernan/CMSSW_5_3_3_patch2/src/GTs/GR_P_V42_AN3_L1FastJet_AK5PFchs.txt");
+    ResJetPar = new JetCorrectorParameters("Winter14_V5_DATA_L2L3Residual_AK5PFchs.txt"); 
+    L3JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L3Absolute_AK5PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L2Relative_AK5PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L1FastJet_AK5PFchs.txt");
   }
   else {
     L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
     L2JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
     L1JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
   }
-
+  
   //  Load the JetCorrectorParameter objects into a vector. The order matters
   vPar.push_back(*L1JetPar);
   vPar.push_back(*L2JetPar);
