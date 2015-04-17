@@ -10,7 +10,7 @@ process.maxEvents = cms.untracked.PSet(
     )
 
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/store/mc/Phys14DR/GluGluToHToWWTo2LAndTau2Nu_M-125_13TeV-powheg-pythia6/MINIAODSIM/AVE30BX50_tsg_PHYS14_ST_V1-v1/10000/440AA9AF-9988-E411-9786-00266CFFA038.root'),
+                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root'),
                             skipEvents = cms.untracked.uint32(4)
                             )
 
