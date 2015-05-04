@@ -62,6 +62,8 @@ Implementation:
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+
 #include "TFile.h"
 #include "TTree.h"
 #include <math.h> 
@@ -139,6 +141,13 @@ private:
   float T_Event_nTruePU;
   float T_Event_AveNTruePU;
   float T_Event_Rho;
+  float T_Event_weight;
+  std::vector<float> *T_Event_pdfWeight;
+//  std::vector<float> *T_Event_hdampWeight;
+  float T_Event_weightMuR1muF2, T_Event_weightMuR1muF05;
+  float T_Event_weightMuR2muF1, T_Event_weightMuR2muF05, T_Event_weightMuR2muF2;
+  float T_Event_weightMuR05muF1, T_Event_weightMuR05muF05, T_Event_weightMuR05muF2;
+
 
   // Gen muon
   std::vector<int>   *T_Gen_PromptMuon_pdgId;
@@ -503,6 +512,12 @@ private:
   std::vector<int>   *T_Jet_Parton_Flavour[NumberOfJetCollections];  
 
   std::vector<float> *T_Jet_Uncertainty[NumberOfJetCollections];
+  std::vector<float> *T_Jet_PileupPt[NumberOfJetCollections];
+  std::vector<float> *T_Jet_MPFInSitu[NumberOfJetCollections];
+  std::vector<float> *T_Jet_bJES[NumberOfJetCollections];
+  std::vector<float> *T_Jet_Flavor[NumberOfJetCollections];
+  std::vector<float> *T_Jet_Intercalibration[NumberOfJetCollections];
+  std::vector<float> *T_Jet_Uncorrelated[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_NeutHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharEmEnergyFrac[NumberOfJetCollections]; 
@@ -609,16 +624,15 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   isRealData = false;
 
   edm::Handle <reco::GenParticleCollection> genParticles;
-  
+
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
-
     // Call genParticles size to forze the exception
     int aux = genParticles->size();
     // Add this line to avoid warnings
     aux = 0 + aux;
   }
-  catch (...) {isRealData = true;} 
+  catch(...) {isRealData = true;} 
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
   iEvent.getByLabel(muonLabel_, muonHandle);
@@ -916,6 +930,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Gen_Tau_LepDec_Py     = new std::vector<float>;
   T_Gen_Tau_LepDec_Pz     = new std::vector<float>;
   T_Gen_Tau_LepDec_Energy = new std::vector<float>;  
+
+  T_Event_pdfWeight = new std::vector<float>;
+  //T_Event_hdampWeight = new std::vector<float>;
+
   
   if (!isRealData) {
 
@@ -924,11 +942,104 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     T_Event_processID = genEvtInfo->signalProcessID();
 
+    T_Event_weight= genEvtInfo->weight(); //muR=muF=1. hdamp=172.5 = (lheEventHandle->weights().at(0)).wgt;
+
+    edm::Handle<LHEEventProduct> lheEventHandle;
+    iEvent.getByLabel("externalLHEProducer",lheEventHandle);
+
+//<weightgroup name='scale_variation' combine='envelope'>
+////<weight id='1001'> muR=1 muF=1 hdamp=mt=172.5 </weight>
+////<weight id='1002'> muR=1 muF=2 hdamp=mt=172.5 </weight>
+////<weight id='1003'> muR=1 muF=0.5 hdamp=mt=172.5 </weight>
+////<weight id='1004'> muR=2 muF=1 hdamp=mt=172.5 </weight>
+////<weight id='1005'> muR=2 muF=2 hdamp=mt=172.5 </weight>
+////<weight id='1006'> muR=2 muF=0.5 hdamp=mt=172.5 </weight>
+////<weight id='1007'> muR=0.5 muF=1 hdamp=mt=172.5 </weight>
+////<weight id='1008'> muR=0.5 muF=2 hdamp=mt=172.5 </weight>
+////<weight id='1009'> muR=0.5 muF=0.5 hdamp=mt=172.5 </weight>
+
+    T_Event_weightMuR1muF2 = (lheEventHandle->weights().at(1)).wgt;
+    T_Event_weightMuR1muF05 = (lheEventHandle->weights().at(2)).wgt;
+
+    T_Event_weightMuR2muF1  = (lheEventHandle->weights().at(3)).wgt;
+    T_Event_weightMuR2muF2  = (lheEventHandle->weights().at(4)).wgt;
+    T_Event_weightMuR2muF05 = (lheEventHandle->weights().at(5)).wgt;
+
+    T_Event_weightMuR05muF1 = (lheEventHandle->weights().at(6)).wgt;
+    T_Event_weightMuR05muF2 = (lheEventHandle->weights().at(7)).wgt;
+    T_Event_weightMuR05muF05= (lheEventHandle->weights().at(8)).wgt;
+
+/*
+ * <scalesfunctionalform>
+ * muR  H_T/2 := sum_i mT(i)/2, i=final state
+ *     muF1 H_T/2 := sum_i mT(i)/2, i=final state
+ *         muF2 H_T/2 := sum_i mT(i)/2, i=final state
+ *             QES  H_T/2 := sum_i mT(i)/2, i=final state
+ *             </scalesfunctionalform>*/
+
+//    <weightgroup type='PDF_variation' combine='gaussian'>
+      //	NNPDF30_nlo_nf_5_pdfas aMCatNLo 29220X
+      // 	NNPDF30_nlo_as_0118    POWHEG  26000X
+//      <weight id='2001'> pdfset=292201 </weight>
+//      <weight id='2002'> pdfset=292202 </weight>
+//      <weight id='2003'> pdfset=292203 </weight>
+// ...
+//      <weight id='2100'> pdfset=292300 </weight>
+//     <weight id='2101'> pdfset=292301 </weight>
+//      <weight id='2102'> pdfset=292302 </weight>
+//    </weightgroup>
+
+//<weightgroup name='PDF_variation' combine='hessian'>
+//<weight id='2001'> PDF set = 260001 </weight>
+//<weight id='2002'> PDF set = 260002 </weight>
+// ...
+   
+    for(int w=9;w<9+102;w++){
+    const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
+    T_Event_pdfWeight->push_back(wgt.wgt);
+       }
+
+//<weightgroup name='hdamp_variation' combine='envelope'>
+////<weight id='3001'> muR=1 muF=1 hdamp=0 </weight>
+////<weight id='3002'> muR=1 muF=2 hdamp=0 </weight>
+////<weight id='3003'> muR=1 muF=0.5 hdamp=0 </weight>
+////<weight id='3004'> muR=2 muF=1 hdamp=0 </weight>
+////<weight id='3005'> muR=2 muF=2 hdamp=0 </weight>
+////<weight id='3006'> muR=2 muF=0.5 hdamp=0 </weight>
+////<weight id='3007'> muR=0.5 muF=1 hdamp=0 </weight>
+////<weight id='3008'> muR=0.5 muF=2 hdamp=0 </weight>
+////<weight id='3009'> muR=0.5 muF=0.5 hdamp=0 </weight>
+////<weight id='3010'> muR=1 muF=1 hdamp=86.25 </weight>
+////<weight id='3011'> muR=1 muF=2 hdamp=86.25 </weight>
+////<weight id='3012'> muR=1 muF=0.5 hdamp=86.25 </weight>
+////<weight id='3013'> muR=2 muF=1 hdamp=86.25 </weight>
+////<weight id='3014'> muR=2 muF=2 hdamp=86.25 </weight>
+////<weight id='3015'> muR=2 muF=0.5 hdamp=86.25 </weight>
+////<weight id='3016'> muR=0.5 muF=1 hdamp=86.25 </weight>
+////<weight id='3017'> muR=0.5 muF=2 hdamp=86.25 </weight>
+////<weight id='3018'> muR=0.5 muF=0.5 hdamp=86.25 </weight>
+////<weight id='3019'> muR=1 muF=1 hdamp=350 </weight>
+////<weight id='3020'> muR=1 muF=2 hdamp=350 </weight>
+////<weight id='3021'> muR=1 muF=0.5 hdamp=350 </weight>
+////<weight id='3022'> muR=2 muF=1 hdamp=350 </weight>
+////<weight id='3023'> muR=2 muF=2 hdamp=350 </weight>
+////<weight id='3024'> muR=2 muF=0.5 hdamp=350 </weight>
+////<weight id='3025'> muR=0.5 muF=1 hdamp=350 </weight>
+////<weight id='3026'> muR=0.5 muF=2 hdamp=350 </weight>
+////<weight id='3027'> muR=0.5 muF=0.5 hdamp=350 </weight>
+//
+//    for(int w=9+102;w<9+102+27;w++){
+//        const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
+//            T_Event_hdampWeight->push_back(wgt.wgt);
+//                }
+//
+
     for (size_t i=0; i<genParticles->size(); ++i) {
 
-      const Candidate &p = (*genParticles)[i];
+      const Candidate & p = (*genParticles)[i];
 
       int id = p.pdgId();
+      int st = p.status();
 
       if (!(
 	    abs(id) == 11 ||       // e
@@ -948,11 +1059,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    )
 	  ) continue;
 
-      if (abs(id) == 1000006) T_Gen_StopMass     -> push_back(p.mass());      
-      if (abs(id) == 1000022) T_Gen_Chi0Mass     -> push_back(p.mass());
-      if (abs(id) == 1000024) T_Gen_CharginoMass -> push_back(p.mass());
+      if (abs(id) == 1000006) T_Gen_StopMass->push_back(p.mass());      
+      if (abs(id) == 1000022) T_Gen_Chi0Mass->push_back(p.mass());
+      if (abs(id) == 1000024) T_Gen_CharginoMass->push_back(p.mass());
       
-      // Get the mother id
+      // Get the mother 
       const GenParticle* gen_mom = static_cast<const GenParticle*> (p.mother());
 
       int m_id = (gen_mom != 0) ? gen_mom->pdgId() : 0;
@@ -961,7 +1072,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       if (abs(id) == 11 || abs(id) == 13 || abs(id) == 5) {
 
 	// Non-prompt. We do NOT want those coming from top/gamma/Z/W
-	if (abs(m_id) != 6 && abs(m_id) != 22 && abs(m_id) != 23 && abs(m_id) != 24 && m_id != id) {
+	if (!(abs(m_id) == 6 || abs(m_id) == 22 || abs(m_id) == 23 || abs(m_id) == 24 || m_id == id)) {
       
 	  // Non-prompt gen electron
 	  if (abs(id) == 11) {
@@ -1061,13 +1172,24 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptElec_Py     -> push_back(p.py());
 	    T_Gen_PromptElec_Pz     -> push_back(p.pz());
 	    T_Gen_PromptElec_Energy -> push_back(p.energy());
+	    T_Gen_PromptElec_MpdgId -> push_back(m_id);
 
-	    T_Gen_PromptElec_MpdgId  -> push_back(m_id);
-	    T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
-	    T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
-	    T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
-	    T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
-	    T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
+	    if (gen_mom != 0){
+
+	      T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
+	      T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
+	      T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_PromptElec_MPx     -> push_back(0);
+	      T_Gen_PromptElec_MPy     -> push_back(0);
+	      T_Gen_PromptElec_MPz     -> push_back(0);
+	      T_Gen_PromptElec_MEnergy -> push_back(0);
+	      T_Gen_PromptElec_MSt     -> push_back(0);
+	    }
 	  }
       
 	  // Prompt gen muon
@@ -1078,13 +1200,24 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptMuon_Py     -> push_back(p.py());
 	    T_Gen_PromptMuon_Pz     -> push_back(p.pz());
 	    T_Gen_PromptMuon_Energy -> push_back(p.energy());
+	    T_Gen_PromptMuon_MpdgId -> push_back(m_id);
 
-	    T_Gen_PromptMuon_MpdgId  -> push_back(m_id);
-	    T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
-	    T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
-	    T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
-	    T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
-	    T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
+	    if (gen_mom != 0) {
+
+	      T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
+	      T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
+	      T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_PromptMuon_MPx     -> push_back(0);
+	      T_Gen_PromptMuon_MPy     -> push_back(0);
+	      T_Gen_PromptMuon_MPz     -> push_back(0);
+	      T_Gen_PromptMuon_MEnergy -> push_back(0);
+	      T_Gen_PromptMuon_MSt     -> push_back(0);
+	    }
 	  }
 
 	  // Prompt gen b
@@ -1095,20 +1228,31 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_Promptb_Py     -> push_back(p.py());
 	    T_Gen_Promptb_Pz     -> push_back(p.pz());
 	    T_Gen_Promptb_Energy -> push_back(p.energy());
+	    T_Gen_Promptb_MpdgId -> push_back(m_id);
 
-	    T_Gen_Promptb_MpdgId  -> push_back(m_id);
-	    T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
-	    T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
-	    T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
-	    T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
-	    T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
+	    if (gen_mom != 0) {
+
+	      T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
+	      T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
+	      T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
+	      T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
+	      T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
+	    }
+	    else {
+
+	      T_Gen_Promptb_MPx     -> push_back(0);
+	      T_Gen_Promptb_MPy     -> push_back(0);
+	      T_Gen_Promptb_MPz     -> push_back(0);
+	      T_Gen_Promptb_MEnergy -> push_back(0);
+	      T_Gen_Promptb_MSt     -> push_back(0);
+	    }
 	  }
       	}
 
-	// After radiation, if any... m_id == id
-	else if (p.status() == 1 && m_id == id) {
+	// After radiation, if any... m_id==id
+	else if (st == 1 && m_id == id) {
 
-	  if (abs(id) == 11) {
+	  if(abs(id) == 11) {
 
 	    T_Gen_FinalElec_pdgId  -> push_back(id);
 	    T_Gen_FinalElec_Px     -> push_back(p.px());
@@ -1283,8 +1427,8 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	T_Gen_Nu_eta    ->push_back(p.eta());	   
 	T_Gen_Nu_phi    ->push_back(p.phi());	   
       }    
-    }
-  }
+    }  // for..genParticles    
+  }  // !isRealData
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2150,6 +2294,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   delete T_Gen_ChiPM_eta;	   
   delete T_Gen_ChiPM_phi;        
 
+  delete T_Event_pdfWeight;
+//  delete T_Event_hdampWeight;
+
   // Vertex variables
   delete T_Vertex_x;
   delete T_Vertex_y;
@@ -2322,6 +2469,12 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     delete T_Jet_Parton_Flavour[i];
 
     delete T_Jet_Uncertainty[i];
+    delete T_Jet_PileupPt[i];
+    delete T_Jet_MPFInSitu[i];
+    delete T_Jet_bJES[i];
+    delete T_Jet_Flavor[i];
+    delete T_Jet_Intercalibration[i];
+    delete T_Jet_Uncorrelated[i];
     delete T_Jet_CharHadEnergyFrac[i];
     delete T_Jet_NeutHadEnergyFrac[i];
     delete T_Jet_CharEmEnergyFrac[i];
@@ -2379,7 +2532,12 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   T_Jet_Tag_HighEffSimpSVtx[idx]     = new std::vector<float>;
   T_Jet_Tag_HighPurTC[idx]           = new std::vector<float>;
   T_Jet_Uncertainty[idx]             = new std::vector<float>;
- 
+  T_Jet_PileupPt[idx]   = new std::vector<float>;
+  T_Jet_MPFInSitu[idx] 		     = new std::vector<float>;
+  T_Jet_bJES[idx] 		     = new std::vector<float>;
+  T_Jet_Flavor[idx] 		     = new std::vector<float>;
+  T_Jet_Intercalibration[idx] 	     = new std::vector<float>;
+  T_Jet_Uncorrelated[idx] 	     = new std::vector<float>; 
   T_Jet_CharHadEnergyFrac[idx]   = new std::vector<float>;
   T_Jet_NeutHadEnergyFrac[idx]   = new std::vector<float>;
   T_Jet_CharEmEnergyFrac[idx]    = new std::vector<float>;
@@ -2414,19 +2572,18 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
   std::vector<JetCorrectorParameters> vPar;
 
-  // Downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
   if (isRealData) {
-    ResJetPar = new JetCorrectorParameters("Winter14_V5_DATA_L2L3Residual_AK5PFchs.txt"); 
-    L3JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L3Absolute_AK5PFchs.txt");
-    L2JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L2Relative_AK5PFchs.txt");
-    L1JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L1FastJet_AK5PFchs.txt");
+    ResJetPar = new JetCorrectorParameters("");
+    L3JetPar  = new JetCorrectorParameters("");
+    L2JetPar  = new JetCorrectorParameters("");
+    L1JetPar  = new JetCorrectorParameters("");
   }
   else {
     L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
     L2JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
     L1JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
   }
-  
+
   //  Load the JetCorrectorParameter objects into a vector. The order matters
   vPar.push_back(*L1JetPar);
   vPar.push_back(*L2JetPar);
@@ -2434,10 +2591,62 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   if (isRealData) vPar.push_back(*ResJetPar);
 
   FactorizedJetCorrector*   JetCorrector = new FactorizedJetCorrector(vPar);
-  JetCorrectorParameters*   TotalJetPar  = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "Total");
-  JetCorrectionUncertainty* jecUnc       = new JetCorrectionUncertainty(*TotalJetPar);
+//  JetCorrectorParameters*   TotalJetPar  = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "Total");
+//
 
-  for (edm::View<pat::Jet>::const_iterator jet_iter=JET.begin(); jet_iter!= JET.end(); jet_iter++) { 
+/*
+JetCorrectorParameters *Total = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "Total");
+JetCorrectorParameters *SubTotalMC = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "SubTotalMC");
+JetCorrectorParameters *MPFInSitu = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "CorrelationGroupMPFInSitu");
+JetCorrectorParameters *bJES = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "CorrelationGroupbJES");
+JetCorrectorParameters *Flavor= new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "CorrelationGroupFlavor");
+JetCorrectorParameters *Intercalibration= new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "CorrelationGroupIntercalibration");
+JetCorrectorParameters *Uncorrelated= new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", "CorrelationGroupUncorrelated");
+
+//  JetCorrectionUncertainty* jecUnc       = new JetCorrectionUncertainty(*TotalJetPar);
+ JetCorrectionUncertainty *jecUncT = new JetCorrectionUncertainty(*Total);
+ JetCorrectionUncertainty *jecUncS = new JetCorrectionUncertainty(*SubTotalMC);
+ JetCorrectionUncertainty *jecUncM = new JetCorrectionUncertainty(*MPFInSitu);
+ JetCorrectionUncertainty *jecUncB = new JetCorrectionUncertainty(*bJES);
+ JetCorrectionUncertainty *jecUncF = new JetCorrectionUncertainty(*Flavor);
+ JetCorrectionUncertainty *jecUncI = new JetCorrectionUncertainty(*Intercalibration);
+ JetCorrectionUncertainty *jecUncU = new JetCorrectionUncertainty(*Uncorrelated);
+*/
+
+// Instantiate uncertainty sources
+// Following  https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopMassSystematics
+
+	const int nsrc = 28;
+	const char* srcnames[nsrc] =
+   {"AbsoluteStat","AbsoluteScale", "HighPtExtra",  "SinglePionECAL", "SinglePionHCAL", 
+     "Time",
+      "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF",
+         "RelativePtBB","RelativePtEC1", "RelativePtEC2", "RelativePtHF", //"RelativeFSR",
+            "RelativeStatEC2", "RelativeStatHF",
+               "PileUpDataMC", "PileUpBias",
+               //JES_Uncorrelated    squared, 17 contributions
+                                   "PileUpPtBB", "PileUpPtEC", "PileUpPtHF",
+                  //JES_PileupPt. squared 3+1 contributions
+                                      //   "SubTotalPileUp","SubTotalRelative","SubTotalPt","SubTotalMC",//"TotalNoFlavor",//   "FlavorZJet",//"FlavorPhotonJet",
+                                                             "FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom",
+                  //JES_Flavor, linear 4 contributions
+                                      "CorrelationGroupIntercalibration","CorrelationGroupMPFInSitu",
+                "CorrelationGroupbJES","Total"};
+
+//        std::vector<JetCorrectorParameters*>  vp(nsrc);
+        std::vector<JetCorrectionUncertainty*> vsrc(nsrc);
+
+
+	for (int isrc = 0; isrc < nsrc; isrc++) {
+
+   		const char *name = srcnames[isrc];
+//   		JetCorrectorParameters *p = new JetCorrectorParameters("Winter14_V5_DATA_UncertaintySources_AK5PFchs.txt", name);
+     		JetCorrectorParameters *p = new JetCorrectorParameters("Summer13_V5_DATA_UncertaintySources_AK5PFchs.txt", name);
+		JetCorrectionUncertainty * unc = new JetCorrectionUncertainty(*p);
+   		vsrc[isrc] = unc;
+	}
+
+  for (edm::View<pat::Jet>::const_iterator jet_iter=JET.begin(); jet_iter!= JET.end(); jet_iter++) {
 
     Jet rawJet = jet_iter->correctedJet("Uncorrected");
 
@@ -2448,7 +2657,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
     double correction = JetCorrector->getCorrection();
     double et         = rawJet.et() * correction;
-    
+
     if (et < 10) continue;
 
     T_Jet_Px    [idx] -> push_back(correction * rawJet.px());
@@ -2459,17 +2668,87 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     T_Jet_Eta   [idx] -> push_back(jet_iter->eta());
     T_Jet_Energy[idx] -> push_back(jet_iter->energy());
 
-    float uncertainty = -9999.;
+        float JES_Uncorrelated=0., JES_PileupPt=0., JES_Flavor=0.;
+        float JES_Intercalibration=0.,JES_MPFInSitu=0, JES_bJES=0.,JES_Total=0.;
+
+
+	for (int isrc = 0; isrc < nsrc; isrc++) {
+ 		float uncVal=-9999.;
+ 		if(fabs(jet_iter->eta())<=5.4 && (jet_iter->pt())<=3276.5 && (jet_iter->pt())>=9.0){
+ 		vsrc[isrc]->setJetEta(jet_iter->eta());
+ 		vsrc[isrc]->setJetPt(jet_iter->pt());
+ 		uncVal = vsrc[isrc]->getUncertainty(true);
+
+		 if (isrc<17) JES_Uncorrelated+=uncVal*uncVal; //quadratic
+		 else if(isrc<21) JES_PileupPt+=uncVal*uncVal; //quadratic
+		 else if(isrc<24) JES_Flavor += uncVal; //linear
+		 else if(isrc==24) JES_Intercalibration = uncVal;
+		 else if(isrc==25) JES_MPFInSitu = uncVal;
+		 else if(isrc==26) JES_bJES=  uncVal;
+		 else if(isrc==27) JES_Total=  uncVal;
+		 }
+	}
+	
+	T_Jet_Uncertainty[idx]->push_back(JES_Total);
+     	T_Jet_PileupPt[idx]->push_back(sqrt(JES_PileupPt));
+     	T_Jet_MPFInSitu[idx]->push_back(JES_MPFInSitu);
+     	T_Jet_bJES[idx]->push_back(JES_bJES);
+     	T_Jet_Flavor[idx]->push_back(JES_Flavor);
+     	T_Jet_Intercalibration[idx]->push_back(JES_Intercalibration);
+     	T_Jet_Uncorrelated[idx]->push_back(sqrt(JES_Uncorrelated));
+
+
+
+
+/*
+// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECUncertaintySources#Winter14_uncertainties 
+
+ float uncT=-9999.,uncS=-9999.,uncB=-9999.,uncM=-9999.,uncF=-9999.,uncI=-9999.,uncU=-9999.;
+
+//    float uncertainty = -9999.;
 
     if (fabs(jet_iter->eta()) <= 5.2 && et <= 1944.5) {
 
-      jecUnc->setJetEta(jet_iter->eta());
-      jecUnc->setJetPt(et);
+ jecUncT->setJetEta(jet_iter->eta());
+ jecUncT->setJetPt(jet_iter->pt());
+ uncT = jecUncT->getUncertainty(true);
 
-      uncertainty = jecUnc->getUncertainty(true);
+ jecUncS->setJetEta(jet_iter->eta());
+ jecUncS->setJetPt(jet_iter->pt());
+ uncS = jecUncS->getUncertainty(true);
+
+ jecUncM->setJetEta(jet_iter->eta());
+ jecUncM->setJetPt(jet_iter->pt());
+ uncM = jecUncM->getUncertainty(true);
+
+ jecUncB->setJetEta(jet_iter->eta());
+ jecUncB->setJetPt(jet_iter->pt());
+ uncB = jecUncB->getUncertainty(true);
+
+ jecUncF->setJetEta(jet_iter->eta());
+ jecUncF->setJetPt(jet_iter->pt());
+ uncF = jecUncF->getUncertainty(true);
+
+ jecUncI->setJetEta(jet_iter->eta());
+ jecUncI->setJetPt(jet_iter->pt());
+ uncI = jecUncI->getUncertainty(true);
+
+ jecUncU->setJetEta(jet_iter->eta());
+ jecUncU->setJetPt(jet_iter->pt());
+ uncU = jecUncU->getUncertainty(true);
+
     }
-    
-    T_Jet_Uncertainty[idx]->push_back(uncertainty);
+ 
+
+   
+     T_Jet_Uncertainty[idx]->push_back(uncT);
+     T_Jet_PileupPt[idx]->push_back(uncS);
+     T_Jet_MPFInSitu[idx]->push_back(uncM);
+     T_Jet_bJES[idx]->push_back(uncB);
+     T_Jet_Flavor[idx]->push_back(uncF);
+     T_Jet_Intercalibration[idx]->push_back(uncI);
+     T_Jet_Uncorrelated[idx]->push_back(uncU);
+*/
 
     if (jet_iter->isPFJet()) {
       T_Jet_CharHadEnergyFrac  [idx] -> push_back(jet_iter->chargedHadronEnergyFraction());
@@ -2563,8 +2842,25 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   delete L1JetPar;
   delete ResJetPar;
   delete JetCorrector;
-  delete TotalJetPar;
-  delete jecUnc;
+  for (int isrc = 0; isrc < nsrc; isrc++)  delete vsrc[isrc];
+
+//  delete TotalJetPar;
+  //delete jecUnc;
+/*  delete SubTotalMC;
+  delete jecUncS;
+  delete Total;
+  delete jecUncT;
+  delete MPFInSitu;
+  delete bJES;
+  delete jecUncM;
+  delete jecUncB;
+  delete Flavor;
+  delete jecUncF;
+  delete Intercalibration;
+  delete jecUncI;
+  delete Uncorrelated;
+  delete jecUncU;
+*/
 }
 
 
@@ -2592,6 +2888,14 @@ void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool caloj
   Tree->Branch(TString(namecol + "_Parton_Pz"),               "std::vector<float>", &T_Jet_Parton_Pz[idx]);
   Tree->Branch(TString(namecol + "_Parton_Energy"),           "std::vector<float>", &T_Jet_Parton_Energy[idx]);
   Tree->Branch(TString(namecol + "_Parton_Flavour"),          "std::vector<int>",   &T_Jet_Parton_Flavour[idx]);
+  Tree->Branch(TString(namecol + "_Uncertainty"), "std::vector<float>", &T_Jet_Uncertainty[idx]);
+  Tree->Branch(TString(namecol + "_PileupPt"), "std::vector<float>", &T_Jet_PileupPt[idx]);
+  Tree->Branch(TString(namecol + "_MPFInSitu"), "std::vector<float>", &T_Jet_MPFInSitu[idx]);
+  Tree->Branch(TString(namecol + "_bJES"), "std::vector<float>", &T_Jet_bJES[idx]);
+  Tree->Branch(TString(namecol + "_Flavor"), "std::vector<float>", &T_Jet_Flavor[idx]);
+  Tree->Branch(TString(namecol + "_Intercalibration"), "std::vector<float>", &T_Jet_Intercalibration[idx]);
+  Tree->Branch(TString(namecol + "_Uncorrelated"), "std::vector<float>", &T_Jet_Uncorrelated[idx]);
+
 
   Tree->Branch(TString(namecol + "_CharHadEnergyFrac"),   "std::vector<float>", &T_Jet_CharHadEnergyFrac[idx]);
   Tree->Branch(TString(namecol + "_NeutHadEnergyFrac"),   "std::vector<float>", &T_Jet_NeutHadEnergyFrac[idx]);
@@ -2860,6 +3164,19 @@ void SUSYSkimToTreeTFS::beginJob()
     Tree->Branch("T_Gen_Tau_LepDec_Py",     "std::vector<float>", &T_Gen_Tau_LepDec_Py);
     Tree->Branch("T_Gen_Tau_LepDec_Pz",     "std::vector<float>", &T_Gen_Tau_LepDec_Pz);
     Tree->Branch("T_Gen_Tau_LepDec_Energy", "std::vector<float>", &T_Gen_Tau_LepDec_Energy);
+
+  Tree->Branch("T_Event_weight", &  T_Event_weight, "T_Event_weight/F");
+  Tree->Branch("T_Event_pdfWeight", "std::vector<float>", &T_Event_pdfWeight);
+//  Tree->Branch("T_Event_hdampWeight", "std::vector<float>", &T_Event_hdampWeight);
+  Tree->Branch("T_Event_weightMuR1muF2", &  T_Event_weightMuR1muF2, "T_Event_weightMuR1muF2/F");
+  Tree->Branch("T_Event_weightMuR1muF05", &  T_Event_weightMuR1muF05, "T_Event_weightMuR1muF05/F");
+  Tree->Branch("T_Event_weightMuR05muF2", &  T_Event_weightMuR05muF2, "T_Event_weightMuR05muF2/F");
+  Tree->Branch("T_Event_weightMuR05muF1", &  T_Event_weightMuR05muF1, "T_Event_weightMuR05muF1/F");
+  Tree->Branch("T_Event_weightMuR05muF05", &  T_Event_weightMuR05muF05, "T_Event_weightMuR05muF05/F");
+  Tree->Branch("T_Event_weightMuR2muF2", &  T_Event_weightMuR2muF2, "T_Event_weightMuR2muF2/F");
+  Tree->Branch("T_Event_weightMuR2muF1", &  T_Event_weightMuR2muF1, "T_Event_weightMuR2muF1/F");
+  Tree->Branch("T_Event_weightMuR2muF05", &  T_Event_weightMuR2muF05, "T_Event_weightMuR2muF05/F");
+
   }
 
   // Vertex
