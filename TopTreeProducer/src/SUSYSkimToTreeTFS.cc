@@ -60,9 +60,8 @@ Implementation:
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -627,12 +626,13 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   try {
     iEvent.getByLabel("prunedGenParticles", genParticles);
+
     // Call genParticles size to forze the exception
     int aux = genParticles->size();
     // Add this line to avoid warnings
     aux = 0 + aux;
   }
-  catch(...) {isRealData = true;} 
+  catch (...) {isRealData = true;} 
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
   iEvent.getByLabel(muonLabel_, muonHandle);
@@ -744,7 +744,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       if (names.triggerName(i) == "logErrorTooManyClusters"            && metFilters.product()->accept(i)) T_EventF_trkPOG_logErrorTooManyClusters     = true;
       if (names.triggerName(i) == "METFilters"                         && metFilters.product()->accept(i)) T_EventF_METFilters                         = true;
     }
-  } catch(...) {;} 
+  } catch (...) {;} 
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1036,10 +1036,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     for (size_t i=0; i<genParticles->size(); ++i) {
 
-      const Candidate & p = (*genParticles)[i];
+      const Candidate &p = (*genParticles)[i];
 
       int id = p.pdgId();
-      int st = p.status();
 
       if (!(
 	    abs(id) == 11 ||       // e
@@ -1059,11 +1058,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    )
 	  ) continue;
 
-      if (abs(id) == 1000006) T_Gen_StopMass->push_back(p.mass());      
-      if (abs(id) == 1000022) T_Gen_Chi0Mass->push_back(p.mass());
+      if (abs(id) == 1000006) T_Gen_StopMass    ->push_back(p.mass());      
+      if (abs(id) == 1000022) T_Gen_Chi0Mass    ->push_back(p.mass());
       if (abs(id) == 1000024) T_Gen_CharginoMass->push_back(p.mass());
       
-      // Get the mother 
+      // Get the mother id
       const GenParticle* gen_mom = static_cast<const GenParticle*> (p.mother());
 
       int m_id = (gen_mom != 0) ? gen_mom->pdgId() : 0;
@@ -1172,24 +1171,13 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptElec_Py     -> push_back(p.py());
 	    T_Gen_PromptElec_Pz     -> push_back(p.pz());
 	    T_Gen_PromptElec_Energy -> push_back(p.energy());
-	    T_Gen_PromptElec_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0){
-
-	      T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
-	      T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
-	      T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_PromptElec_MPx     -> push_back(0);
-	      T_Gen_PromptElec_MPy     -> push_back(0);
-	      T_Gen_PromptElec_MPz     -> push_back(0);
-	      T_Gen_PromptElec_MEnergy -> push_back(0);
-	      T_Gen_PromptElec_MSt     -> push_back(0);
-	    }
+	    T_Gen_PromptElec_MpdgId  -> push_back(m_id);
+	    T_Gen_PromptElec_MPx     -> push_back(gen_mom->px());
+	    T_Gen_PromptElec_MPy     -> push_back(gen_mom->py());
+	    T_Gen_PromptElec_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_PromptElec_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_PromptElec_MSt     -> push_back(gen_mom->status());
 	  }
       
 	  // Prompt gen muon
@@ -1200,24 +1188,13 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_PromptMuon_Py     -> push_back(p.py());
 	    T_Gen_PromptMuon_Pz     -> push_back(p.pz());
 	    T_Gen_PromptMuon_Energy -> push_back(p.energy());
-	    T_Gen_PromptMuon_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0) {
-
-	      T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
-	      T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
-	      T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_PromptMuon_MPx     -> push_back(0);
-	      T_Gen_PromptMuon_MPy     -> push_back(0);
-	      T_Gen_PromptMuon_MPz     -> push_back(0);
-	      T_Gen_PromptMuon_MEnergy -> push_back(0);
-	      T_Gen_PromptMuon_MSt     -> push_back(0);
-	    }
+	    T_Gen_PromptMuon_MpdgId  -> push_back(m_id);
+	    T_Gen_PromptMuon_MPx     -> push_back(gen_mom->px());
+	    T_Gen_PromptMuon_MPy     -> push_back(gen_mom->py());
+	    T_Gen_PromptMuon_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_PromptMuon_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_PromptMuon_MSt     -> push_back(gen_mom->status());
 	  }
 
 	  // Prompt gen b
@@ -1228,31 +1205,20 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	    T_Gen_Promptb_Py     -> push_back(p.py());
 	    T_Gen_Promptb_Pz     -> push_back(p.pz());
 	    T_Gen_Promptb_Energy -> push_back(p.energy());
-	    T_Gen_Promptb_MpdgId -> push_back(m_id);
 
-	    if (gen_mom != 0) {
-
-	      T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
-	      T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
-	      T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
-	      T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
-	      T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
-	    }
-	    else {
-
-	      T_Gen_Promptb_MPx     -> push_back(0);
-	      T_Gen_Promptb_MPy     -> push_back(0);
-	      T_Gen_Promptb_MPz     -> push_back(0);
-	      T_Gen_Promptb_MEnergy -> push_back(0);
-	      T_Gen_Promptb_MSt     -> push_back(0);
-	    }
+	    T_Gen_Promptb_MpdgId  -> push_back(m_id);
+	    T_Gen_Promptb_MPx     -> push_back(gen_mom->px());
+	    T_Gen_Promptb_MPy     -> push_back(gen_mom->py());
+	    T_Gen_Promptb_MPz     -> push_back(gen_mom->pz());
+	    T_Gen_Promptb_MEnergy -> push_back(gen_mom->energy());
+	    T_Gen_Promptb_MSt     -> push_back(gen_mom->status());
 	  }
       	}
 
 	// After radiation, if any... m_id==id
-	else if (st == 1 && m_id == id) {
+	else if (p.status() == 1 && m_id == id) {
 
-	  if(abs(id) == 11) {
+	  if (abs(id) == 11) {
 
 	    T_Gen_FinalElec_pdgId  -> push_back(id);
 	    T_Gen_FinalElec_Px     -> push_back(p.px());
@@ -2572,11 +2538,12 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
   std::vector<JetCorrectorParameters> vPar;
 
+  // Downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
   if (isRealData) {
-    ResJetPar = new JetCorrectorParameters("");
-    L3JetPar  = new JetCorrectorParameters("");
-    L2JetPar  = new JetCorrectorParameters("");
-    L1JetPar  = new JetCorrectorParameters("");
+    ResJetPar = new JetCorrectorParameters("Winter14_V5_DATA_L2L3Residual_AK5PFchs.txt"); 
+    L3JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L3Absolute_AK5PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L2Relative_AK5PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L1FastJet_AK5PFchs.txt");
   }
   else {
     L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
@@ -2822,7 +2789,7 @@ JetCorrectorParameters *Uncorrelated= new JetCorrectorParameters("Winter14_V5_DA
 	  T_Jet_GenJet_Energy[idx]     -> push_back(0);
 	  T_Jet_GenJet_InvisibleE[idx] -> push_back(0);
 	}
-      } catch(...) {;}
+      } catch (...) {;}
     }
     
     T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
