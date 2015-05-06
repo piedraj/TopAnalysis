@@ -39,6 +39,7 @@ process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElec
 
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen        = cms.untracked.bool(True),
+                              readLHE        = cms.untracked.bool(False),
                               trigTag        = cms.untracked.InputTag('TriggerResults'),
                               muonTag        = cms.untracked.InputTag('slimmedMuons'),
                               jetPFTag       = cms.untracked.InputTag('slimmedJets'),
@@ -60,8 +61,8 @@ process.p = cms.Path(process.preYieldFilter*process.demo)
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/piedra/public/MiniAOD/440AA9AF-9988-E411-9786-00266CFFA038.root')
-process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
