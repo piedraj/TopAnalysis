@@ -48,8 +48,17 @@ CRAB3
     source /cvmfs/cms.cern.ch/crab3/crab.csh
     voms-proxy-init -voms cms
     cd TopTreeProducer/test/
+
+Submit one job
+
     crab submit -c crabConfig.py
     crab status --dir crab_DYJetsToLL_PU20bx25_PHYS14
+
+Submit multiple jobs
+
+    python multicrab.py
+    crab status --dir crab_7May_PHYS14/crab_TTDMDMJets_M1GeV
+    crab status --dir crab_7May_PHYS14/crab_TTDMDMJets_M10GeV
 
 
 It is commit time
