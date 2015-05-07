@@ -75,6 +75,38 @@ using namespace edm;
 using namespace std;
 using namespace reco;
 
+const int nsrc = 28;
+const char* srcnames[nsrc] =
+  {"AbsoluteStat",      //  0 JES_Uncorrelated
+   "AbsoluteScale",     //  1 JES_Uncorrelated
+   "HighPtExtra",       //  2 JES_Uncorrelated
+   "SinglePionECAL",    //  3 JES_Uncorrelated
+   "SinglePionHCAL",    //  4 JES_Uncorrelated
+   "Time",              //  5 JES_Uncorrelated
+   "RelativeJEREC1",    //  6 JES_Uncorrelated
+   "RelativeJEREC2",    //  7 JES_Uncorrelated
+   "RelativeJERHF",     //  8 JES_Uncorrelated
+   "RelativePtBB",      //  9 JES_Uncorrelated
+   "RelativePtEC1",     // 10 JES_Uncorrelated
+   "RelativePtEC2",     // 11 JES_Uncorrelated
+   "RelativePtHF",      // 12 JES_Uncorrelated
+   "RelativeStatEC2",   // 13 JES_Uncorrelated
+   "RelativeStatHF",    // 14 JES_Uncorrelated
+   "PileUpDataMC",      // 15 JES_Uncorrelated
+   "PileUpBias",        // 16 JES_Uncorrelated
+   "PileUpPtBB",        // 17 JES_PileupPt
+   "PileUpPtEC",        // 18 JES_PileupPt
+   "PileUpPtHF",        // 19 JES_PileupPt
+   "FlavorPureGluon",   // 20 JES_Flavor
+   "FlavorPureQuark",   // 21 JES_Flavor
+   "FlavorPureCharm",   // 22 JES_Flavor
+   "FlavorPureBottom",  // 23 JES_Flavor
+   "CorrelationGroupIntercalibration",
+   "CorrelationGroupMPFInSitu",
+   "CorrelationGroupbJES",
+   "Total"
+  };
+
 
 //
 // Class declaration
@@ -114,6 +146,14 @@ private:
   edm::InputTag pfLabel_;
 
   //  EGammaMvaEleEstimator* myMVATrig;
+
+  JetCorrectorParameters* L3JetPar;
+  JetCorrectorParameters* L2JetPar;
+  JetCorrectorParameters* L1JetPar;
+  JetCorrectorParameters* ResJetPar;
+  FactorizedJetCorrector* JetCorrector;
+  std::vector<JetCorrectorParameters> vPar;
+  std::vector<JetCorrectionUncertainty*> vsrc;
 
   // MET filters
   bool T_EventF_HBHENoiseFilter;
@@ -613,12 +653,57 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
   //			EGammaMvaEleEstimator::kTrig,
   //			true,
   //			myManualCatWeigths);
+
+
+  // Files downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+  if (readGen_) {
+    ResJetPar = NULL;
+    L3JetPar  = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
+  }
+  else {
+    ResJetPar = new JetCorrectorParameters("Winter14_V5_DATA_L2L3Residual_AK5PFchs.txt"); 
+    L3JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L3Absolute_AK5PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L2Relative_AK5PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L1FastJet_AK5PFchs.txt");
+  }
+
+  //  Load the JetCorrectorParameter objects into a vector. The order matters
+  vPar.clear();
+  vPar.push_back(*L1JetPar);
+  vPar.push_back(*L2JetPar);
+  vPar.push_back(*L3JetPar);
+  if (!readGen_) vPar.push_back(*ResJetPar);
+
+  JetCorrector = new FactorizedJetCorrector(vPar);
+
+  // Instantiate uncertainty sources following https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopMassSystematics
+  // File downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Summer13
+  vsrc.clear();
+
+  for (int isrc=0; isrc<nsrc; isrc++) {
+
+    const char *name = srcnames[isrc];
+
+    JetCorrectorParameters   *p   = new JetCorrectorParameters("Summer13_V5_DATA_UncertaintySources_AK5PFchs.txt", name);
+    JetCorrectionUncertainty *unc = new JetCorrectionUncertainty(*p);
+    vsrc.push_back(unc);
+  }
 }
 
 
 SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
 {
   //  delete myMVATrig;
+
+  delete L3JetPar;
+  delete L2JetPar;
+  delete L1JetPar;
+  delete ResJetPar;
+  delete JetCorrector;
+
+  for (int isrc=0; isrc<nsrc; isrc++) delete vsrc[isrc];
 }
 
 
@@ -1937,8 +2022,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     T_Elec_isEB                  -> push_back(selected_electrons[k].isEB());
     T_Elec_isEE                  -> push_back(selected_electrons[k].isEE());
     T_Elec_isPF                  -> push_back(selected_electrons[k].isPF());
-    //    T_Elec_MVAoutput             -> push_back(myMVATrig->mvaValue(selected_electrons[k],false));
-    T_Elec_MVAoutput             -> push_back(-999.);
+    T_Elec_MVAoutput             -> push_back(-999.);  // push_back(myMVATrig->mvaValue(selected_electrons[k],false));
     T_Elec_PFElecPt              -> push_back(pfElecPx);
     T_Elec_PFElecPx              -> push_back(pfElecPy);
     T_Elec_PFElecPy              -> push_back(pfElecPz);
@@ -2463,90 +2547,18 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   PFJetIDSelectionFunctor PFjetIDLoose(PFJetIDSelectionFunctor::FIRSTDATA,
 				       PFJetIDSelectionFunctor::LOOSE);
 
-  // Create the JetCorrectorParameter objects. The order does not matter
-  JetCorrectorParameters *L3JetPar  = NULL;
-  JetCorrectorParameters *L2JetPar  = NULL;
-  JetCorrectorParameters *L1JetPar  = NULL;
-  JetCorrectorParameters *ResJetPar = NULL;
 
-  std::vector<JetCorrectorParameters> vPar;
-
-  // Downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-  if (isRealData) {
-    ResJetPar = new JetCorrectorParameters("Winter14_V5_DATA_L2L3Residual_AK5PFchs.txt"); 
-    L3JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L3Absolute_AK5PFchs.txt");
-    L2JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L2Relative_AK5PFchs.txt");
-    L1JetPar  = new JetCorrectorParameters("Winter14_V5_DATA_L1FastJet_AK5PFchs.txt");
-  }
-  else {
-    L3JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
-    L2JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
-    L1JetPar = new JetCorrectorParameters("PHYS14_V2_MC_L1FastJet_AK4PFchs.txt");
-  }
-
-  //  Load the JetCorrectorParameter objects into a vector. The order matters
-  vPar.push_back(*L1JetPar);
-  vPar.push_back(*L2JetPar);
-  vPar.push_back(*L3JetPar);
-  if (isRealData) vPar.push_back(*ResJetPar);
-
-  FactorizedJetCorrector* JetCorrector = new FactorizedJetCorrector(vPar);
-
-  // Instantiate uncertainty sources
-  // following https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopMassSystematics
-
-  const int nsrc = 28;
-  const char* srcnames[nsrc] =
-    {"AbsoluteStat",      // JES_Uncorrelated
-     "AbsoluteScale",     // JES_Uncorrelated
-     "HighPtExtra",       // JES_Uncorrelated
-     "SinglePionECAL",    // JES_Uncorrelated
-     "SinglePionHCAL",    // JES_Uncorrelated
-     "Time",              // JES_Uncorrelated
-     "RelativeJEREC1",    // JES_Uncorrelated
-     "RelativeJEREC2",    // JES_Uncorrelated
-     "RelativeJERHF",     // JES_Uncorrelated
-     "RelativePtBB",      // JES_Uncorrelated
-     "RelativePtEC1",     // JES_Uncorrelated
-     "RelativePtEC2",     // JES_Uncorrelated
-     "RelativePtHF",      // JES_Uncorrelated
-     "RelativeStatEC2",   // JES_Uncorrelated
-     "RelativeStatHF",    // JES_Uncorrelated
-     "PileUpDataMC",      // JES_Uncorrelated
-     "PileUpBias",        // JES_Uncorrelated
-     "PileUpPtBB",        // JES_PileupPt
-     "PileUpPtEC",        // JES_PileupPt
-     "PileUpPtHF",        // JES_PileupPt
-     "FlavorPureGluon",   // JES_PileupPt ???
-     "FlavorPureQuark",   // JES_Flavor
-     "FlavorPureCharm",   // JES_Flavor
-     "FlavorPureBottom",  // JES_Flavor
-     "CorrelationGroupIntercalibration",
-     "CorrelationGroupMPFInSitu",
-     "CorrelationGroupbJES",
-     "Total"
-    };
-
-  std::vector<JetCorrectionUncertainty*> vsrc(nsrc);
-  
-  for (int isrc=0; isrc<nsrc; isrc++) {
-
-    const char *name = srcnames[isrc];
-
-    // Downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Summer13
-    JetCorrectorParameters *p = new JetCorrectorParameters("Summer13_V5_DATA_UncertaintySources_AK5PFchs.txt", name);
-    JetCorrectionUncertainty *unc = new JetCorrectionUncertainty(*p);
-    vsrc[isrc] = unc;
-  }
-
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Deal with JES
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   for (edm::View<pat::Jet>::const_iterator jet_iter=JET.begin(); jet_iter!= JET.end(); jet_iter++) {
 
     Jet rawJet = jet_iter->correctedJet("Uncorrected");
 
-    JetCorrector->setJetEta(jet_iter->eta());
-    JetCorrector->setJetPt(rawJet.pt());
-    JetCorrector->setJetA(jet_iter->jetArea());
-    JetCorrector->setRho(T_Event_Rho);
+    JetCorrector -> setJetEta(jet_iter->eta());
+    JetCorrector -> setJetPt (rawJet.pt());
+    JetCorrector -> setJetA  (jet_iter->jetArea());
+    JetCorrector -> setRho   (T_Event_Rho);
 
     double correction = JetCorrector->getCorrection();
     double et         = rawJet.et() * correction;
@@ -2575,13 +2587,13 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       
       if (fabs(jet_iter->eta()) <= 5.4 && (jet_iter->pt()) <= 3276.5 && (jet_iter->pt()) >= 9.0) {
 
-	vsrc[isrc]->setJetEta(jet_iter->eta());
-	vsrc[isrc]->setJetPt(jet_iter->pt());
+	vsrc[isrc] -> setJetEta(jet_iter->eta());
+	vsrc[isrc] -> setJetPt(jet_iter->pt());
 
 	uncVal = vsrc[isrc]->getUncertainty(true);
 	
 	if      (isrc  < 17) JES_Uncorrelated += uncVal*uncVal;  // quadratic
-	else if (isrc  < 21) JES_PileupPt     += uncVal*uncVal;  // quadratic
+	else if (isrc  < 20) JES_PileupPt     += uncVal*uncVal;  // quadratic
 	else if (isrc  < 24) JES_Flavor       += uncVal;         // linear
 	else if (isrc == 24) JES_Intercalibration = uncVal;
 	else if (isrc == 25) JES_MPFInSitu        = uncVal;
@@ -2597,7 +2609,6 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     T_Jet_Flavor          [idx] -> push_back(JES_Flavor);
     T_Jet_Intercalibration[idx] -> push_back(JES_Intercalibration);
     T_Jet_Uncorrelated    [idx] -> push_back(sqrt(JES_Uncorrelated));
-
 
     if (jet_iter->isPFJet()) {
       T_Jet_CharHadEnergyFrac  [idx] -> push_back(jet_iter->chargedHadronEnergyFraction());
@@ -2685,14 +2696,6 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     T_Jet_Tag_HighPurSimpSVtx[idx]     -> push_back(jet_iter->bDiscriminator("simpleSecondaryVertexHighPurBJetTags"));
     T_Jet_Tag_HighPurTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighPurBJetTags"));
   }
-
-  delete L3JetPar;
-  delete L2JetPar;
-  delete L1JetPar;
-  delete ResJetPar;
-  delete JetCorrector;
-
-  for (int isrc=0; isrc<nsrc; isrc++) delete vsrc[isrc];
 }
 
 
