@@ -7,7 +7,7 @@ The most common machines to run are lxplus.
 
 Once logged in we need to set the architecture.
 
-    setenv SCRAM_ARCH slc6_amd64_gcc491
+    setenv SCRAM_ARCH slc6_amd64_gcc481
 
 If not running from lxplus, the CMS environment has to be set.
 
@@ -15,13 +15,19 @@ If not running from lxplus, the CMS environment has to be set.
 
 Now we can choose our favorite CMSSW release.
 
-    cmsrel CMSSW_7_4_0_pre9
-    cd CMSSW_7_4_0_pre9/src
+    cmsrel CMSSW_7_2_3
+    cd CMSSW_7_2_3
     cmsenv
 
 
 It is time to get the material
 ====
+
+This is needed to compute the MET significance in 7_2_X
+
+    git cms-addpkg PhysicsTools/PatAlgos
+    git cms-addpkg FWCore/Version
+    git-cms-merge-topic -u cms-met:72X-MetSig-150311
 
 Go to the master repository (https://github.com/piedraj/TopAnalysis) and click **Fork** in the top-right corner of the page. Now get the code in your working area.
 
@@ -32,7 +38,7 @@ Go to the master repository (https://github.com/piedraj/TopAnalysis) and click *
 Do a test run
 ====
 
-    cd CMSSW_7_4_0_pre9/src
+    cd CMSSW_7_2_3/src
     cmsenv
     scram b -j 10
     voms-proxy-init -voms cms
@@ -43,7 +49,7 @@ Do a test run
 CRAB3
 ====
 
-    cd CMSSW_7_4_0_pre9/src
+    cd CMSSW_7_2_3/src
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
     voms-proxy-init -voms cms

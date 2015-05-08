@@ -585,6 +585,7 @@ private:
   std::vector<bool>  *T_Jet_IsGenJet[NumberOfJetCollections];      
 
   // MET variables
+  float T_MET_Significance;
   float T_MET_ET;
   float T_MET_ET_JetEnUp;
   float T_MET_ET_JetEnDown;
@@ -792,7 +793,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // Rho 
   edm::Handle<double> rhoH;
   iEvent.getByLabel(edm::InputTag("fixedGridRhoAll"), rhoH);
-  T_Event_Rho = *rhoH; 
+  T_Event_Rho = *rhoH;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2040,6 +2041,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // MET variables
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  edm::Handle<double> metSignificance;
+  iEvent.getByLabel(edm::InputTag("METSignificance", "METSignificance", "Tree"), metSignificance);
+  T_MET_Significance = *metSignificance;
+
   const pat::MET &met = mets->front();
   
   T_MET_ET                   = met.shiftedPt(pat::MET::NoShift);  // Should be equivalent to met.pt()
@@ -3162,6 +3167,7 @@ void SUSYSkimToTreeTFS::beginJob()
   SetJetBranchAddress(0, "T_JetAKCHS", true);
 
   // MET
+  Tree->Branch("T_MET_Significance",         &T_MET_Significance,         "T_MET_Significance/F");
   Tree->Branch("T_MET_ET",                   &T_MET_ET,                   "T_MET_ET/F");
   Tree->Branch("T_MET_ET_JetEnUp",           &T_MET_ET_JetEnUp,           "T_MET_ET_JetEnUp/F");
   Tree->Branch("T_MET_ET_JetEnDown",         &T_MET_ET_JetEnDown,         "T_MET_ET_JetEnDown/F");
