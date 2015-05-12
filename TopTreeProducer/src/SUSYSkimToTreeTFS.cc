@@ -561,6 +561,7 @@ private:
   std::vector<float> *T_Jet_Flavor[NumberOfJetCollections];
   std::vector<float> *T_Jet_Intercalibration[NumberOfJetCollections];
   std::vector<float> *T_Jet_Uncorrelated[NumberOfJetCollections];
+  std::vector<float> *T_Jet_MuonEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_NeutHadEnergyFrac[NumberOfJetCollections];
   std::vector<float> *T_Jet_CharEmEnergyFrac[NumberOfJetCollections]; 
@@ -572,8 +573,8 @@ private:
   std::vector<int>   *T_Jet_MuonMultiplicity[NumberOfJetCollections];
   std::vector<int>   *T_Jet_NeutralMultiplicity[NumberOfJetCollections];
   std::vector<int>   *T_Jet_ChargedMultiplicity[NumberOfJetCollections];
-  std::vector<bool>  *T_Jet_IDLoose[NumberOfJetCollections];
   std::vector<int>   *T_Jet_nDaughters[NumberOfJetCollections];
+  std::vector<bool>  *T_Jet_IDLoose[NumberOfJetCollections];
  
   std::vector<float> *T_Jet_GenJet_InvisibleE[NumberOfJetCollections];
   std::vector<float> *T_Jet_GenJet_Px[NumberOfJetCollections];
@@ -2463,6 +2464,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     delete T_Jet_Flavor[i];
     delete T_Jet_Intercalibration[i];
     delete T_Jet_Uncorrelated[i];
+    delete T_Jet_MuonEnergyFrac[i];
     delete T_Jet_CharHadEnergyFrac[i];
     delete T_Jet_NeutHadEnergyFrac[i];
     delete T_Jet_CharEmEnergyFrac[i];
@@ -2474,8 +2476,8 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     delete T_Jet_MuonMultiplicity[i];
     delete T_Jet_NeutralMultiplicity[i];
     delete T_Jet_ChargedMultiplicity[i];
-    delete T_Jet_IDLoose[i];
     delete T_Jet_nDaughters[i];
+    delete T_Jet_IDLoose[i];
 
     delete T_Jet_GenJet_InvisibleE[i];
     delete T_Jet_GenJet_Px[i];
@@ -2526,6 +2528,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   T_Jet_Flavor[idx] 		     = new std::vector<float>;
   T_Jet_Intercalibration[idx] 	     = new std::vector<float>;
   T_Jet_Uncorrelated[idx] 	     = new std::vector<float>; 
+  T_Jet_MuonEnergyFrac[idx]          = new std::vector<float>;
   T_Jet_CharHadEnergyFrac[idx]       = new std::vector<float>;
   T_Jet_NeutHadEnergyFrac[idx]       = new std::vector<float>;
   T_Jet_CharEmEnergyFrac[idx]        = new std::vector<float>;
@@ -2537,8 +2540,8 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
   T_Jet_MuonMultiplicity[idx]        = new std::vector<int>;
   T_Jet_NeutralMultiplicity[idx]     = new std::vector<int>; 
   T_Jet_ChargedMultiplicity[idx]     = new std::vector<int>;
-  T_Jet_IDLoose[idx]                 = new std::vector<bool>;
   T_Jet_nDaughters[idx]              = new std::vector<int>;
+  T_Jet_IDLoose[idx]                 = new std::vector<bool>;
   
   T_Jet_GenJet_InvisibleE[idx] = new std::vector<float>;
   T_Jet_GenJet_Px[idx]         = new std::vector<float>;
@@ -2616,6 +2619,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     T_Jet_Uncorrelated    [idx] -> push_back(sqrt(JES_Uncorrelated));
 
     if (jet_iter->isPFJet()) {
+      T_Jet_MuonEnergyFrac     [idx] -> push_back(jet_iter->muonEnergyFraction());
       T_Jet_CharHadEnergyFrac  [idx] -> push_back(jet_iter->chargedHadronEnergyFraction());
       T_Jet_NeutHadEnergyFrac  [idx] -> push_back(jet_iter->neutralHadronEnergyFraction()); 
       T_Jet_CharEmEnergyFrac   [idx] -> push_back(jet_iter->chargedEmEnergyFraction()); 
@@ -2627,10 +2631,11 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       T_Jet_MuonMultiplicity   [idx] -> push_back(jet_iter->muonMultiplicity());
       T_Jet_NeutralMultiplicity[idx] -> push_back(jet_iter->neutralMultiplicity());
       T_Jet_ChargedMultiplicity[idx] -> push_back(jet_iter->chargedMultiplicity());
-      T_Jet_IDLoose            [idx] -> push_back(PFjetIDLoose(*jet_iter)); 
       T_Jet_nDaughters         [idx] -> push_back(jet_iter->numberOfDaughters());
+      T_Jet_IDLoose            [idx] -> push_back(PFjetIDLoose(*jet_iter)); 
     }
     else {
+      T_Jet_MuonEnergyFrac     [idx] -> push_back(-9999);
       T_Jet_CharHadEnergyFrac  [idx] -> push_back(-9999);
       T_Jet_NeutHadEnergyFrac  [idx] -> push_back(-9999);
       T_Jet_CharEmEnergyFrac   [idx] -> push_back(-9999);
@@ -2642,8 +2647,8 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       T_Jet_MuonMultiplicity   [idx] -> push_back(-9999);
       T_Jet_NeutralMultiplicity[idx] -> push_back(-9999);
       T_Jet_ChargedMultiplicity[idx] -> push_back(-9999);
-      T_Jet_IDLoose            [idx] -> push_back(false);
       T_Jet_nDaughters         [idx] -> push_back(-9999);
+      T_Jet_IDLoose            [idx] -> push_back(false);
     }
     
     T_Jet_Parton_Flavour[idx]->push_back(jet_iter->partonFlavour());
@@ -2736,7 +2741,7 @@ void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool caloj
   Tree->Branch(TString(namecol + "_Intercalibration"),        "std::vector<float>", &T_Jet_Intercalibration[idx]);
   Tree->Branch(TString(namecol + "_Uncorrelated"),            "std::vector<float>", &T_Jet_Uncorrelated[idx]);
 
-
+  Tree->Branch(TString(namecol + "_MuonEnergyFrac"),      "std::vector<float>", &T_Jet_MuonEnergyFrac[idx]);
   Tree->Branch(TString(namecol + "_CharHadEnergyFrac"),   "std::vector<float>", &T_Jet_CharHadEnergyFrac[idx]);
   Tree->Branch(TString(namecol + "_NeutHadEnergyFrac"),   "std::vector<float>", &T_Jet_NeutHadEnergyFrac[idx]);
   Tree->Branch(TString(namecol + "_CharEmEnergyFrac"),    "std::vector<float>", &T_Jet_CharEmEnergyFrac[idx]);
@@ -2748,8 +2753,8 @@ void SUSYSkimToTreeTFS::SetJetBranchAddress(int idx, TString namecol, bool caloj
   Tree->Branch(TString(namecol + "_MuonMultiplicity"),    "std::vector<int>",   &T_Jet_MuonMultiplicity[idx]);
   Tree->Branch(TString(namecol + "_NeutralMultiplicity"), "std::vector<int>",   &T_Jet_NeutralMultiplicity[idx]);
   Tree->Branch(TString(namecol + "_ChargedMultiplicity"), "std::vector<int>",   &T_Jet_ChargedMultiplicity[idx]);
-  Tree->Branch(TString(namecol + "_IDLoose"),             "std::vector<bool>",  &T_Jet_IDLoose[idx]);
   Tree->Branch(TString(namecol + "_nDaughters"),          "std::vector<int>",   &T_Jet_nDaughters[idx]);
+  Tree->Branch(TString(namecol + "_IDLoose"),             "std::vector<bool>",  &T_Jet_IDLoose[idx]);
  
   if (readGen_) {
     Tree->Branch(TString(namecol + "_GenJet_InvisibleE"), "std::vector<float>", &T_Jet_GenJet_InvisibleE[idx]);
