@@ -7,7 +7,7 @@ The most common machines to run are lxplus.
 
 Once logged in we need to set the architecture.
 
-    setenv SCRAM_ARCH slc6_amd64_gcc481
+    setenv SCRAM_ARCH slc6_amd64_gcc491
 
 If not running from lxplus, the CMS environment has to be set.
 
@@ -15,30 +15,24 @@ If not running from lxplus, the CMS environment has to be set.
 
 Now we can choose our favorite CMSSW release.
 
-    cmsrel CMSSW_7_2_3
-    cd CMSSW_7_2_3
+    cmsrel CMSSW_7_4_1
+    cd CMSSW_7_4_1
     cmsenv
 
 
 It is time to get the material
 ====
 
-This is needed to compute the MET significance in 7_2_X
-
-    git cms-addpkg PhysicsTools/PatAlgos
-    git cms-addpkg FWCore/Version
-    git-cms-merge-topic -u cms-met:72X-MetSig-150311
-
 Go to the master repository (https://github.com/piedraj/TopAnalysis) and click **Fork** in the top-right corner of the page. Now get the code in your working area.
 
-    git clone https://github.com/YOUR-GIT-USER-NAME/TopAnalysis.git TopAnalysis
+    git clone https://github.com/piedraj/TopAnalysis.git TopAnalysis
     mkdir TopAnalysis/TopTreeProducer/interface
 
 
 Do a test run
 ====
 
-    cd CMSSW_7_2_3/src
+    cd CMSSW_7_4_1/src
     cmsenv
     scram b -j 10
     voms-proxy-init -voms cms
@@ -49,11 +43,11 @@ Do a test run
 CRAB3
 ====
 
-    cd CMSSW_7_2_3/src
+    cd CMSSW_7_4_1/src
     cmsenv
     source /cvmfs/cms.cern.ch/crab3/crab.csh
     voms-proxy-init -voms cms
-    cd TopTreeProducer/test/
+    cd TopTreeProducer/test
 
 Submit one job
 
@@ -81,5 +75,5 @@ And then commit your changes.
     git commit -m 'Modified'
     git push origin master
 
-If the changes have been made in a fork of the master, go to https://github.com/YOUR-GIT-USER-NAME/TopAnalysis.git and click **Pull Request**.
+If the changes have been made in a fork of the master, go to https://github.com/piedraj/TopAnalysis.git and click **Pull Request**.
 

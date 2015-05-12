@@ -40,16 +40,16 @@ process.countDiLeps = cms.EDFilter("CandViewCountFilter",
 process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.allDiLep+process.countDiLeps)
 
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
-                              readGen        = cms.untracked.bool(True),
-                              readLHE        = cms.untracked.bool(False),
-                              trigTag        = cms.untracked.InputTag('TriggerResults'),
-                              muonTag        = cms.untracked.InputTag('slimmedMuons'),
-                              jetPFTag       = cms.untracked.InputTag('slimmedJets'),
-                              metTag         = cms.untracked.InputTag('slimmedMETs'),
-                              PVTag          = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-                              electronTag    = cms.untracked.InputTag('slimmedElectrons'),
-                              tauTag         = cms.untracked.InputTag('slimmedTaus'),
-                              pfTag          = cms.untracked.InputTag('packedPFCandidates'))
+                              readGen     = cms.untracked.bool(True),
+                              readLHE     = cms.untracked.bool(False),
+                              trigTag     = cms.untracked.InputTag('TriggerResults'),
+                              muonTag     = cms.untracked.InputTag('slimmedMuons'),
+                              jetPFTag    = cms.untracked.InputTag('slimmedJets'),
+                              metTag      = cms.untracked.InputTag('slimmedMETs'),
+                              PVTag       = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
+                              electronTag = cms.untracked.InputTag('slimmedElectrons'),
+                              tauTag      = cms.untracked.InputTag('slimmedTaus'),
+                              pfTag       = cms.untracked.InputTag('packedPFCandidates'))
 
 process.TFileService = cms.Service("TFileService",
                                    fileName = cms.string("Tree_13TeV.root"),
@@ -63,7 +63,8 @@ process.p = cms.Path(process.preYieldFilter*process.METSignificance*process.demo
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+process.source.fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/relval/CMSSW_7_4_1/RelValZMM_13/MINIAODSIM/MCRUN2_74_V9_extended-v2/00000/1C2CE936-37F2-E411-85DF-02163E00C8BA.root')
+#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 #process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
