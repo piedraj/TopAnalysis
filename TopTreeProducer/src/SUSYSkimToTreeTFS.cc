@@ -2661,10 +2661,10 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       T_Jet_Parton_Energy[idx] -> push_back(jet_iter->genParton()->energy());
     }
     else {
-      T_Jet_Parton_Px    [idx] -> push_back(0);
-      T_Jet_Parton_Py    [idx] -> push_back(0);
-      T_Jet_Parton_Pz    [idx] -> push_back(0);
-      T_Jet_Parton_Energy[idx] -> push_back(0);
+      T_Jet_Parton_Px    [idx] -> push_back(-9999);
+      T_Jet_Parton_Py    [idx] -> push_back(-9999);
+      T_Jet_Parton_Pz    [idx] -> push_back(-9999);
+      T_Jet_Parton_Energy[idx] -> push_back(-9999);
     }
    
     if (!isRealData) {
@@ -2685,13 +2685,13 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 	}
 	else {
 	  T_Jet_IsGenJet[idx]          -> push_back(false);
-	  T_Jet_GenJet_Px[idx]         -> push_back(0);
-	  T_Jet_GenJet_Py[idx]         -> push_back(0);
-	  T_Jet_GenJet_Pz[idx]         -> push_back(0);
-	  T_Jet_GenJet_Et[idx]         -> push_back(0);
-	  T_Jet_GenJet_Eta[idx]        -> push_back(0);
-	  T_Jet_GenJet_Energy[idx]     -> push_back(0);
-	  T_Jet_GenJet_InvisibleE[idx] -> push_back(0);
+	  T_Jet_GenJet_Px[idx]         -> push_back(-9999);
+	  T_Jet_GenJet_Py[idx]         -> push_back(-9999);
+	  T_Jet_GenJet_Pz[idx]         -> push_back(-9999);
+	  T_Jet_GenJet_Et[idx]         -> push_back(-9999);
+	  T_Jet_GenJet_Eta[idx]        -> push_back(-9999);
+	  T_Jet_GenJet_Energy[idx]     -> push_back(-9999);
+	  T_Jet_GenJet_InvisibleE[idx] -> push_back(-9999);
 	}
       } catch (...) {;}
     }
