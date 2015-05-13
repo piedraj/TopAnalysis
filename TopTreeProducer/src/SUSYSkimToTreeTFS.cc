@@ -1538,16 +1538,15 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Muon_photonIsoR04          = new std::vector<float>;
   T_Muon_sumPUPtR04            = new std::vector<float>;
 
-  // It is not clear if the muon ordering by pt is needed
-  std::map<float,pat::Muon> muonMap;
-  for (size_t i=0; i<muonHandle->size(); ++i) {
-    muonMap[(*muonHandle)[i].pt()] = (*muonHandle)[i];  
-  }
-
   std::vector<pat::Muon> selected_muons;
-  for (std::map<float,pat::Muon>::reverse_iterator rit=muonMap.rbegin(); rit!=muonMap.rend(); ++rit) {
-    selected_muons.push_back((*rit).second);
-  }
+  for (size_t i=0; i<muonHandle->size(); ++i) 
+    selected_muons.push_back((*muonHandle)[i]);
+
+  // Sort by pt, even if not necessary
+  sort(selected_muons.begin(), selected_muons.end(), [] (const pat::Muon& muon1, const pat::Muon& muon2)
+       {
+	 return muon1.pt() > muon2.pt();
+       });
   
   // Loop over muons
   for (size_t k=0; k<selected_muons.size(); ++k) {
@@ -1812,23 +1811,24 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Tau_Energy = new std::vector<float>;
   T_Tau_Charge = new std::vector<int>;
   
-  std::map<float,pat::Tau> tauMap;
-  for (size_t i=0; i<tauHandle->size(); ++i) {
-    tauMap[(*tauHandle)[i].pt()] = (*tauHandle)[i];
-  }
+  std::vector<pat::Tau> selected_taus;
+  for (size_t i=0; i<tauHandle->size(); ++i)
+    selected_taus.push_back((*tauHandle)[i]);
 
-  std::vector<pat::Tau> selected_Taus;
-  for (std::map<float,pat::Tau>::reverse_iterator rit=tauMap.rbegin(); rit!=tauMap.rend(); ++rit) {
-    selected_Taus.push_back((*rit).second);
-  }
-  
-  for (size_t k=0; k<selected_Taus.size(); ++k) {
+  // Sort by pt, even if not necessary
+  sort(selected_taus.begin(), selected_taus.end(), [] (const pat::Tau& tau1, const pat::Tau& tau2)
+       {
+	 return tau1.pt() > tau2.pt();
+       });
 
-    T_Tau_Px     -> push_back(selected_Taus[k].px());
-    T_Tau_Py     -> push_back(selected_Taus[k].py());
-    T_Tau_Pz     -> push_back(selected_Taus[k].pz());
-    T_Tau_Energy -> push_back(selected_Taus[k].energy());
-    T_Tau_Charge -> push_back(selected_Taus[k].charge());
+  // Loop over taus
+  for (size_t k=0; k<selected_taus.size(); ++k) {
+
+    T_Tau_Px     -> push_back(selected_taus[k].px());
+    T_Tau_Py     -> push_back(selected_taus[k].py());
+    T_Tau_Pz     -> push_back(selected_taus[k].pz());
+    T_Tau_Energy -> push_back(selected_taus[k].energy());
+    T_Tau_Charge -> push_back(selected_taus[k].charge());
   }
 
 
@@ -1885,16 +1885,17 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Elec_PFElecE               = new std::vector<float>;
   T_Elec_MVAoutput             = new std::vector<float>;
 
-  std::map<float,pat::Electron> electronMap;
-  for (size_t j=0; j<electronHandle->size(); ++j) {
-    electronMap[(*electronHandle)[j].pt()] = (*electronHandle)[j];   
-  } 
-
   std::vector<pat::Electron> selected_electrons;
-  for (std::map<float,pat::Electron>::reverse_iterator rit=electronMap.rbegin(); rit!=electronMap.rend(); ++rit) {
-    selected_electrons.push_back((*rit).second);
-  }
+  for (size_t i=0; i<electronHandle->size(); ++i)
+    selected_electrons.push_back((*electronHandle)[i]);
  
+  // Sort by pt, even if not necessary
+  sort(selected_electrons.begin(), selected_electrons.end(), [] (const pat::Electron& electron1, const pat::Electron& electron2)
+       {
+	 return electron1.pt() > electron2.pt();
+       });
+  
+  // Loop over electrons
   for (size_t k=0; k<selected_electrons.size(); ++k) {
 
     float IP    =  9999;
