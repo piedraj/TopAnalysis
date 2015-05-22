@@ -79,6 +79,7 @@ private:
  TH1D * h_hdampWeight;
  TH1D * h_pdfWeight;
 
+ bool doLHE;
  bool doHdamp;
  bool doPdf;
  int  nPdf;
@@ -91,6 +92,7 @@ private:
 //
 SUSYweightCounter::SUSYweightCounter(const edm::ParameterSet& iConfig):
   theHistosFileName(iConfig.getUntrackedParameter<string>("histosFileName")) ,
+  doLHE(iConfig.getUntrackedParameter<bool>("doLHE",false)),
   doHdamp(iConfig.getUntrackedParameter<bool>("doHdamp",false)),
   doPdf(iConfig.getUntrackedParameter<bool>("doPdf",false)),
   nPdf(iConfig.getUntrackedParameter<int>("nPdf",102)),
@@ -127,11 +129,12 @@ SUSYweightCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     //                //<weight id='1008'> muR=0.5 muF=2 hdamp=mt=172.5 </weight>
     //                //<weight id='1009'> muR=0.5 muF=0.5 hdamp=mt=172.5 </weight>
     //
+if(doLHE){
        for(int w=0;w<9;w++){
         const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
             h_hdampWeight->Fill(w,wgt.wgt);
 	}
- 
+}
 //<weightgroup name='hdamp_variation' combine='envelope'>
 ////<weight id='3001'> muR=1 muF=1 hdamp=0 </weight>
 ////<weight id='3002'> muR=1 muF=2 hdamp=0 </weight>

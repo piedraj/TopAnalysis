@@ -58,6 +58,7 @@ process.count = cms.EDAnalyzer('SUSYweightCounter',
 
 			      histosFileName = cms.untracked.string("Histos.root"),
 			      isaMCatNLO = cms.untracked.bool(False),
+			      doLHE = cms.untracked.bool(True),
 			      doHdamp = cms.untracked.bool(False),
 			      doPdf = cms.untracked.bool(True),
 			      nPdf = cms.untracked.int32(437) #MLM 437, POWHEG 213 #FxFx 102
