@@ -136,6 +136,8 @@ private:
   // Input tags
   bool readGen_;
   bool readLHE_;
+  int  nPdf_;
+  bool readHdamp_;
   edm::InputTag muonLabel_;
   edm::InputTag jetLabel_;
   edm::InputTag metLabel_;
@@ -191,6 +193,7 @@ private:
   float T_Event_weightMuR05muF05;
   float T_Event_weightMuR05muF2;
   std::vector<float> *T_Event_pdfWeight;
+  std::vector<float> *T_Event_hdampWeight;
 
   // Gen muon
   std::vector<int>   *T_Gen_PromptMuon_pdgId;
@@ -635,6 +638,8 @@ private:
 SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
   readGen_  (iConfig.getUntrackedParameter<bool>("readGen", false)),
   readLHE_  (iConfig.getUntrackedParameter<bool>("readLHE", false)),
+  nPdf_     (iConfig.getUntrackedParameter<int>("nPdf",102)),
+  readHdamp_(iConfig.getUntrackedParameter<bool>("readHdamp", false)),
   muonLabel_(iConfig.getUntrackedParameter<edm::InputTag>("muonTag")),
   jetLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("jetPFTag")),
   metLabel_ (iConfig.getUntrackedParameter<edm::InputTag>("metTag")),
@@ -1024,7 +1029,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Gen_Tau_LepDec_Energy = new std::vector<float>;  
 
   T_Event_pdfWeight = new std::vector<float>;
-
+  T_Event_hdampWeight = new std::vector<float>;
   
   if (!isRealData) {
 
@@ -1035,10 +1040,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     T_Event_weight= genEvtInfo->weight();  // muR=muF=1. hdamp=172.5 = (lheEventHandle->weights().at(0)).wgt;
 
-    edm::Handle<LHEEventProduct> lheEventHandle;
-
+    if(readHdamp_ && !readLHE_) readHdamp_=false;
     if (readLHE_) {
-
+    edm::Handle<LHEEventProduct> lheEventHandle;
       iEvent.getByLabel("externalLHEProducer", lheEventHandle);
 
       T_Event_weightMuR1muF2  = (lheEventHandle->weights().at(1)).wgt;
@@ -1050,10 +1054,18 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       T_Event_weightMuR05muF2 = (lheEventHandle->weights().at(7)).wgt;
       T_Event_weightMuR05muF05= (lheEventHandle->weights().at(8)).wgt;
    
-      for (int w=9; w<9+102; w++) {
+      for (int w=9; w<9+nPdf_; w++) {
 	const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
 	T_Event_pdfWeight->push_back(wgt.wgt);
       }
+    
+
+    if (readHdamp_){
+     for(int w=9+nPdf_;w<9+nPdf_+27;w++){
+      const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
+            T_Event_hdampWeight->push_back(wgt.wgt);
+          }
+ 	} 
     }
 
     for (size_t i=0; i<genParticles->size(); ++i) {
@@ -2286,6 +2298,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   delete T_Gen_ChiPM_phi;        
 
   delete T_Event_pdfWeight;
+  delete T_Event_hdampWeight;
 
   // Vertex variables
   delete T_Vertex_x;
@@ -3025,6 +3038,7 @@ void SUSYSkimToTreeTFS::beginJob()
     Tree->Branch("T_Event_weightMuR2muF05",  &T_Event_weightMuR2muF05,  "T_Event_weightMuR2muF05/F");
     
     Tree->Branch("T_Event_pdfWeight", "std::vector<float>", &T_Event_pdfWeight);
+   if (readHdamp_)  Tree->Branch("T_Event_hdampWeight", "std::vector<float>", &T_Event_hdampWeight);
   }
 
   // Vertex

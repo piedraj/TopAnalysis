@@ -41,7 +41,9 @@ process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElec
 
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen     = cms.untracked.bool(True),
-                              readLHE     = cms.untracked.bool(False),
+                              readLHE     = cms.untracked.bool(True),
+			      readHdamp   = cms.untracked.bool(False),
+			      nPdf	  = cms.untracked.int32(437), #MLM 437, POWHEG 213 #FxFx 102 
                               trigTag     = cms.untracked.InputTag('TriggerResults'),
                               muonTag     = cms.untracked.InputTag('slimmedMuons'),
                               jetPFTag    = cms.untracked.InputTag('slimmedJets'),
@@ -51,19 +53,32 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               tauTag      = cms.untracked.InputTag('slimmedTaus'),
                               pfTag       = cms.untracked.InputTag('packedPFCandidates'))
 
+
+process.count = cms.EDAnalyzer('SUSYweightCounter',
+
+			      histosFileName = cms.untracked.string("Histos.root"),
+			      isaMCatNLO = cms.untracked.bool(False),
+			      doHdamp = cms.untracked.bool(False),
+			      doPdf = cms.untracked.bool(True),
+			      nPdf = cms.untracked.int32(437) #MLM 437, POWHEG 213 #FxFx 102
+)
+
+
 process.TFileService = cms.Service("TFileService",
                                    fileName = cms.string("Tree_13TeV.root"),
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
-process.p = cms.Path(process.preYieldFilter*process.METSignificance*process.demo)
+process.p = cms.Path(process.preYieldFilter*
+process.METSignificance*
+process.demo*process.count)
 # No skim
 #process.p = cms.Path(process.METSignificance*process.demo)
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-process.source.fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/relval/CMSSW_7_4_1/RelValZMM_13/MINIAODSIM/MCRUN2_74_V9_extended-v2/00000/1C2CE936-37F2-E411-85DF-02163E00C8BA.root')
+process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/0066F143-F8FD-E411-9A0B-D4AE526A0D2E.root')
 #process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 #process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 
