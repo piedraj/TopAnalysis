@@ -2710,7 +2710,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
     }
     
     T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
-    T_Jet_Tag_CombInclusiveSVtxV2[idx] -> push_back(jet_iter->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
+    T_Jet_Tag_CombInclusiveSVtxV2[idx] -> push_back(jet_iter->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     T_Jet_Tag_CombSVtx[idx]            -> push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));
     T_Jet_Tag_CombMVA[idx]             -> push_back(jet_iter->bDiscriminator("combinedMVABJetTags"));
     T_Jet_Tag_pfCombinedSVtx[idx]      -> push_back(jet_iter->bDiscriminator("pfCombinedSecondaryVertexBJetTags"));

@@ -43,7 +43,7 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen     = cms.untracked.bool(True),
                               readLHE     = cms.untracked.bool(True),
 			      readHdamp   = cms.untracked.bool(False),
-			      nPdf	  = cms.untracked.int32(437), #MLM 437, POWHEG 213 #FxFx 102 
+			      nPdf	  = cms.untracked.int32(213), #MLM 437, POWHEG 213, FxFx 102 
                               trigTag     = cms.untracked.InputTag('TriggerResults'),
                               muonTag     = cms.untracked.InputTag('slimmedMuons'),
                               jetPFTag    = cms.untracked.InputTag('slimmedJets'),
@@ -55,14 +55,12 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
 
 
 process.count = cms.EDAnalyzer('SUSYweightCounter',
-
-			      histosFileName = cms.untracked.string("Histos.root"),
-			      isaMCatNLO = cms.untracked.bool(False),
-			      doLHE = cms.untracked.bool(True),
-			      doHdamp = cms.untracked.bool(False),
-			      doPdf = cms.untracked.bool(True),
-			      nPdf = cms.untracked.int32(437) #MLM 437, POWHEG 213 #FxFx 102
-)
+                               histosFileName = cms.untracked.string("Histos.root"),
+                               isaMCatNLO     = cms.untracked.bool(False),
+                               doLHE          = cms.untracked.bool(True),
+                               doHdamp        = cms.untracked.bool(False),
+                               doPdf          = cms.untracked.bool(True),
+                               nPdf           = cms.untracked.int32(213)) #MLM 437, POWHEG 213, FxFx 102
 
 
 process.TFileService = cms.Service("TFileService",
@@ -71,17 +69,18 @@ process.TFileService = cms.Service("TFileService",
 
 # Skim
 process.p = cms.Path(process.preYieldFilter*
-process.METSignificance*
-process.demo*process.count)
+                     process.METSignificance*
+                     process.demo*
+                     process.count)
 # No skim
-#process.p = cms.Path(process.METSignificance*process.demo)
+#process.p = cms.Path(process.METSignificance*
+#                     process.demo)
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/0066F143-F8FD-E411-9A0B-D4AE526A0D2E.root')
-#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
-#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/50000/68EBC80B-4CFF-E411-8D52-00074305CFFB.root')
+#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50n#s_MCRUN2_74_V9A-v1/00000/0066F143-F8FD-E411-9A0B-D4AE526A0D2E.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
