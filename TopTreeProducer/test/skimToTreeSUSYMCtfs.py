@@ -39,14 +39,56 @@ process.countDiLeps = cms.EDFilter("CandViewCountFilter",
 
 process.preYieldFilter = cms.Sequence(process.selectedMuons+process.selectedElectrons+process.allLeps+process.allDiLep+process.countDiLeps)
 
+
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",
+      DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0)
+        ),
+      timetype = cms.string('runnumber'),
+      toGet = cms.VPSet(
+      cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_PHYS14_V4_MC_AK4PFchs'),
+            # tag    = cms.string('JetCorrectorParametersCollection_Summer12_V3_MC_AK5PF'),
+            label  = cms.untracked.string('AK4PFchs')
+            ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+      ), 
+      connect = cms.string('sqlite:PHYS14_V4_MC.db')
+     # uncomment above tag lines and this comment to use MC JEC
+     # connect = cms.string('sqlite:Summer12_V7_MC.db')
+)
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+  src = cms.InputTag("slimmedJets"),
+  levels = ['L1FastJet', 
+        'L2Relative', 
+        'L3Absolute'],
+  payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+  jetSource = cms.InputTag("slimmedJets"),
+  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+  )
+
+process.JEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC )
+
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen     = cms.untracked.bool(True),
                               readLHE     = cms.untracked.bool(True),
-			      readHdamp   = cms.untracked.bool(False),
-			      nPdf	  = cms.untracked.int32(213), #MLM 437, POWHEG 213, FxFx 102 
+			      readHdamp   = cms.untracked.bool(False), #must be false if not TT powheg
+			      nPdf	  = cms.untracked.int32(102), #MLM 437, POWHEG 213 #FxFx 102 
                               trigTag     = cms.untracked.InputTag('TriggerResults'),
                               muonTag     = cms.untracked.InputTag('slimmedMuons'),
-                              jetPFTag    = cms.untracked.InputTag('slimmedJets'),
+                              jetPFTag    = cms.untracked.InputTag('patJetsReapplyJEC'), #'slimmedJets'),
                               metTag      = cms.untracked.InputTag('slimmedMETs'),
                               PVTag       = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
                               electronTag = cms.untracked.InputTag('slimmedElectrons'),
@@ -55,32 +97,35 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
 
 
 process.count = cms.EDAnalyzer('SUSYweightCounter',
-                               histosFileName = cms.untracked.string("Histos.root"),
-                               isaMCatNLO     = cms.untracked.bool(False),
-                               doLHE          = cms.untracked.bool(True),
-                               doHdamp        = cms.untracked.bool(False),
-                               doPdf          = cms.untracked.bool(True),
-                               nPdf           = cms.untracked.int32(213)) #MLM 437, POWHEG 213, FxFx 102
+
+			      histosFileName = cms.untracked.string("Histos.root"),
+			      isaMCatNLO = cms.untracked.bool(True),
+			      doLHE = cms.untracked.bool(True),
+			      doHdamp = cms.untracked.bool(False), #must be false if not TT powheg
+			      doPdf = cms.untracked.bool(True),
+			      nPdf = cms.untracked.int32(102) #MLM 437, POWHEG 213 #FxFx 102
+)
 
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("Tree_13TeV.root"),
+                                   fileName = cms.string("Tree.root"),
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
-process.p = cms.Path(process.preYieldFilter*
-                     process.METSignificance*
-                     process.demo*
-                     process.count)
+process.p = cms.Path(process.count*process.preYieldFilter*
+process.JEC*process.METSignificance*
+process.demo)
 # No skim
-#process.p = cms.Path(process.METSignificance*
-#                     process.demo)
+#process.p = cms.Path(process.METSignificance*process.demo)
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring("#inputfiles#"))
 
-process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/50000/68EBC80B-4CFF-E411-8D52-00074305CFFB.root')
-#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50n#s_MCRUN2_74_V9A-v1/00000/0066F143-F8FD-E411-9A0B-D4AE526A0D2E.root')
+process.source.fileNames = cms.untracked.vstring('file:/tmp/jfernan2/2A6E24B6-D9FE-E411-A1DA-0025905B8572.root')
+
+#'root://xrootd.unl.edu//store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/0066F143-F8FD-E411-9A0B-D4AE526A0D2E.root')
+#process.source.fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/piedra/work/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
+#process.source.fileNames = cms.untracked.vstring('root://xrootd.unl.edu//store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root')
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
@@ -92,7 +137,7 @@ process.MessageLogger.destinations = ['cout', 'cerr']
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 # GlobalTag stuff
-process.GlobalTag.globaltag = 'GR_R_52_V7::All'
+process.GlobalTag.globaltag = 'MCRUN2_74_V9A'
 
 # Debug
 #process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1))

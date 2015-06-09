@@ -114,8 +114,8 @@ SUSYweightCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
 // In the future, this should be checked at AOD level in the  Handle<LHEEventProduct> comments;
 //   iEvent.getByLabel("source", comments);	# model T2tt_mstop_mLSP cross-section uncertainty
 
-    
                 edm::Handle<LHEEventProduct> lheEventHandle;
+       if(doLHE){
                     iEvent.getByLabel("externalLHEProducer",lheEventHandle);
     //
     //                //<weightgroup name='scale_variation' combine='envelope'>
@@ -129,7 +129,7 @@ SUSYweightCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
     //                //<weight id='1008'> muR=0.5 muF=2 hdamp=mt=172.5 </weight>
     //                //<weight id='1009'> muR=0.5 muF=0.5 hdamp=mt=172.5 </weight>
     //
-if(doLHE){
+
        for(int w=0;w<9;w++){
         const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(w);
             h_hdampWeight->Fill(w,wgt.wgt);

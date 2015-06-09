@@ -149,12 +149,13 @@ private:
 
   //  EGammaMvaEleEstimator* myMVATrig;
 
-  JetCorrectorParameters* L3JetPar;
+/*  JetCorrectorParameters* L3JetPar;
   JetCorrectorParameters* L2JetPar;
   JetCorrectorParameters* L1JetPar;
   JetCorrectorParameters* ResJetPar;
   FactorizedJetCorrector* JetCorrector;
   std::vector<JetCorrectorParameters> vPar;
+*/
   std::vector<JetCorrectionUncertainty*> vsrc;
 
   // MET filters
@@ -183,6 +184,7 @@ private:
   float T_Event_nTruePU;
   float T_Event_AveNTruePU;
   float T_Event_Rho;
+  float T_Event_RhoFastJet;
   float T_Event_weight;
   float T_Event_weightMuR1muF2;
   float T_Event_weightMuR1muF05;
@@ -663,7 +665,7 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
 
 
   // Files downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-  if (readGen_) {
+/*  if (readGen_) {
     ResJetPar = NULL;
     L3JetPar  = new JetCorrectorParameters("PHYS14_V2_MC_L3Absolute_AK4PFchs.txt");
     L2JetPar  = new JetCorrectorParameters("PHYS14_V2_MC_L2Relative_AK4PFchs.txt");
@@ -684,7 +686,7 @@ SUSYSkimToTreeTFS::SUSYSkimToTreeTFS(const edm::ParameterSet& iConfig) :
   if (!readGen_) vPar.push_back(*ResJetPar);
 
   JetCorrector = new FactorizedJetCorrector(vPar);
-
+*/
   // Instantiate uncertainty sources following https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopMassSystematics
   // File downloaded from https://twiki.cern.ch/twiki/bin/view/CMS/JECUncertaintySources#Summer13
   vsrc.clear();
@@ -704,12 +706,12 @@ SUSYSkimToTreeTFS::~SUSYSkimToTreeTFS()
 {
   //  delete myMVATrig;
 
-  delete L3JetPar;
+/*  delete L3JetPar;
   delete L2JetPar;
   delete L1JetPar;
   delete ResJetPar;
   delete JetCorrector;
-
+*/
   for (int isrc=0; isrc<nsrc; isrc++) delete vsrc[isrc];
 }
 
@@ -800,6 +802,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<double> rhoH;
   iEvent.getByLabel(edm::InputTag("fixedGridRhoAll"), rhoH);
   T_Event_Rho = *rhoH;
+
+  edm::Handle<double> rhoHFj;
+  iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetAll"), rhoHFj);
+  T_Event_RhoFastJet = *rhoHFj;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2577,20 +2583,20 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
 
     Jet rawJet = jet_iter->correctedJet("Uncorrected");
 
-    JetCorrector -> setJetEta(jet_iter->eta());
+/*    JetCorrector -> setJetEta(jet_iter->eta());
     JetCorrector -> setJetPt (rawJet.pt());
     JetCorrector -> setJetA  (jet_iter->jetArea());
     JetCorrector -> setRho   (T_Event_Rho);
+*/
+    double et         = jet_iter->et();//rawJet.et() * correction;
+    double correction = et/rawJet.et();//JetCorrector->getCorrection();
 
-    double correction = JetCorrector->getCorrection();
-    double et         = rawJet.et() * correction;
+    if (et/correction < 10) continue;
 
-    if (et < 10) continue;
-
-    T_Jet_Px    [idx] -> push_back(correction * rawJet.px());
-    T_Jet_Py    [idx] -> push_back(correction * rawJet.py());
-    T_Jet_Pz    [idx] -> push_back(correction * rawJet.pz());
-    T_Jet_Et    [idx] -> push_back(et);
+    T_Jet_Px    [idx] -> push_back(jet_iter->px());
+    T_Jet_Py    [idx] -> push_back(jet_iter->py());
+    T_Jet_Pz    [idx] -> push_back(jet_iter->pz());
+    T_Jet_Et    [idx] -> push_back(jet_iter->et());
     T_Jet_Corr  [idx] -> push_back(correction);
     T_Jet_Eta   [idx] -> push_back(jet_iter->eta());
     T_Jet_Energy[idx] -> push_back(jet_iter->energy());
@@ -2709,7 +2715,7 @@ void SUSYSkimToTreeTFS::SetJetInfo(int idx,
       } catch (...) {;}
     }
     
-    T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("trackCountingHighEffBJetTags"));
+    T_Jet_Tag_HighEffTC[idx]           -> push_back(jet_iter->bDiscriminator("pfTrackCountingHighEffBJetTags"));
     T_Jet_Tag_CombInclusiveSVtxV2[idx] -> push_back(jet_iter->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     T_Jet_Tag_CombSVtx[idx]            -> push_back(jet_iter->bDiscriminator("combinedSecondaryVertexBJetTags"));
     T_Jet_Tag_CombMVA[idx]             -> push_back(jet_iter->bDiscriminator("combinedMVABJetTags"));
@@ -2824,6 +2830,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Event_LuminosityBlock", &T_Event_LuminosityBlock, "T_Event_LuminosityBlock/I");
   Tree->Branch("T_Event_processID",       &T_Event_processID,       "T_Event_processID/I");
   Tree->Branch("T_Event_Rho",             &T_Event_Rho,             "T_Event_Rho/F");
+  Tree->Branch("T_Event_RhoFastJet",      &T_Event_RhoFastJet,      "T_Event_RhoFastJet/F");
   Tree->Branch("T_Event_nPU",             &T_Event_nPU,             "T_Event_nPU/I");
   Tree->Branch("T_Event_nPUm",            &T_Event_nPUm,            "T_Event_nPUm/I");
   Tree->Branch("T_Event_nPUp",            &T_Event_nPUp,            "T_Event_nPUp/I");
