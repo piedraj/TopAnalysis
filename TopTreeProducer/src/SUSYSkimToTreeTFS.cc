@@ -498,6 +498,7 @@ private:
   std::vector<float> *T_Elec_chargedHadronIso;
   std::vector<float> *T_Elec_neutralHadronIso;
   std::vector<float> *T_Elec_neutralIsoPFweight;
+  std::vector<float> *T_Elec_neutralIsoPUPPI;
   std::vector<float> *T_Elec_photonIso;
   std::vector<float> *T_Elec_puChargedHadronIso;
   std::vector<float> *T_Elec_sumChargedHadronPt;
@@ -851,6 +852,50 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       if (names.triggerName(i) == "METFilters"                         && metFilters.product()->accept(i)) T_EventF_METFilters                         = true;
     }
   } catch (...) {;} 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // PF Weights for PF-Weighted Isolation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  std::vector<double> PFWeights;
+
+  // Loop on all the PF candidates
+  for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
+
+    const pat::PackedCandidate &pfi = (*pfHandle)[i];
+
+    double pfw = 1.;
+
+    if (pfi.charge() == 0) {
+
+      double sumPU = 1.0;
+      double sumPV = 1.0;
+
+      for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
+
+    	const pat::PackedCandidate &pfj = (*pfHandle)[j];
+
+    	if (pfj.charge() == 0) continue;
+
+    	double sum = (pfj.pt() * pfj.pt()) / deltaR2(pfi.eta(),pfi.phi(),pfj.eta(),pfj.phi());
+
+    	if (pfj.fromPV() >= 2) {
+    	  if (sum > 1.0) sumPV *= sum;
+    	} else {
+    	  if (sum > 1.0) sumPU *= sum;
+    	}
+      }
+
+      sumPU = 0.5 * log(sumPU);
+      sumPV = 0.5 * log(sumPV);
+
+      if (sumPU+sumPV > 0)  pfw = sumPV / (sumPV + sumPU);
+
+    }
+
+    PFWeights.push_back(pfw);
+
+  }
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1667,51 +1712,6 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
 
 
-    //---------------------------------------------------------
-    //    PF Weights for PF-Weighted Isolation
-    //---------------------------------------------------------
-
-    std::vector<double> PFWeights;
-
-    // Loop on all the PF candidates
-    for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
-
-      const pat::PackedCandidate &pfi = (*pfHandle)[i];
-
-      double pfw = 1.;
-
-      if (pfi.charge() == 0) {
-
-	double sumPU = 1.0;
-	double sumPV = 1.0;
-
-	for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
-
-	  const pat::PackedCandidate &pfj = (*pfHandle)[j];
-
-	  if (pfj.charge() == 0) continue;
-
-	  double sum = (pfj.pt() * pfj.pt()) / deltaR2(pfi.eta(),pfi.phi(),pfj.eta(),pfj.phi());
-
-	  if (pfj.fromPV() >= 2) {
-	    if (sum > 1.0) sumPV *= sum;
-	  } else {
-	    if (sum > 1.0) sumPU *= sum;
-	  }
-	}
-
-	sumPU = 0.5 * log(sumPU);
-	sumPV = 0.5 * log(sumPV);
-
-        if (sumPU+sumPV > 0)  pfw = sumPV / (sumPV + sumPU);
-
-      }
-
-      PFWeights.push_back(pfw);
-
-    }
-
-
     //-------------------------------------------------------------
     //    PF-Weighted and PUPPI neutral components to Isolation
     //-------------------------------------------------------------
@@ -1737,28 +1737,28 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       // Remove the PF candidates used to build the muon
       if (std::find(footprint.begin(), footprint.end(), reco::CandidatePtr(pfHandle,i)) != footprint.end()) {
 
-	muon_fromPV          = pf.fromPV();  // 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
-	muon_trackHighPurity = pf.trackHighPurity();
+    	muon_fromPV          = pf.fromPV();  // 3:PVUsedInFit, 2:PVTight, 1:PVLoose, 0:NoPV
+    	muon_trackHighPurity = pf.trackHighPurity();
 
-	continue;
+    	continue;
       }
 
       //Only take neutral particles
-      if (pf.charge() == 0) continue;
+      if (pf.charge() != 0) continue;
 
       // deltaR = 0.4
       if (deltaR(pf,selected_muons[k]) < 0.4) {	
   
-	muon_neutralIsoPFweightR04 += (PFWeights[i]     * pf.pt());
-	muon_neutralIsoPUPPIR04    += (pf.puppiWeight() * pf.pt());
+    	muon_neutralIsoPFweightR04 += (PFWeights[i]     * pf.pt());
+    	muon_neutralIsoPUPPIR04    += (pf.puppiWeight() * pf.pt());
 
       }
 	
       // deltaR = 0.3
       if (deltaR(pf,selected_muons[k]) < 0.3) {
 
-	muon_neutralIsoPFweightR03 += (PFWeights[i]     * pf.pt());
-	muon_neutralIsoPUPPIR03    += (pf.puppiWeight() * pf.pt());	  
+    	muon_neutralIsoPFweightR03 += (PFWeights[i]     * pf.pt());
+    	muon_neutralIsoPUPPIR03    += (pf.puppiWeight() * pf.pt());	  
 
       }
 
@@ -1767,7 +1767,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     // ID
     T_Muon_IsTightMuon             -> push_back(isTightMuon);
-    T_Muon_IsMediumMuon            -> push_back(false);
+    T_Muon_IsMediumMuon            -> push_back(selected_muons[k].isMediumMuon()); //Only from CMSSW_7_4_2 onwards
     T_Muon_IsPFMuon                -> push_back(selected_muons[k].isPFMuon());
     T_Muon_IsGlobalMuon            -> push_back(selected_muons[k].isGlobalMuon());
     T_Muon_IsTrackerMuon           -> push_back(selected_muons[k].isTrackerMuon());
@@ -1909,6 +1909,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Elec_chargedHadronIso      = new std::vector<float>;
   T_Elec_neutralHadronIso      = new std::vector<float>;
   T_Elec_neutralIsoPFweight    = new std::vector<float>;
+  T_Elec_neutralIsoPUPPI       = new std::vector<float>;
   T_Elec_photonIso             = new std::vector<float>;
   T_Elec_puChargedHadronIso    = new std::vector<float>;
   T_Elec_sumChargedHadronPt    = new std::vector<float>;
@@ -1972,9 +1973,12 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
 
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PF-Reweight ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //-------------------------------------------------------------
+    //    PF-Weighted and PUPPI neutral components to Isolation
+    //-------------------------------------------------------------
     double electron_neutralIsoPFweightR04 = 0;
-    
+    double electron_neutralIsoPUPPIR04    = 0;
+  
     // Fill a vector with the PF candidates used to build the electron
     std::vector<reco::CandidatePtr> footprint;
 
@@ -1984,7 +1988,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     // Loop on all the PF candidates
     for (unsigned int i=0, n=pfHandle->size(); i<n; ++i) {
-      
+
       const pat::PackedCandidate &pf = (*pfHandle)[i];
       
       // Remove the PF candidates used to build the electron
@@ -1992,33 +1996,14 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	
       // deltaR = 0.4
       if (pf.charge() == 0 && deltaR(pf,selected_electrons[k]) < 0.4) {
-	  
-	double sumPU = 1.0;
-	double sumPV = 1.0;
-	  
-	for (unsigned int j=0, n=pfHandle->size(); j<n; ++j) {
-	  
-	  const pat::PackedCandidate &pfj = (*pfHandle)[j];
-	  
-	  if (pfj.charge() == 0) continue;
-	    
-	  double sum = (pfj.pt() * pfj.pt()) / deltaR2(pf.eta(),pf.phi(),pfj.eta(),pfj.phi());
-	    
-	  if (pfj.fromPV() >= 2) {
-	    if (sum > 1.0) sumPV *= sum;
-	  } else {
-	    if (sum > 1.0) sumPU *= sum;
-	  }
-	}
-	  
-	sumPU = 0.5 * log(sumPU);
-	sumPV = 0.5 * log(sumPV);
-	
-	double pfw = sumPV / (sumPV + sumPU);
-	
-	electron_neutralIsoPFweightR04 += (pfw * pf.pt());
+  
+    	electron_neutralIsoPFweightR04 += (PFWeights[i]     * pf.pt());
+    	electron_neutralIsoPUPPIR04    += (pf.puppiWeight() * pf.pt());
+
       }
+
     }
+
 
     T_Elec_Eta                   -> push_back(selected_electrons[k].eta());
     T_Elec_IPwrtAveBS            -> push_back(selected_electrons[k].dB());
@@ -2047,6 +2032,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     T_Elec_chargedHadronIso      -> push_back(selected_electrons[k].chargedHadronIso());
     T_Elec_neutralHadronIso      -> push_back(selected_electrons[k].neutralHadronIso());
     T_Elec_neutralIsoPFweight    -> push_back(electron_neutralIsoPFweightR04);
+    T_Elec_neutralIsoPUPPI       -> push_back(electron_neutralIsoPUPPIR04);
     T_Elec_photonIso             -> push_back(selected_electrons[k].photonIso());
     T_Elec_puChargedHadronIso    -> push_back(selected_electrons[k].puChargedHadronIso());
     T_Elec_sumChargedHadronPt    -> push_back(selected_electrons[k].pfIsolationVariables().sumChargedHadronPt);
@@ -2435,6 +2421,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   delete T_Elec_chargedHadronIso;
   delete T_Elec_neutralHadronIso;
   delete T_Elec_neutralIsoPFweight;
+  delete T_Elec_neutralIsoPUPPI;
   delete T_Elec_photonIso;
   delete T_Elec_puChargedHadronIso;
   delete T_Elec_sumChargedHadronPt;
@@ -3185,6 +3172,7 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Elec_chargedHadronIso",   "std::vector<float>", &T_Elec_chargedHadronIso);
   Tree->Branch("T_Elec_neutralHadronIso",   "std::vector<float>", &T_Elec_neutralHadronIso);
   Tree->Branch("T_Elec_neutralIsoPFweight", "std::vector<float>", &T_Elec_neutralIsoPFweight);
+  Tree->Branch("T_Elec_neutralIsoPUPPI", "   std::vector<float>", &T_Elec_neutralIsoPUPPI);
   Tree->Branch("T_Elec_photonIso",          "std::vector<float>", &T_Elec_photonIso);
   Tree->Branch("T_Elec_puChargedHadronIso", "std::vector<float>", &T_Elec_puChargedHadronIso);
   Tree->Branch("T_Elec_sumChargedHadronPt", "std::vector<float>", &T_Elec_sumChargedHadronPt);
