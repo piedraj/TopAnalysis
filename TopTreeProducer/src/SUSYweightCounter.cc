@@ -232,6 +232,7 @@ if(doPdf){
 }
 
 if (isaMCatNLO){
+	if (!doLHE) iEvent.getByLabel("externalLHEProducer",lheEventHandle);
 const LHEEventProduct::WGT& wgt = lheEventHandle->weights().at(0);
 double w= wgt.wgt;
 h_eventCount->Fill(TMath::Sign((double)1.0, w));}

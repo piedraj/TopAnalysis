@@ -47,6 +47,7 @@ Implementation:
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -507,6 +508,7 @@ private:
   std::vector<float> *T_Elec_sumPUPt;
 
   std::vector<bool>  *T_Elec_passConversionVeto;
+  std::vector<bool>  *T_Elec_hasMatchedConversion;
   std::vector<float> *T_Elec_vx;
   std::vector<float> *T_Elec_vy;
   std::vector<float> *T_Elec_vz;
@@ -810,6 +812,12 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<double> rhoHFj;
   iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetAll"), rhoHFj);
   T_Event_RhoFastJet = *rhoHFj;
+
+  edm::Handle<reco::ConversionCollection> conversions;
+  iEvent.getByLabel(edm::InputTag("reducedEgamma","reducedConversions"),conversions);
+
+  edm::Handle<reco::BeamSpot> theBeamSpot;
+  iEvent.getByLabel("offlineBeamSpot",theBeamSpot);
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1629,10 +1637,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     
       normchi2 = selected_muons[k].globalTrack()->normalizedChi2();
 
-      if (firstGoodVertex > -1) {
-	IP = selected_muons[k].globalTrack()->dxy(vtxs[firstGoodVertex].position());
-	dZ = selected_muons[k].globalTrack()->dz(vtxs[firstGoodVertex].position());
-      }
+//      if (firstGoodVertex > -1) {
+	IP = selected_muons[k].globalTrack()->dxy(vtxs[0].position());
+	dZ = selected_muons[k].globalTrack()->dz(vtxs[0].position());
+//      }
     }
 
     // innerTrack quantities
@@ -1658,10 +1666,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       validFraction     = selected_muons[k].innerTrack()->validFraction();
       deltaPt           = selected_muons[k].innerTrack()->ptError();
 
-      if (firstGoodVertex > -1) {
-	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[firstGoodVertex].position());
-	dZIn = selected_muons[k].innerTrack()->dz(vtxs[firstGoodVertex].position());
-      }
+//      if (firstGoodVertex > -1) {
+	IPIn = selected_muons[k].innerTrack()->dxy(vtxs[0].position());
+	dZIn = selected_muons[k].innerTrack()->dz(vtxs[0].position());
+//      }
     }
 
     // muonBestTrack quantities
@@ -1676,7 +1684,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     float besttrack_Pt  = 9999;
     float besttrack_Phi = 9999;
 
-    if (!selected_muons[k].innerTrack().isNull()) {
+    if (!selected_muons[k].muonBestTrack().isNull()) {
 
       besttrack_vx  = selected_muons[k].muonBestTrack()->vx();
       besttrack_vy  = selected_muons[k].muonBestTrack()->vy();
@@ -1687,10 +1695,10 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
       besttrack_Pt  = selected_muons[k].muonBestTrack()->pt();
       besttrack_Phi = selected_muons[k].muonBestTrack()->phi();
 
-      if (firstGoodVertex > -1) {
-	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[firstGoodVertex].position());
-	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[firstGoodVertex].position());
-      }
+//      if (firstGoodVertex > -1) {
+	besttrack_dxy = selected_muons[k].muonBestTrack()->dxy(vtxs[0].position());
+	besttrack_dz  = selected_muons[k].muonBestTrack()->dz(vtxs[0].position());
+//      }
     }
 
     // standAloneMuon quantities
@@ -1707,9 +1715,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
 
     bool isTightMuon = false;
-    if (firstGoodVertex > -1) {
-      isTightMuon = selected_muons[k].isTightMuon(vtxs[firstGoodVertex]);
-    }
+//    if (firstGoodVertex > -1) {
+      isTightMuon = selected_muons[k].isTightMuon(vtxs[0]);
+//    }
 
 
     //-------------------------------------------------------------
@@ -1898,6 +1906,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   T_Elec_dr03EcalSumEt         = new std::vector<float>; 
   T_Elec_dr03HcalSumEt         = new std::vector<float>; 
   T_Elec_passConversionVeto    = new std::vector<bool>;
+  T_Elec_hasMatchedConversion  = new std::vector<bool>;
   T_Elec_isEB                  = new std::vector<bool>;
   T_Elec_isEE                  = new std::vector<bool>;
   T_Elec_sigmaIetaIeta         = new std::vector<float>;
@@ -1929,10 +1938,11 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     selected_electrons.push_back((*electronHandle)[i]);
  
   // Sort by pt, even if not necessary
-  sort(selected_electrons.begin(), selected_electrons.end(), [] (const pat::Electron& electron1, const pat::Electron& electron2)
+/*  sort(selected_electrons.begin(), selected_electrons.end(), [] (const pat::Electron& electron1, const pat::Electron& electron2)
        {
 	 return electron1.pt() > electron2.pt();
        });
+*/
   
   // Loop over electrons
   for (size_t k=0; k<selected_electrons.size(); ++k) {
@@ -2040,6 +2050,9 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
     T_Elec_sumPhotonEt           -> push_back(selected_electrons[k].pfIsolationVariables().sumPhotonEt);
     T_Elec_sumPUPt               -> push_back(selected_electrons[k].pfIsolationVariables().sumPUPt);
     T_Elec_passConversionVeto    -> push_back(selected_electrons[k].passConversionVeto());
+    bool passConvVeto = !ConversionTools::hasMatchedConversion(selected_electrons[k],conversions,theBeamSpot->position());
+    T_Elec_hasMatchedConversion  -> push_back(passConvVeto);
+
     T_Elec_sigmaIetaIeta         -> push_back(selected_electrons[k].sigmaIetaIeta());
     T_Elec_sigmaIetaIetaFull5by5 -> push_back(selected_electrons[k].full5x5_sigmaIetaIeta());
     T_Elec_deltaPhiIn            -> push_back(selected_electrons[k].deltaPhiSuperClusterTrackAtVtx());
@@ -2430,6 +2443,7 @@ void SUSYSkimToTreeTFS::analyze(const edm::Event& iEvent, const edm::EventSetup&
   delete T_Elec_sumPUPt;
 
   delete T_Elec_passConversionVeto;
+  delete T_Elec_hasMatchedConversion;
   delete T_Elec_vx;
   delete T_Elec_vy;
   delete T_Elec_vz;
@@ -3180,6 +3194,8 @@ void SUSYSkimToTreeTFS::beginJob()
   Tree->Branch("T_Elec_sumPhotonEt",        "std::vector<float>", &T_Elec_sumPhotonEt);
   Tree->Branch("T_Elec_sumPUPt",            "std::vector<float>", &T_Elec_sumPUPt);
   Tree->Branch("T_Elec_passConversionVeto", "std::vector<bool>",  &T_Elec_passConversionVeto);
+  Tree->Branch("T_Elec_hasMatchedConversion", "std::vector<bool>",  &T_Elec_hasMatchedConversion);
+
     
   Tree->Branch("T_Elec_sigmaIetaIeta",         "std::vector<float>", &T_Elec_sigmaIetaIeta);
   Tree->Branch("T_Elec_sigmaIetaIetaFull5by5", "std::vector<float>", &T_Elec_sigmaIetaIetaFull5by5);
