@@ -153,7 +153,8 @@ process.TFileService = cms.Service("TFileService",
                                    closeFileFast = cms.untracked.bool(True))
 
 # Skim
-process.p = cms.Path(process.count*process.preYieldFilter*
+process.p = cms.Path(process.count*
+#process.preYieldFilter* ######NO SKIM####
 process.JEC*process.METSignificance*
 process.demo)
 # No skim
