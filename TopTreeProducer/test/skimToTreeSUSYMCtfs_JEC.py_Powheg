@@ -50,14 +50,14 @@ process.jec = cms.ESSource("PoolDBESSource",
       toGet = cms.VPSet(
       cms.PSet(
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_PY8_RunIISpring15DR74_bx50_MC_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV2_MC_AK4PFchs'),
             # tag    = cms.string('JetCorrectorParametersCollection_Summer12_V3_MC_AK5PF'),
             label  = cms.untracked.string('AK4PFchs')
             ),
       ## here you add as many jet types as you need
       ## note that the tag name is specific for the particular sqlite file 
       ), 
-      connect = cms.string('sqlite:PY8_RunIISpring15DR74_bx50_MC.db')
+      connect = cms.string('sqlite:Summer15_50nsV2_MC.db')
      # uncomment above tag lines and this comment to use MC JEC
      # connect = cms.string('sqlite:Summer12_V7_MC.db')
 )
@@ -84,7 +84,7 @@ process.JEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJe
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen     = cms.untracked.bool(True),
                               readLHE     = cms.untracked.bool(True),
-			      readHdamp   = cms.untracked.bool(True), #must be false if not TT powheg
+			      readHdamp   = cms.untracked.bool(True), #must be false if not TT powheg nominal or PS scale variation. Not with mass variation
 			      nPdf	  = cms.untracked.int32(213), #MLM 437, POWHEG 213 #FxFx 102 
                               trigTag     = cms.untracked.InputTag('TriggerResults::HLT'),
                               muonTag     = cms.untracked.InputTag('slimmedMuons'),
@@ -154,7 +154,7 @@ process.TFileService = cms.Service("TFileService",
 
 # Skim
 process.p = cms.Path(process.count*
-#process.preYieldFilter* ######NO SKIM####
+#process.preYieldFilter* ###NO SKIM###
 process.JEC*process.METSignificance*
 process.demo)
 # No skim

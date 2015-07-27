@@ -50,18 +50,16 @@ process.jec = cms.ESSource("PoolDBESSource",
       toGet = cms.VPSet(
       cms.PSet(
             record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_PHYS14_V4_MC_AK4PFchs'),
-#             tag    = cms.string('JetCorrectorParametersCollection_Summer15_V5_MC_AK4PFchs'),
-             tag    = cms.string('JetCorrectorParametersCollection_PY8_RunIISpring15DR74_bx50_MC_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV2_MC_AK4PFchs'),
+            # tag    = cms.string('JetCorrectorParametersCollection_Summer12_V3_MC_AK5PF'),
             label  = cms.untracked.string('AK4PFchs')
             ),
       ## here you add as many jet types as you need
       ## note that the tag name is specific for the particular sqlite file 
       ), 
-#      connect = cms.string('sqlite:PHYS14_V4_MC.db')
+      connect = cms.string('sqlite:Summer15_50nsV2_MC.db')
      # uncomment above tag lines and this comment to use MC JEC
-#       connect = cms.string('sqlite:Summer15_V5_MC.db')
-      connect = cms.string('sqlite:PY8_RunIISpring15DR74_bx50_MC.db')
+     # connect = cms.string('sqlite:Summer12_V7_MC.db')
 )
 ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
@@ -85,9 +83,9 @@ process.JEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJe
 
 process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                               readGen     = cms.untracked.bool(True),
-                              readLHE     = cms.untracked.bool(True),
+                              readLHE     = cms.untracked.bool(False),
 			      readHdamp   = cms.untracked.bool(False), #must be false if not TT powheg
-			      nPdf	  = cms.untracked.int32(102), #MLM 437, POWHEG 213 #FxFx 102 
+			      nPdf	  = cms.untracked.int32(213), #MLM 437, POWHEG 213 #FxFx 102 
                               trigTag     = cms.untracked.InputTag('TriggerResults::HLT'),
                               muonTag     = cms.untracked.InputTag('slimmedMuons'),
                               jetPFTag    = cms.untracked.InputTag('patJetsReapplyJEC'), #'slimmedJets'),
@@ -136,7 +134,6 @@ process.demo = cms.EDAnalyzer('SUSYSkimToTreeTFS',
                         singleElMCPaths = cms.vstring(
                                "1-999999:HLT_Ele27_eta2p1_WP75_Gsf_v*"
                         ),
-
 )
 
 
@@ -144,9 +141,9 @@ process.count = cms.EDAnalyzer('SUSYweightCounter',
 
 			      histosFileName = cms.untracked.string("Histos.root"),
 			      isaMCatNLO = cms.untracked.bool(True),
-			      doLHE = cms.untracked.bool(True),
+			      doLHE = cms.untracked.bool(False),
 			      doHdamp = cms.untracked.bool(False), #must be false if not TT powheg
-			      doPdf = cms.untracked.bool(True),
+			      doPdf = cms.untracked.bool(False),
 			      nPdf = cms.untracked.int32(102) #MLM 437, POWHEG 213 #FxFx 102
 )
 
