@@ -144,7 +144,7 @@ process.count = cms.EDAnalyzer('SUSYweightCounter',
 			      doLHE = cms.untracked.bool(True),
 			      doHdamp = cms.untracked.bool(False), #must be false if not TT powheg
 			      doPdf = cms.untracked.bool(True),
-			      nPdf = cms.untracked.int32(437) #MLM 437, POWHEG 213 #FxFx 102
+			      nPdf = cms.untracked.int32(102) #MLM 437, POWHEG 213 #FxFx 102
 )
 
 
